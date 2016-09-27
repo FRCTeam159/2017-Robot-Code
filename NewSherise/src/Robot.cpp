@@ -1,8 +1,15 @@
 #include "WPILib.h"
 #include "Toggler.h"
 #define FLIPPER_SPEED .5
-#define FLIPPER_UP_BUTTON 3
-#define FLIPPER_DOWN_BUTTON 4
+#define FLIPPER_UP_BUTTON 5
+#define FLIPPER_DOWN_BUTTON 6
+#define FLIPPER_UP_SPEED .2
+#define FLIPPER_DOWN_SPEED -.2
+#define SHOOTER_UP_SPEED 1
+#define SHOOTER_DOWN_SPEED -1
+#define SHOOTER_BUTTON 3
+#define INTAKE_BUTTON 4
+
 class Robot: public IterativeRobot
 {
 private:
@@ -59,16 +66,15 @@ private:
 			intakeMotor->Set(0);
 		}*/
 		customArcade();
-		if(stick->GetRawButton(2))
+		if(stick->GetRawButton(SHOOTER_BUTTON))
 		{
-			intakeMotor->Set(1);
+			intakeMotor->Set(SHOOTER_UP_SPEED);
 		}
 		else
 		{
 			intakeMotor->Set(0);
 		}
-		customArcade();
-		if(stick->GetRawButton(1))
+		if(stick->GetRawButton(INTAKE_BUTTON))
 		{
 			shootMotor->Set(1);
 			printf ("Shooter down button pressed\n");
@@ -77,20 +83,15 @@ private:
 		{
 			shootMotor->Set(0);
 		}
-		customArcade();
 		if(stick->GetRawButton(FLIPPER_UP_BUTTON))
 		{
-			Flipper->Set(FLIPPER_SPEED);
+			Flipper->Set(FLIPPER_UP_SPEED);
 			printf ("Flipper up button pressed\n");
 		}
-		else
+
+		else if(stick->GetRawButton(FLIPPER_DOWN_BUTTON))
 		{
-			Flipper->Set(0);
-		}
-		customArcade();
-		if(stick->GetRawButton(FLIPPER_DOWN_BUTTON))
-		{
-			Flipper->Set(-FLIPPER_SPEED);
+			Flipper->Set(FLIPPER_DOWN_SPEED);
 			printf ("Flipper down button pressed\n");
 		}
 		else
