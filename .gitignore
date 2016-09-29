@@ -2,4 +2,8 @@
 build.xml
 .metadata/
 RemoteSystemsTempFiles/
+Debug/
+linux_simulate/
+*.o
+
 
