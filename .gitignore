@@ -2,5 +2,13 @@
 build.xml
 .metadata/
 RemoteSystemsTempFiles/
+<<<<<<< HEAD
 *.exe
 *.o
+=======
+Debug/
+linux_simulate/
+*.o
+
+
+>>>>>>> a4da50bd6db9f74ff834153389cdc754a96101f0
