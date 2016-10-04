@@ -3,6 +3,7 @@
 class Robot: public IterativeRobot
 {
 private:
+	Joystick *stick;
 	LiveWindow *lw = LiveWindow::GetInstance();
 	SendableChooser *chooser;
 	const std::string autoNameDefault = "Default";
@@ -11,6 +12,7 @@ private:
 
 	void RobotInit()
 	{
+		stick = new Joystick(0);
 		chooser = new SendableChooser();
 		chooser->AddDefault(autoNameDefault, (void*)&autoNameDefault);
 		chooser->AddObject(autoNameCustom, (void*)&autoNameCustom);
