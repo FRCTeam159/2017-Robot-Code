@@ -4,6 +4,12 @@ class Robot: public IterativeRobot
 {
 private:
 	Joystick *stick;
+	CANTalon *frontRight;
+	CANTalon *frontLeft;
+	CANTalon *rearLeft;
+	CANTalon *rearRight;
+	CANTalon *liftMotor;
+	RobotDrive *robotDrive;
 	LiveWindow *lw = LiveWindow::GetInstance();
 	SendableChooser *chooser;
 	const std::string autoNameDefault = "Default";
@@ -13,10 +19,18 @@ private:
 	void RobotInit()
 	{
 		stick = new Joystick(0);
+		frontLeft = new CANTalon(1);
+		frontRight = new CANTalon(4);
+		rearLeft = new CANTalon(2);
+		rearRight = new CANTalon(3);
+		liftMotor = new CANTalon(5);
 		chooser = new SendableChooser();
 		chooser->AddDefault(autoNameDefault, (void*)&autoNameDefault);
 		chooser->AddObject(autoNameCustom, (void*)&autoNameCustom);
 		SmartDashboard::PutData("Auto Modes", chooser);
+		robotDrive = new RobotDrive(frontLeft, rearLeft, frontRight, rearRight);
+		robotDrive->SetInvertedMotor(RobotDrive::kFrontRightMotor,true);
+		robotDrive->SetInvertedMotor(RobotDrive::kRearRightMotor,true);
 	}
 
 
@@ -58,12 +72,16 @@ private:
 
 	void TeleopPeriodic()
 	{
-
+		DriveWithJoystick ();
 	}
 
 	void TestPeriodic()
 	{
 		lw->Run();
+	}
+	void DriveWithJoystick ()
+	{
+		robotDrive->MecanumDrive_Cartesian(stick->GetX(), stick->GetY(), stick->GetZ());
 	}
 };
 
