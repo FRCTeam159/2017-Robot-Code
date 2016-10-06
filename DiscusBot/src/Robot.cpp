@@ -69,7 +69,7 @@ private:
 	}
 
 	void TeleopPeriodic() {
-		// DriveWithJoystick();
+		DriveWithJoystick();
 		DoLifter();
 	}
 
