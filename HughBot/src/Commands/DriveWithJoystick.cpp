@@ -4,7 +4,7 @@
 DriveWithJoystick::DriveWithJoystick()
 {
 	// Use Requires() here to declare subsystem dependencies
-	Requires(drivetrain.get());
+	Requires(driveTrain.get());
 }
 
 // Called just before this Command runs the first time
@@ -25,7 +25,7 @@ void DriveWithJoystick::Execute()
 	yAxis = quadDeadband(.6, .3, yAxis);
 	xAxis = quadDeadband(.6, .3, xAxis);
 	zAxis = quadDeadband(.6, .3, zAxis);
-	drivetrain.get()->Drive(xAxis, yAxis, zAxis);
+	driveTrain.get()->Drive(xAxis, yAxis, zAxis);
 }
 
 // Make this return true when this Command no longer needs to run execute()
