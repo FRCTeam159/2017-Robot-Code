@@ -11,6 +11,7 @@
 #include "Subsystems/GearSubsystem.h"
 #include "Subsystems/Vision.h"
 #include "Subsystems/Fuel.h"
+using namespace std;
 
 /**
  * The base for all commands. All atomic commands should subclass CommandBase.

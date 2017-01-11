@@ -1,5 +1,6 @@
 #include "Vision.h"
 #include "../RobotMap.h"
+#include "Commands/VisionTest.h"
 
 Vision::Vision() : Subsystem("ExampleSubsystem") {
 
@@ -7,7 +8,7 @@ Vision::Vision() : Subsystem("ExampleSubsystem") {
 
 void Vision::InitDefaultCommand() {
 	// Set the default command for a subsystem here.
-	// SetDefaultCommand(new MySpecialCommand());
+	SetDefaultCommand(new VisionTest());
 }
 
 // Put methods for controlling this subsystem
