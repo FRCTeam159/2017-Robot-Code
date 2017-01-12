@@ -9,13 +9,59 @@
 
 #include "CommandBase.h"
 
+#include <thread>
+#include <CameraServer.h>
+#include <IterativeRobot.h>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/core/core.hpp>
+#include <opencv2/core/types.hpp>
+
 class Robot: public frc::IterativeRobot {
+	static void VisionThread() {
+			// Get the USB camera from CameraServer
+			cs::UsbCamera camera = CameraServer::GetInstance()->StartAutomaticCapture();
+			// Set the resolution
+			camera.SetResolution(320, 240);
+
+			// Get a CvSink. This will capture Mats from the Camera
+			cs::CvSink cvSink = CameraServer::GetInstance()->GetVideo();
+			// Setup a CvSource. This will send images back to the Dashboard
+			cs::CvSource outputStream = CameraServer::GetInstance()->
+					PutVideo("Rectangle", 320, 240);
+
+			// Mats are very memory expensive. Lets reuse this Mat.
+			cv::Mat mat;
+
+			while (true) {
+				// Tell the CvSink to grab a frame from the camera and put it
+				// in the source mat.  If there is an error notify the output.
+				if (cvSink.GrabFrame(mat) == 0) {
+					// Send the output the error.
+					outputStream.NotifyError(cvSink.GetError());
+					// skip the rest of the current iteration
+					continue;
+				}
+				// Put a rectangle on the image
+				rectangle(mat, cv::Point(100, 100), cv::Point(400, 400),
+						cv::Scalar(255, 255, 255), 5);
+				// Give the output stream a new image to display
+				outputStream.PutFrame(mat);
+			}
+		}
+
 public:
 	void RobotInit() override {
 		CommandBase::init();
 		// chooser.AddDefault("Default Auto", new ExampleCommand());
 		// chooser.AddObject("My Auto", new MyAutoCommand());
 		frc::SmartDashboard::PutData("Auto Modes", &chooser);
+      //  CameraServer::GetInstance()->SetQuality(50);
+
+        //the camera name (ex "cam0") can be found through the roborio web interface
+       // CameraServer::GetInstance()->StartAutomaticCapture();
+		std::thread visionThread(VisionThread);
+		visionThread.detach();
+
 	}
 
 	/**
