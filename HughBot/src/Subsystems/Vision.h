@@ -1,16 +1,19 @@
 #ifndef Vision_H
 #define Vision_H
+#include "Subsystems/GripPipeline.h"
 
 #include <Commands/Subsystem.h>
+using namespace grip;
 
 class Vision : public Subsystem {
 private:
-	// It's desirable that everything possible under private except
-	// for methods that implement subsystem capabilities
+	GripPipeline gp;
+
 
 public:
 	Vision();
 	void InitDefaultCommand();
+	void Process( cv::Mat);
 };
 
 #endif  // Vision_H

@@ -31,7 +31,7 @@ class Robot: public frc::IterativeRobot {
 
 			// Mats are very memory expensive. Lets reuse this Mat.
 			cv::Mat mat;
-
+			int startposition=10;
 			while (true) {
 				// Tell the CvSink to grab a frame from the camera and put it
 				// in the source mat.  If there is an error notify the output.
@@ -42,10 +42,16 @@ class Robot: public frc::IterativeRobot {
 					continue;
 				}
 				// Put a rectangle on the image
-				rectangle(mat, cv::Point(100, 100), cv::Point(400, 400),
-						cv::Scalar(255, 255, 255), 5);
+				int width=100;
+				int linewidth=5;
+
+				rectangle(mat, cv::Point(startposition, startposition), cv::Point(startposition+width, startposition+width),
+						cv::Scalar(255, 0, 0), linewidth);
 				// Give the output stream a new image to display
 				outputStream.PutFrame(mat);
+				startposition++;
+				if (startposition>20)
+					startposition=10;
 			}
 		}
 
@@ -59,8 +65,8 @@ public:
 
         //the camera name (ex "cam0") can be found through the roborio web interface
        // CameraServer::GetInstance()->StartAutomaticCapture();
-		std::thread visionThread(VisionThread);
-		visionThread.detach();
+		//std::thread visionThread(VisionThread);
+		//visionThread.detach();
 
 	}
 
