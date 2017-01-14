@@ -173,13 +173,13 @@ private:
 		float right=0;  // Left and right motor power values
 
 		// Get axis values
-		float yAxis = -1 * ((*stick).GetY());
-		float xAxis = (*stick).GetX();
+		float yAxis = 1 * ((*stick).GetY());
+		float xAxis = -1 * ((*stick).GetX());
 		float zAxis = (*stick).GetZ();
 		// Run axis values through deadband
-		yAxis = quadDeadband(.6 , .3 , yAxis);
-		xAxis = quadDeadband(.6 , .3 , xAxis);
-		zAxis = quadDeadband(.6 , .3 , zAxis);
+		yAxis = quadDeadband(.4 , .3 , yAxis);
+		xAxis = quadDeadband(.4 , .3 , xAxis);
+		zAxis = quadDeadband(.4 , .3 , zAxis);
 
 		// Turning logic
 		if (zAxis != 0)

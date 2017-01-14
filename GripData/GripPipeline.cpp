@@ -30,18 +30,9 @@ void GripPipeline::process(cv::Mat source0){
 	//Step RGB_Threshold0:
 	//input
 	cv::Mat rgbThresholdInput = blurOutput;
-	double rgbThresholdRed[] = {0.0, 192};
-	double rgbThresholdGreen[] = {240, 255.0};
-	double rgbThresholdBlue[] = {220, 255.0};
-	/*
-
 	double rgbThresholdRed[] = {0.0, 191.90273037542661};
 	double rgbThresholdGreen[] = {224.7302158273381, 255.0};
 	double rgbThresholdBlue[] = {181.16007194244605, 255.0};
-
-	original RGB color stats
-
-	 */
 	rgbThreshold(rgbThresholdInput, rgbThresholdRed, rgbThresholdGreen, rgbThresholdBlue, this->rgbThresholdOutput);
 	//Step Find_Contours0:
 	//input

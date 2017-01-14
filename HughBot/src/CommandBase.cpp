@@ -23,4 +23,5 @@ void CommandBase::init()
 	gearSubsystem.reset(new GearSubsystem());
 	visionSubsystem.reset(new Vision());
 	oi.reset(new OI());
+	visionSubsystem->Init();
 }
