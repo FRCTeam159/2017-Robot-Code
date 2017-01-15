@@ -13,39 +13,40 @@ GripPipeline::GripPipeline() {
 * Sources need to be set before calling this method. 
 *
 */
+#define BLUR
 void GripPipeline::process(cv::Mat source0){
 	//Step Resize_Image0:
 	//input
 	cv::Mat resizeImageInput = source0;
+#ifdef RESIZE_IMAGE
 	double resizeImageWidth = 320.0;  // default Double
 	double resizeImageHeight = 240.0;  // default Double
 	int resizeImageInterpolation = cv::INTER_CUBIC;
 	resizeImage(resizeImageInput, resizeImageWidth, resizeImageHeight, resizeImageInterpolation, this->resizeImageOutput);
+	cv::Mat blurInput = resizeImageOutput;
+#else
+	cv::Mat blurInput = source0;
+#endif
 	//Step Blur0:
 	//input
-	cv::Mat blurInput = resizeImageOutput;
+#ifdef BLUR
 	BlurType blurType = BlurType::MEDIAN;
-	double blurRadius = 4.504504504504505;  // default Double
+	double blurRadius = 1.5;  // default Double
 	blur(blurInput, blurType, blurRadius, this->blurOutput);
+	cv::Mat rgbThresholdInput = blurOutput;
+#else
+	cv::Mat rgbThresholdInput = blurInput;
+#endif
 	//Step RGB_Threshold0:
 	//input
-	cv::Mat rgbThresholdInput = blurOutput;
-	double rgbThresholdRed[] = {0.0, 192};
-	double rgbThresholdGreen[] = {240, 255.0};
+	double rgbThresholdRed[] = {0.0, 210};
+	double rgbThresholdGreen[] = {165, 255.0};
 	double rgbThresholdBlue[] = {220, 255.0};
-	/*
-
-	double rgbThresholdRed[] = {0.0, 191.90273037542661};
-	double rgbThresholdGreen[] = {224.7302158273381, 255.0};
-	double rgbThresholdBlue[] = {181.16007194244605, 255.0};
-
-	original RGB color stats
-
-	 */
 	rgbThreshold(rgbThresholdInput, rgbThresholdRed, rgbThresholdGreen, rgbThresholdBlue, this->rgbThresholdOutput);
-	//Step Find_Contours0:
+	//Step Find_Contours0:rgbThresholdGreen
 	//input
-	cv::Mat findContoursInput = rgbThresholdOutput;
+	cv::Mat findContoursInput ;
+	rgbThresholdOutput.copyTo(findContoursInput);
 	bool findContoursExternalOnly = false;  // default Boolean
 	findContours(findContoursInput, findContoursExternalOnly, this->findContoursOutput);
 	//Step Convex_Hulls0:
@@ -55,17 +56,17 @@ void GripPipeline::process(cv::Mat source0){
 	//Step Filter_Contours0:
 	//input
 	std::vector<std::vector<cv::Point> > filterContoursContours = convexHullsOutput;
-	double filterContoursMinArea = 66.0;  // default Double
+	double filterContoursMinArea = 5.0;  // default Double
 	double filterContoursMinPerimeter = 0;  // default Double
-	double filterContoursMinWidth = 0.0;  // default Double
-	double filterContoursMaxWidth = 1000;  // default Double
-	double filterContoursMinHeight = 50.0;  // default Double
+	double filterContoursMinWidth = 5.0;  // default Double
+	double filterContoursMaxWidth = 100;  // default Double
+	double filterContoursMinHeight = 5.0;  // default Double
 	double filterContoursMaxHeight = 1000;  // default Double
 	double filterContoursSolidity[] = {0, 100};
-	double filterContoursMaxVertices = 1000000;  // default Double
-	double filterContoursMinVertices = 0;  // default Double
+	double filterContoursMaxVertices = 100;  // default Double
+	double filterContoursMinVertices = 4;  // default Double
 	double filterContoursMinRatio = 0;  // default Double
-	double filterContoursMaxRatio = 1000;  // default Double
+	double filterContoursMaxRatio = 2.0/5.0;  // default Double
 	filterContours(filterContoursContours, filterContoursMinArea, filterContoursMinPerimeter, filterContoursMinWidth, filterContoursMaxWidth, filterContoursMinHeight, filterContoursMaxHeight, filterContoursSolidity, filterContoursMaxVertices, filterContoursMinVertices, filterContoursMinRatio, filterContoursMaxRatio, this->filterContoursOutput);
 }
 

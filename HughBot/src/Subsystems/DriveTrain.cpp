@@ -13,6 +13,7 @@ DriveTrain::DriveTrain() :
 	drive = new RobotDrive(&frontLeft, &backLeft, &frontRight, &backRight);
 	drive->SetInvertedMotor(RobotDrive::kFrontLeftMotor,true);
 	drive->SetInvertedMotor(RobotDrive::kRearLeftMotor,true);
+	drive->SetExpiration(0.1);
 }
 
 void DriveTrain::InitDefaultCommand()

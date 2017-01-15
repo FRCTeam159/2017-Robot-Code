@@ -14,8 +14,6 @@ VisionTest::VisionTest() {
 // Called just before this Command runs the first time
 void VisionTest::Initialize() {
 	// Get the USB camera from CameraServer
-
-
 }
 
 // Called repeatedly when this Command is scheduled to run
