@@ -22,6 +22,8 @@ public:
 	void InitDefaultCommand();
 	void Process();
 	void Init();
+	void camerasettings(double exposure, double balance, double brightness);
+
 };
 
 #endif  // Vision_H

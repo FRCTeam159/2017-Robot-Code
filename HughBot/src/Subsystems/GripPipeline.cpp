@@ -253,5 +253,5 @@ std::vector<std::vector<cv::Point> >* GripPipeline::getfilterContoursOutput(){
 } // end grip namespace
 
 std::vector<std::vector<cv::Point> >* grip::GripPipeline::getResultVector() {
-	return &(this->returnVector);
+	return &(this->returnVector)			;
 }

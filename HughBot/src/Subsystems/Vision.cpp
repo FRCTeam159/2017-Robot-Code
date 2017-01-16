@@ -74,6 +74,16 @@ void Vision::Init() {
 	cvSink = CameraServer::GetInstance()->GetVideo();
 	// Setup a CvSource. This will send images back to the Dashboard
 	outputStream = CameraServer::GetInstance()->PutVideo("Rectangle", 320, 240);
+	camerasettings(0, 0, 0);
+}
+
+void Vision::camerasettings(double exposure, double balance, double brightness)
+{
+	float e=camera.GetBrightness();
+	cout <<"original brightness:"<<e<< endl;
+	camera.SetBrightness(0.25*e);
+	e=camera.GetBrightness();
+	cout <<"new brightness:"<<e<< endl;
 }
 // Put methods for controlling this subsystem
 // here. Call these from Commands.
