@@ -37,7 +37,7 @@ void Vision::Process() {
 #endif
 	//cv::Mat* mat2=gp.getblurOutput();
 	int minx = 1000, maxx = 0, miny = 1000, maxy = 0;
-	std::vector<std::vector<cv::Point> > points = *gp.getfilterContoursOutput();
+	std::vector<std::vector<cv::Point> > points = *gp.getResultVector();
 	//cout << "points size:" << points.size() << endl;
 	for (unsigned int i = 0; i < points.size(); i++) {
 		std::vector<cv::Point> pv = points[i];

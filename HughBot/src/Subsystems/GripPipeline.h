@@ -33,9 +33,12 @@ class GripPipeline {
 		cv::Mat blurOutput;
 		cv::Mat rgbThresholdOutput;
 		cv::Mat source0;
+		cv::Mat returnImage;
 		std::vector<std::vector<cv::Point> > findContoursOutput;
 		std::vector<std::vector<cv::Point> > convexHullsOutput;
 		std::vector<std::vector<cv::Point> > filterContoursOutput;
+		std::vector<std::vector<cv::Point> > returnVector;
+
 		void resizeImage(cv::Mat &, double , double , int , cv::Mat &);
 		void blur(cv::Mat &, BlurType &, double , cv::Mat &);
 		void rgbThreshold(cv::Mat &, double [], double [], double [], cv::Mat &);
@@ -53,6 +56,7 @@ class GripPipeline {
 		std::vector<std::vector<cv::Point> >* getconvexHullsOutput();
 		std::vector<std::vector<cv::Point> >* getfilterContoursOutput();
 		void setsource0(cv::Mat &source0);
+		std::vector<std::vector<cv::Point> >*getResultVector();
 };
 
 

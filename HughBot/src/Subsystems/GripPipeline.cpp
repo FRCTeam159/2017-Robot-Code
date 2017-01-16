@@ -31,7 +31,7 @@ void GripPipeline::process(cv::Mat source0){
 	//input
 #ifdef BLUR
 	BlurType blurType = BlurType::MEDIAN;
-	double blurRadius = 1.5;  // default Double
+	double blurRadius = 4.5;  // default Double
 	blur(blurInput, blurType, blurRadius, this->blurOutput);
 	cv::Mat rgbThresholdInput = blurOutput;
 #else
@@ -39,9 +39,9 @@ void GripPipeline::process(cv::Mat source0){
 #endif
 	//Step RGB_Threshold0:
 	//input
-	double rgbThresholdRed[] = {0.0, 210};
-	double rgbThresholdGreen[] = {165, 255.0};
-	double rgbThresholdBlue[] = {220, 255.0};
+	double rgbThresholdRed[] = {16.052158273381295, 89.64163822525597};
+		double rgbThresholdGreen[] = {103.19244604316546, 255.0};
+		double rgbThresholdBlue[] = {107.77877697841726, 255.0};
 	rgbThreshold(rgbThresholdInput, rgbThresholdRed, rgbThresholdGreen, rgbThresholdBlue, this->rgbThresholdOutput);
 	//Step Find_Contours0:rgbThresholdGreen
 	//input
@@ -55,6 +55,7 @@ void GripPipeline::process(cv::Mat source0){
 	convexHulls(convexHullsContours, this->convexHullsOutput);
 	//Step Filter_Contours0:
 	//input
+#ifdef FILTERCONTOURS
 	std::vector<std::vector<cv::Point> > filterContoursContours = convexHullsOutput;
 	double filterContoursMinArea = 5.0;  // default Double
 	double filterContoursMinPerimeter = 0;  // default Double
@@ -68,6 +69,11 @@ void GripPipeline::process(cv::Mat source0){
 	double filterContoursMinRatio = 0;  // default Double
 	double filterContoursMaxRatio = 2.0/5.0;  // default Double
 	filterContours(filterContoursContours, filterContoursMinArea, filterContoursMinPerimeter, filterContoursMinWidth, filterContoursMaxWidth, filterContoursMinHeight, filterContoursMaxHeight, filterContoursSolidity, filterContoursMaxVertices, filterContoursMinVertices, filterContoursMinRatio, filterContoursMaxRatio, this->filterContoursOutput);
+	returnVector=this->filterContoursOutput;
+#else
+	returnVector=this->convexHullsOutput;
+#endif
+
 }
 
 /**
@@ -232,10 +238,10 @@ std::vector<std::vector<cv::Point> >* GripPipeline::getfilterContoursOutput(){
 			double area = cv::contourArea(contour);
 			if (area < minArea) continue;
 			if (arcLength(contour, true) < minPerimeter) continue;
-			cv::convexHull(cv::Mat(contour, true), hull);
-			double solid = 100 * area / cv::contourArea(hull);
-			if (solid < solidity[0] || solid > solidity[1]) continue;
-			if (contour.size() < minVertexCount || contour.size() > maxVertexCount)	continue;
+			//cv::convexHull(cv::Mat(contour, true), hull);
+			//double solid = 100 * area / cv::contourArea(hull);
+			//if (solid < solidity[0] || solid > solidity[1]) continue;
+			//if (contour.size() < minVertexCount || contour.size() > maxVertexCount)	continue;
 			double ratio = bb.width / bb.height;
 			if (ratio < minRatio || ratio > maxRatio) continue;
 			output.push_back(contour);
@@ -246,3 +252,6 @@ std::vector<std::vector<cv::Point> >* GripPipeline::getfilterContoursOutput(){
 
 } // end grip namespace
 
+std::vector<std::vector<cv::Point> >* grip::GripPipeline::getResultVector() {
+	return &(this->returnVector);
+}
