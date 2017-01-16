@@ -16,6 +16,13 @@ void Vision::InitDefaultCommand() {
 //#define SHOW_RGB_THRESHOLD
 
 void Vision::Process() {
+	/*double val = frc::SmartDashboard::GetNumber("CameraBrightness",2);
+	if(val!=brightness){
+		cout<<"New Brightness> "<<val<<endl;
+		brightness = val;
+		camerasettings(0,0,brightness);
+	}*/
+	//frc::SmartDashboard::PutNumber("CameraBrightness", camera.GetBrightness());
 	cv::Mat mat;
 	//return;
 	int status = cvSink.GrabFrame(mat);
@@ -64,8 +71,10 @@ void Vision::Process() {
 
 void Vision::Init() {
 	camera = CameraServer::GetInstance()->StartAutomaticCapture();
+	camera2 = CameraServer::GetInstance()->StartAutomaticCapture("DriverCam",1);
 	// Set the resolution
 	camera.SetResolution(320, 240);
+	camera2.SetResolution(320, 240);
 	//camera.SetFPS(1);
 
 	//camera.SetPixelFormat(cs::VideoMode::PixelFormat::kBGR);
@@ -74,16 +83,17 @@ void Vision::Init() {
 	cvSink = CameraServer::GetInstance()->GetVideo();
 	// Setup a CvSource. This will send images back to the Dashboard
 	outputStream = CameraServer::GetInstance()->PutVideo("Rectangle", 320, 240);
-	camerasettings(0, 0, 0);
+	//camerasettings(0, 0, brightness);
+	camerasettings(0,0,frc::SmartDashboard::GetNumber("CameraBrightness",2));
 }
 
 void Vision::camerasettings(double exposure, double balance, double brightness)
 {
-	float e=camera.GetBrightness();
-	cout <<"original brightness:"<<e<< endl;
-	camera.SetBrightness(0.25*e);
-	e=camera.GetBrightness();
-	cout <<"new brightness:"<<e<< endl;
+	//float e=camera.GetBrightness();
+	//cout <<"original brightness:"<<e<< endl;
+	camera.SetBrightness(brightness);
+	//e=camera.GetBrightness();
+	//cout <<"new brightness:"<<e<< endl;
 }
 // Put methods for controlling this subsystem
 // here. Call these from Commands.

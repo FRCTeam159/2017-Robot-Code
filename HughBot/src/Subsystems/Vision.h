@@ -12,10 +12,12 @@ using namespace grip;
 class Vision : public Subsystem {
 private:
 	cs::UsbCamera camera;
+	cs::UsbCamera camera2;
 	cs::CvSink cvSink;
 	cs::CvSource outputStream;
 	GripPipeline gp;
 	bool error=false;
+	double brightness=2;
 
 public:
 	Vision();
