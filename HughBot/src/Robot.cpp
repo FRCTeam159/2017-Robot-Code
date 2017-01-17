@@ -6,11 +6,15 @@
 #include <LiveWindow/LiveWindow.h>
 #include <SmartDashboard/SendableChooser.h>
 #include <SmartDashboard/SmartDashboard.h>
-
 #include "CommandBase.h"
+#include "Commands/DisabledCommand.h"
+#include "Commands/AdjustCamera.h"
+
+#include "Commands/Autonomous.h"
 
 #include <thread>
 #include <CameraServer.h>
+#include <Commands/DisabledCommand.h>
 #include <IterativeRobot.h>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/core/core.hpp>
@@ -67,6 +71,7 @@ public:
        // CameraServer::GetInstance()->StartAutomaticCapture();
 		//std::thread visionThread(VisionThread);
 		//visionThread.detach();
+		//disabledCommand.reset(new DisabledCommand());
 
 	}
 
@@ -76,7 +81,6 @@ public:
 	 * the robot is disabled.
 	 */
 	void DisabledInit() override {
-
 	}
 
 	void DisabledPeriodic() override {
@@ -95,15 +99,17 @@ public:
 	 * to the if-else structure below with additional strings & commands.
 	 */
 	void AutonomousInit() override {
-		/* std::string autoSelected = frc::SmartDashboard::GetString("Auto Selector", "Default");
+		std::string autoSelected = frc::SmartDashboard::GetString("Auto Selector", "Default");
 		if (autoSelected == "My Auto") {
-			autonomousCommand.reset(new MyAutoCommand());
+			autonomousCommand.reset(new Autonomous());
+			cout<<"Chose My Auto"<<endl;
 		}
 		else {
-			autonomousCommand.reset(new ExampleCommand());
-		} */
+			autonomousCommand.reset(new Autonomous());
+			cout<<"Chose default auto"<<endl;
+		}
 
-		autonomousCommand.reset(chooser.GetSelected());
+		//autonomousCommand.reset(chooser.GetSelected());
 
 		if (autonomousCommand.get() != nullptr) {
 			autonomousCommand->Start();
@@ -128,6 +134,12 @@ public:
 		frc::Scheduler::GetInstance()->Run();
 	}
 
+	void TestInit(){
+		disabledCommand.reset(new DisabledCommand());
+		disabledCommand->Start();
+		cout<<"TestInit"<<endl;
+	}
+
 	void TestPeriodic() override {
 		frc::LiveWindow::GetInstance()->Run();
 	}
@@ -135,6 +147,7 @@ public:
 private:
 	std::unique_ptr<frc::Command> autonomousCommand;
 	frc::SendableChooser<frc::Command*> chooser;
+	std::unique_ptr<frc::Command> disabledCommand;
 };
 
 START_ROBOT_CLASS(Robot)

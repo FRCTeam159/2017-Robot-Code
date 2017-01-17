@@ -17,14 +17,16 @@ private:
 	cs::CvSource outputStream;
 	GripPipeline gp;
 	bool error=false;
-	double brightness=2;
+	double brightness = 10;
+	double exposure = 10;
 
 public:
 	Vision();
 	void InitDefaultCommand();
 	void Process();
 	void Init();
-	void camerasettings(double exposure, double balance, double brightness);
+	void CameraSettings(double exposure, double balance, double brightness);
+	void AdjustCamera(double exposure, double balance, double brightness);
 
 };
 

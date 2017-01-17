@@ -13,40 +13,34 @@ GripPipeline::GripPipeline() {
 * Sources need to be set before calling this method. 
 *
 */
-#define BLUR
+//#define BLUR
+//#define RGB_THRESHOLD
+
 void GripPipeline::process(cv::Mat source0){
-	//Step Resize_Image0:
-	//input
-	cv::Mat resizeImageInput = source0;
-#ifdef RESIZE_IMAGE
-	double resizeImageWidth = 320.0;  // default Double
-	double resizeImageHeight = 240.0;  // default Double
-	int resizeImageInterpolation = cv::INTER_CUBIC;
-	resizeImage(resizeImageInput, resizeImageWidth, resizeImageHeight, resizeImageInterpolation, this->resizeImageOutput);
-	cv::Mat blurInput = resizeImageOutput;
-#else
-	cv::Mat blurInput = source0;
-#endif
 	//Step Blur0:
 	//input
 #ifdef BLUR
 	BlurType blurType = BlurType::MEDIAN;
 	double blurRadius = 4.5;  // default Double
-	blur(blurInput, blurType, blurRadius, this->blurOutput);
-	cv::Mat rgbThresholdInput = blurOutput;
+	blur(source0, blurType, blurRadius, this->blurOutput);
+	cv::Mat colorThresholdInput = blurOutput;
 #else
-	cv::Mat rgbThresholdInput = blurInput;
+	cv::Mat colorThresholdInput = source0;
 #endif
+#ifdef RGB_THRESHOLD
 	//Step RGB_Threshold0:
 	//input
 	double rgbThresholdRed[] = {16.052158273381295, 89.64163822525597};
-		double rgbThresholdGreen[] = {103.19244604316546, 255.0};
-		double rgbThresholdBlue[] = {107.77877697841726, 255.0};
-	rgbThreshold(rgbThresholdInput, rgbThresholdRed, rgbThresholdGreen, rgbThresholdBlue, this->rgbThresholdOutput);
+	double rgbThresholdGreen[] = {103.19244604316546, 255.0};
+	double rgbThresholdBlue[] = {107.77877697841726, 255.0};
+	rgbThreshold(colorThresholdInput, rgbThresholdRed, rgbThresholdGreen, rgbThresholdBlue, this->colorThresholdOutput);
+#else
+	hsvThreshold(colorThresholdInput, hsvThresholdHue, hsvThresholdSaturation, hsvThresholdValue, this->colorThresholdOutput);
+#endif
 	//Step Find_Contours0:rgbThresholdGreen
 	//input
 	cv::Mat findContoursInput ;
-	rgbThresholdOutput.copyTo(findContoursInput);
+	colorThresholdOutput.copyTo(findContoursInput);
 	bool findContoursExternalOnly = false;  // default Boolean
 	findContours(findContoursInput, findContoursExternalOnly, this->findContoursOutput);
 	//Step Convex_Hulls0:
@@ -98,11 +92,11 @@ cv::Mat* GripPipeline::getblurOutput(){
 	return &(this->blurOutput);
 }
 /**
- * This method is a generated getter for the output of a RGB_Threshold.
- * @return Mat output from RGB_Threshold.
+ * This method is a generated getter for the output of a color_Threshold.
+ * @return Mat output from color_Threshold.
  */
-cv::Mat* GripPipeline::getrgbThresholdOutput(){
-	return &(this->rgbThresholdOutput);
+cv::Mat* GripPipeline::getColorThresholdOutput(){
+	return &(this->colorThresholdOutput);
 }
 /**
  * This method is a generated getter for the output of a Find_Contours.
@@ -180,7 +174,19 @@ std::vector<std::vector<cv::Point> >* GripPipeline::getfilterContoursOutput(){
 		cv::cvtColor(input, output, cv::COLOR_BGR2RGB);
 		cv::inRange(output, cv::Scalar(red[0], green[0], blue[0]), cv::Scalar(red[1], green[1], blue[1]), output);
 	}
-
+	/**
+	 * Segment an image based on hue, saturation, and value ranges.
+	 *
+	 * @param input The image on which to perform the HSL threshold.
+	 * @param hue The min and max hue.
+	 * @param sat The min and max saturation.
+	 * @param val The min and max value.
+	 * @param output The image in which to store the output.
+	 */
+	void GripPipeline::hsvThreshold(cv::Mat &input, double hue[], double sat[], double val[], cv::Mat &out) {
+		cv::cvtColor(input, out, cv::COLOR_BGR2HSV);
+		cv::inRange(out,cv::Scalar(hue[0], sat[0], val[0]), cv::Scalar(hue[1], sat[1], val[1]), out);
+	}
 	/**
 	 * Finds contours in an image.
 	 *

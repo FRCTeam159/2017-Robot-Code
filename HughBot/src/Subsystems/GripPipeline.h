@@ -31,7 +31,7 @@ class GripPipeline {
 	private:
 		cv::Mat resizeImageOutput;
 		cv::Mat blurOutput;
-		cv::Mat rgbThresholdOutput;
+		cv::Mat colorThresholdOutput;
 		cv::Mat source0;
 		cv::Mat returnImage;
 		std::vector<std::vector<cv::Point> > findContoursOutput;
@@ -42,21 +42,33 @@ class GripPipeline {
 		void resizeImage(cv::Mat &, double , double , int , cv::Mat &);
 		void blur(cv::Mat &, BlurType &, double , cv::Mat &);
 		void rgbThreshold(cv::Mat &, double [], double [], double [], cv::Mat &);
+		void hsvThreshold(cv::Mat &input, double hue[], double sat[], double val[], cv::Mat &out);
 		void findContours(cv::Mat &, bool , std::vector<std::vector<cv::Point> > &);
 		void convexHulls(std::vector<std::vector<cv::Point> > &, std::vector<std::vector<cv::Point> > &);
 		void filterContours(std::vector<std::vector<cv::Point> > &, double , double , double , double , double , double , double [], double , double , double , double , std::vector<std::vector<cv::Point> > &);
+
+		llvm::ArrayRef<double>  hsvThresholdHue[] = {70, 110};
+		llvm::ArrayRef<double>  hsvThresholdSaturation[] = {222, 255};
+		llvm::ArrayRef<double>  hsvThresholdValue[] = {52, 133};
 
 	public:
 		GripPipeline();
 		void process(cv::Mat source0);
 		cv::Mat* getresizeImageOutput();
 		cv::Mat* getblurOutput();
-		cv::Mat* getrgbThresholdOutput();
+		cv::Mat* getColorThresholdOutput();
 		std::vector<std::vector<cv::Point> >* getfindContoursOutput();
 		std::vector<std::vector<cv::Point> >* getconvexHullsOutput();
 		std::vector<std::vector<cv::Point> >* getfilterContoursOutput();
 		void setsource0(cv::Mat &source0);
 		std::vector<std::vector<cv::Point> >*getResultVector();
+
+		void setHSVThresholdHue(llvm::ArrayRef<double> value) { hsvThresholdHue=value;}
+		void setHSVThresholdSaturation(llvm::ArrayRef<double> value) {hsvThresholdSaturation =value;}
+		void setHSVThresholdValue(llvm::ArrayRef<double> value) {hsvThresholdValue = value;}
+		llvm::ArrayRef<double> getHSVHue() { return hsvThresholdHue;}
+		llvm::ArrayRef<double> getHSVSaturation() {return hsvThresholdSaturation;}
+		llvm::ArrayRef<double> getHSVValue() {return hsvThresholdValue;}
 };
 
 
