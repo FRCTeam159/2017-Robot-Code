@@ -15,6 +15,7 @@ GripPipeline::GripPipeline() {
 */
 //#define BLUR
 //#define RGB_THRESHOLD
+#define FILTERCONTOURS
 
 void GripPipeline::process(cv::Mat source0){
 	//Step Blur0:
@@ -183,7 +184,7 @@ std::vector<std::vector<cv::Point> >* GripPipeline::getfilterContoursOutput(){
 	 * @param val The min and max value.
 	 * @param output The image in which to store the output.
 	 */
-	void GripPipeline::hsvThreshold(cv::Mat &input, double hue[], double sat[], double val[], cv::Mat &out) {
+	void GripPipeline::hsvThreshold(cv::Mat &input, llvm::ArrayRef<double> hue, llvm::ArrayRef<double> sat, llvm::ArrayRef<double> val, cv::Mat &out) {
 		cv::cvtColor(input, out, cv::COLOR_BGR2HSV);
 		cv::inRange(out,cv::Scalar(hue[0], sat[0], val[0]), cv::Scalar(hue[1], sat[1], val[1]), out);
 	}

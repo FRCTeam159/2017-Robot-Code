@@ -12,6 +12,8 @@
 #include <vector>
 #include <string>
 #include <math.h>
+#include "llvm/StringRef.h"
+#include "llvm/ArrayRef.h"
 
 namespace grip {
 
@@ -42,14 +44,14 @@ class GripPipeline {
 		void resizeImage(cv::Mat &, double , double , int , cv::Mat &);
 		void blur(cv::Mat &, BlurType &, double , cv::Mat &);
 		void rgbThreshold(cv::Mat &, double [], double [], double [], cv::Mat &);
-		void hsvThreshold(cv::Mat &input, double hue[], double sat[], double val[], cv::Mat &out);
+		void hsvThreshold(cv::Mat &input, llvm::ArrayRef<double>, llvm::ArrayRef<double>, llvm::ArrayRef<double>, cv::Mat &out);
 		void findContours(cv::Mat &, bool , std::vector<std::vector<cv::Point> > &);
 		void convexHulls(std::vector<std::vector<cv::Point> > &, std::vector<std::vector<cv::Point> > &);
 		void filterContours(std::vector<std::vector<cv::Point> > &, double , double , double , double , double , double , double [], double , double , double , double , std::vector<std::vector<cv::Point> > &);
 
-		llvm::ArrayRef<double>  hsvThresholdHue[] = {70, 110};
-		llvm::ArrayRef<double>  hsvThresholdSaturation[] = {222, 255};
-		llvm::ArrayRef<double>  hsvThresholdValue[] = {52, 133};
+		llvm::ArrayRef<double>  hsvThresholdHue = {71, 115};
+		llvm::ArrayRef<double>  hsvThresholdSaturation = {134, 255};
+		llvm::ArrayRef<double>  hsvThresholdValue = {121, 211};
 
 	public:
 		GripPipeline();

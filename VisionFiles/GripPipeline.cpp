@@ -14,30 +14,17 @@ GripPipeline::GripPipeline() {
 *
 */
 void GripPipeline::process(cv::Mat source0){
-	//Step Resize_Image0:
+	//Step HSV_Threshold0:
 	//input
-	cv::Mat resizeImageInput = source0;
-	double resizeImageWidth = 320.0;  // default Double
-	double resizeImageHeight = 240.0;  // default Double
-	int resizeImageInterpolation = cv::INTER_CUBIC;
-	resizeImage(resizeImageInput, resizeImageWidth, resizeImageHeight, resizeImageInterpolation, this->resizeImageOutput);
-	//Step Blur0:
-	//input
-	cv::Mat blurInput = resizeImageOutput;
-	BlurType blurType = BlurType::MEDIAN;
-	double blurRadius = 4.504504504504505;  // default Double
-	blur(blurInput, blurType, blurRadius, this->blurOutput);
-	//Step RGB_Threshold0:
-	//input
-	cv::Mat rgbThresholdInput = blurOutput;
-	double rgbThresholdRed[] = {0.0, 191.90273037542661};
-	double rgbThresholdGreen[] = {224.7302158273381, 255.0};
-	double rgbThresholdBlue[] = {181.16007194244605, 255.0};
-	rgbThreshold(rgbThresholdInput, rgbThresholdRed, rgbThresholdGreen, rgbThresholdBlue, this->rgbThresholdOutput);
+	cv::Mat hsvThresholdInput = source0;
+	double hsvThresholdHue[] = {71.40934668710695, 115.30553349192942};
+	double hsvThresholdSaturation[] = {134.47988556121143, 255.0};
+	double hsvThresholdValue[] = {121.53776978417265, 211.48464163822527};
+	hsvThreshold(hsvThresholdInput, hsvThresholdHue, hsvThresholdSaturation, hsvThresholdValue, this->hsvThresholdOutput);
 	//Step Find_Contours0:
 	//input
-	cv::Mat findContoursInput = rgbThresholdOutput;
-	bool findContoursExternalOnly = false;  // default Boolean
+	cv::Mat findContoursInput = hsvThresholdOutput;
+	bool findContoursExternalOnly = true;  // default Boolean
 	findContours(findContoursInput, findContoursExternalOnly, this->findContoursOutput);
 	//Step Convex_Hulls0:
 	//input
@@ -46,17 +33,17 @@ void GripPipeline::process(cv::Mat source0){
 	//Step Filter_Contours0:
 	//input
 	std::vector<std::vector<cv::Point> > filterContoursContours = convexHullsOutput;
-	double filterContoursMinArea = 66.0;  // default Double
-	double filterContoursMinPerimeter = 0;  // default Double
+	double filterContoursMinArea = 100.0;  // default Double
+	double filterContoursMinPerimeter = 10.0;  // default Double
 	double filterContoursMinWidth = 0.0;  // default Double
-	double filterContoursMaxWidth = 1000;  // default Double
-	double filterContoursMinHeight = 50.0;  // default Double
-	double filterContoursMaxHeight = 1000;  // default Double
+	double filterContoursMaxWidth = 1000.0;  // default Double
+	double filterContoursMinHeight = 0.0;  // default Double
+	double filterContoursMaxHeight = 1000.0;  // default Double
 	double filterContoursSolidity[] = {0, 100};
-	double filterContoursMaxVertices = 1000000;  // default Double
-	double filterContoursMinVertices = 0;  // default Double
-	double filterContoursMinRatio = 0;  // default Double
-	double filterContoursMaxRatio = 1000;  // default Double
+	double filterContoursMaxVertices = 1000000.0;  // default Double
+	double filterContoursMinVertices = 0.0;  // default Double
+	double filterContoursMinRatio = 0.0;  // default Double
+	double filterContoursMaxRatio = 1000.0;  // default Double
 	filterContours(filterContoursContours, filterContoursMinArea, filterContoursMinPerimeter, filterContoursMinWidth, filterContoursMaxWidth, filterContoursMinHeight, filterContoursMaxHeight, filterContoursSolidity, filterContoursMaxVertices, filterContoursMinVertices, filterContoursMinRatio, filterContoursMaxRatio, this->filterContoursOutput);
 }
 
@@ -68,25 +55,11 @@ void GripPipeline::setsource0(cv::Mat &source0){
 	source0.copyTo(this->source0);
 }
 /**
- * This method is a generated getter for the output of a Resize_Image.
- * @return Mat output from Resize_Image.
+ * This method is a generated getter for the output of a HSV_Threshold.
+ * @return Mat output from HSV_Threshold.
  */
-cv::Mat* GripPipeline::getresizeImageOutput(){
-	return &(this->resizeImageOutput);
-}
-/**
- * This method is a generated getter for the output of a Blur.
- * @return Mat output from Blur.
- */
-cv::Mat* GripPipeline::getblurOutput(){
-	return &(this->blurOutput);
-}
-/**
- * This method is a generated getter for the output of a RGB_Threshold.
- * @return Mat output from RGB_Threshold.
- */
-cv::Mat* GripPipeline::getrgbThresholdOutput(){
-	return &(this->rgbThresholdOutput);
+cv::Mat* GripPipeline::gethsvThresholdOutput(){
+	return &(this->hsvThresholdOutput);
 }
 /**
  * This method is a generated getter for the output of a Find_Contours.
@@ -110,59 +83,17 @@ std::vector<std::vector<cv::Point> >* GripPipeline::getfilterContoursOutput(){
 	return &(this->filterContoursOutput);
 }
 	/**
-	 * Scales and image to an exact size.
+	 * Segment an image based on hue, saturation, and value ranges.
 	 *
-	 * @param input The image on which to perform the Resize.
-	 * @param width The width of the output in pixels.
-	 * @param height The height of the output in pixels.
-	 * @param interpolation The type of interpolation.
+	 * @param input The image on which to perform the HSL threshold.
+	 * @param hue The min and max hue.
+	 * @param sat The min and max saturation.
+	 * @param val The min and max value.
 	 * @param output The image in which to store the output.
 	 */
-	void GripPipeline::resizeImage(cv::Mat &input, double width, double height, int interpolation, cv::Mat &output) {
-		cv::resize(input, output, cv::Size(width, height), 0.0, 0.0, interpolation);
-	}
-
-	/**
-	 * Softens an image using one of several filters.
-	 *
-	 * @param input The image on which to perform the blur.
-	 * @param type The blurType to perform.
-	 * @param doubleRadius The radius for the blur.
-	 * @param output The image in which to store the output.
-	 */
-	void GripPipeline::blur(cv::Mat &input, BlurType &type, double doubleRadius, cv::Mat &output) {
-		int radius = (int)(doubleRadius + 0.5);
-		int kernelSize;
-		switch(type) {
-			case BOX:
-				kernelSize = 2 * radius + 1;
-				cv::blur(input,output,cv::Size(kernelSize, kernelSize));
-				break;
-			case GAUSSIAN:
-				kernelSize = 6 * radius + 1;
-				cv::GaussianBlur(input, output, cv::Size(kernelSize, kernelSize), radius);
-				break;
-			case MEDIAN:
-				kernelSize = 2 * radius + 1;
-				cv::medianBlur(input, output, kernelSize);
-				break;
-			case BILATERAL:
-				cv::bilateralFilter(input, output, -1, radius, radius);
-				break;
-        }
-	}
-	/**
-	 * Segment an image based on color ranges.
-	 *
-	 * @param input The image on which to perform the RGB threshold.
-	 * @param red The min and max red.
-	 * @param green The min and max green.
-	 * @param blue The min and max blue.
-	 * @param output The image in which to store the output.
-	 */
-	void GripPipeline::rgbThreshold(cv::Mat &input, double red[], double green[], double blue[], cv::Mat &output) {
-		cv::cvtColor(input, output, cv::COLOR_BGR2RGB);
-		cv::inRange(output, cv::Scalar(red[0], green[0], blue[0]), cv::Scalar(red[1], green[1], blue[1]), output);
+	void GripPipeline::hsvThreshold(cv::Mat &input, double hue[], double sat[], double val[], cv::Mat &out) {
+		cv::cvtColor(input, out, cv::COLOR_BGR2HSV);
+		cv::inRange(out,cv::Scalar(hue[0], sat[0], val[0]), cv::Scalar(hue[1], sat[1], val[1]), out);
 	}
 
 	/**

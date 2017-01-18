@@ -18,7 +18,12 @@ private:
 	GripPipeline gp;
 	bool error=false;
 	double brightness = 10;
-	double exposure = 10;
+	double exposure = 1;
+
+	llvm::ArrayRef<double>  hsvThresholdHue = {71, 115};
+	llvm::ArrayRef<double>  hsvThresholdSaturation = {134, 255};
+	llvm::ArrayRef<double>  hsvThresholdValue = {121, 211};
+
 
 public:
 	Vision();
