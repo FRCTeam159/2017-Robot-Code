@@ -7,7 +7,6 @@
 
 Vision::Vision() :
 		Subsystem("ExampleSubsystem"), gp() {
-
 }
 
 void Vision::InitDefaultCommand() {
@@ -22,9 +21,11 @@ void Vision::Init() {
 	CameraSettings(exposure, 0, brightness);
 	frc::SmartDashboard::PutNumber("CameraBrightness", camera.GetBrightness());
 	frc::SmartDashboard::PutNumber("CameraExposure", exposure);
-	frc::SmartDashboard::PutNumberArray("hue", hsvThresholdHue);
-	frc::SmartDashboard::PutNumber("CameraBrightness", camera.GetBrightness());
-	frc::SmartDashboard::PutNumber("CameraBrightness", camera.GetBrightness());
+	frc::SmartDashboard::PutBoolean("showColorThreshold", false);
+	frc::SmartDashboard::PutNumber("HueMax", hsvThresholdHue[1]);
+	frc::SmartDashboard::PutNumber("HueMin", hsvThresholdHue[0]);
+	//frc::SmartDashboard::PutNumberArray("hue", hsvThresholdHue);
+
 
 	// Set the resolution
 	camera.SetResolution(320, 240);
@@ -40,7 +41,7 @@ void Vision::Init() {
 	//CameraSettings(0,0,frc::SmartDashboard::GetNumber("CameraBrightness",2));
 }
 
-//#define SHOW_COLOR_THRESHOLD
+#define SHOW_COLOR_THRESHOLD
 
 void Vision::Process() {
 
@@ -60,13 +61,27 @@ void Vision::Process() {
 	//cout<<"VisionTestRan"<<endl;
 	double val = frc::SmartDashboard::GetNumber("CameraBrightness",0);
 	double exp = frc::SmartDashboard::GetNumber("CameraExposure",10);
+	showColorThreshold = frc::SmartDashboard::GetBoolean("showColorThreshold", false);
+	double hMin = frc::SmartDashboard::GetNumber("HueMin",0);
+	double hMax = frc::SmartDashboard::GetNumber("HueMax", 100);
+	llvm::ArrayRef<double> test={hMin,hMax};
+	if((hMin != hsvThresholdHue[0]) || (hMax != hsvThresholdHue[1])){
+		cout<<"hue changed"<<endl;
+		//llvm::ArrayRef<double> temp = gp.getHSVHue();
+		hsvThresholdHue=test;
+		//hsvThresholdHue.[0] = hMin;
+		//hsvThresholdHue[1] = hMax;
+		gp.setHSVThresholdHue(hsvThresholdHue);
+	}
 	AdjustCamera(exp,0,val);
 
 	gp.process(mat);
-#ifdef SHOW_COLOR_THRESHOLD
+	if(showColorThreshold){
+		//cout<<"Show color threshold is true"<<endl;
 	cv::Mat* mat2=gp.getColorThresholdOutput();
 	mat2->copyTo(mat);
-#endif
+	}
+
 	//cv::Mat* mat2=gp.getblurOutput();
 	int minx = 1000, maxx = 0, miny = 1000, maxy = 0;
 	std::vector<std::vector<cv::Point> > points = *gp.getResultVector();

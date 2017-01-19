@@ -19,6 +19,7 @@ private:
 	bool error=false;
 	double brightness = 10;
 	double exposure = 1;
+	bool showColorThreshold = false;
 
 	llvm::ArrayRef<double>  hsvThresholdHue = {71, 115};
 	llvm::ArrayRef<double>  hsvThresholdSaturation = {134, 255};
