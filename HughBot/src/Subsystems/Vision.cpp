@@ -5,9 +5,10 @@
 #include "llvm/ArrayRef.h"
 #include "llvm/StringRef.h"
 
+using namespace frc;
+
 Vision::Vision() :
 		Subsystem("ExampleSubsystem"), gp() {
-
 }
 
 void Vision::InitDefaultCommand() {
@@ -22,9 +23,14 @@ void Vision::Init() {
 	CameraSettings(exposure, 0, brightness);
 	frc::SmartDashboard::PutNumber("CameraBrightness", camera.GetBrightness());
 	frc::SmartDashboard::PutNumber("CameraExposure", exposure);
-	frc::SmartDashboard::PutNumberArray("hue", hsvThresholdHue);
-	frc::SmartDashboard::PutNumber("CameraBrightness", camera.GetBrightness());
-	frc::SmartDashboard::PutNumber("CameraBrightness", camera.GetBrightness());
+	frc::SmartDashboard::PutBoolean("showColorThreshold", false);
+	frc::SmartDashboard::PutNumber("HueMax", hsvThresholdHue[1]);
+	frc::SmartDashboard::PutNumber("HueMin", hsvThresholdHue[0]);
+	//frc::SmartDashboard::PutNumberArray("hue", hsvThresholdHue);
+	frc::SmartDashboard::PutNumber("SaturationMax", hsvThresholdSaturation[1]);
+	frc::SmartDashboard::PutNumber("SaturationMin", hsvThresholdSaturation[0]);
+	frc::SmartDashboard::PutNumber("ValueMax", hsvThresholdValue[1]);
+	frc::SmartDashboard::PutNumber("ValueMin", hsvThresholdValue[0]);
 
 	// Set the resolution
 	camera.SetResolution(320, 240);
@@ -40,7 +46,7 @@ void Vision::Init() {
 	//CameraSettings(0,0,frc::SmartDashboard::GetNumber("CameraBrightness",2));
 }
 
-//#define SHOW_COLOR_THRESHOLD
+#define SHOW_COLOR_THRESHOLD
 
 void Vision::Process() {
 
@@ -58,15 +64,25 @@ void Vision::Process() {
 		return;
 	}
 	//cout<<"VisionTestRan"<<endl;
-	double val = frc::SmartDashboard::GetNumber("CameraBrightness",0);
-	double exp = frc::SmartDashboard::GetNumber("CameraExposure",10);
+	double val = frc::SmartDashboard::GetNumber("CameraBrightness",2);
+	double exp = frc::SmartDashboard::GetNumber("CameraExposure",1);
+	showColorThreshold = frc::SmartDashboard::GetBoolean("showColorThreshold", false);
+	hsvThresholdHue={SmartDashboard::GetNumber("HueMin",70),SmartDashboard::GetNumber("HueMax", 100)};
+	hsvThresholdValue={SmartDashboard::GetNumber("ValueMin", 100),SmartDashboard::GetNumber("ValueMax",255)};
+	hsvThresholdSaturation={SmartDashboard::GetNumber("SaturationMin", 100),SmartDashboard::GetNumber("SaturationMax",255)};
+
+	gp.setHSVThresholdHue(hsvThresholdHue);
+	gp.setHSVThresholdValue(hsvThresholdValue);
+	gp.setHSVThresholdSaturation(hsvThresholdSaturation);
 	AdjustCamera(exp,0,val);
 
 	gp.process(mat);
-#ifdef SHOW_COLOR_THRESHOLD
+	if(showColorThreshold){
+		//cout<<"Show color threshold is true"<<endl;
 	cv::Mat* mat2=gp.getColorThresholdOutput();
 	mat2->copyTo(mat);
-#endif
+	}
+
 	//cv::Mat* mat2=gp.getblurOutput();
 	int minx = 1000, maxx = 0, miny = 1000, maxy = 0;
 	std::vector<std::vector<cv::Point> > points = *gp.getResultVector();

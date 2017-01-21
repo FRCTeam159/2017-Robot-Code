@@ -17,12 +17,13 @@ private:
 	cs::CvSource outputStream;
 	GripPipeline gp;
 	bool error=false;
-	double brightness = 10;
+	double brightness = 2;
 	double exposure = 1;
+	bool showColorThreshold = false;
 
-	llvm::ArrayRef<double>  hsvThresholdHue = {71, 115};
-	llvm::ArrayRef<double>  hsvThresholdSaturation = {134, 255};
-	llvm::ArrayRef<double>  hsvThresholdValue = {121, 211};
+	llvm::ArrayRef<double>  hsvThresholdHue = {70, 110};
+	llvm::ArrayRef<double>  hsvThresholdSaturation = {180, 255};
+	llvm::ArrayRef<double>  hsvThresholdValue = {70, 200};
 
 
 public:
