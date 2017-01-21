@@ -13,7 +13,7 @@ DriveTrain::DriveTrain() :
 	drive = new RobotDrive(&frontLeft, &backLeft, &frontRight, &backRight);
 	drive->SetInvertedMotor(RobotDrive::kFrontLeftMotor,true);
 	drive->SetInvertedMotor(RobotDrive::kRearLeftMotor,true);
-	drive->SetExpiration(0.1);
+	drive->SetExpiration(0.5);
 }
 void DriveTrain::InitDefaultCommand()
 {
@@ -76,7 +76,6 @@ void DriveTrain::CustomArcade(float xAxis, float yAxis, float zAxis)
 		backLeft.Set(left);
 		frontRight.Set(-1*right);
 		backRight.Set(-1*right);
-		std::cout<<"left:"<<left<<" right:"<<right<<endl;
 	}
 
 float DriveTrain::coerce(float min, float max, float x)

@@ -173,9 +173,9 @@ private:
 		float right=0;  // Left and right motor power values
 
 		// Get axis values
-		float yAxis = 1 * ((*stick).GetY());
-		float xAxis = -1 * ((*stick).GetX());
-		float zAxis = (*stick).GetZ();
+		float yAxis = -0.75* ((*stick).GetY());
+		float xAxis = 0.75* ((*stick).GetX());
+		float zAxis = .75*(*stick).GetZ();
 		// Run axis values through deadband
 		yAxis = quadDeadband(.4 , .3 , yAxis);
 		xAxis = quadDeadband(.4 , .3 , xAxis);

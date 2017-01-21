@@ -1,0 +1,59 @@
+<xml version="1.0">
+<dashboard>
+	<widget field="CameraBalance" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="11" y="122"/>
+	</widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
+		<location x="400" y="23"/>
+		<property name="Camera Choice" value="DriverCam"/>
+	</static-widget>
+	<widget field="showColorThreshold" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
+		<location x="11" y="349"/>
+	</widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
+		<location x="207" y="154"/>
+		<width>376</width>
+		<height>325</height>
+		<property name="Camera Choice" value="Rectangle"/>
+	</static-widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
+		<location x="201" y="24"/>
+		<property name="Camera Choice" value="USB Camera 0"/>
+	</static-widget>
+	<widget field="Auto Modes" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
+		<location x="6" y="210"/>
+	</widget>
+	<widget field="HueMin" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="48" y="187"/>
+		<height>20</height>
+	</widget>
+	<widget field="CameraBrightness" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="-3" y="147"/>
+	</widget>
+	<widget field="SaturationMin" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="15" y="286"/>
+		<height>20</height>
+	</widget>
+	<widget field="ValueMax" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="35" y="254"/>
+	</widget>
+	<widget field="HueMax" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="43" y="208"/>
+		<width>125</width>
+	</widget>
+	<widget field="Auto Selector" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="17" y="63"/>
+	</widget>
+	<widget field="CameraExposure" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="1" y="98"/>
+	</widget>
+	<widget field="SaturationMax" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="11" y="306"/>
+	</widget>
+	<widget field="ValueMin" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="39" y="236"/>
+	</widget>
+</dashboard>
+<live-window>
+</live-window>
+</xml>

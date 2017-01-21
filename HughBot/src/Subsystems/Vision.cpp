@@ -23,6 +23,7 @@ void Vision::Init() {
 	CameraSettings(exposure, 0, brightness);
 	frc::SmartDashboard::PutNumber("CameraBrightness", camera.GetBrightness());
 	frc::SmartDashboard::PutNumber("CameraExposure", exposure);
+	frc::SmartDashboard::PutNumber("CameraBalance", whiteBalance);
 	frc::SmartDashboard::PutBoolean("showColorThreshold", false);
 	frc::SmartDashboard::PutNumber("HueMax", hsvThresholdHue[1]);
 	frc::SmartDashboard::PutNumber("HueMin", hsvThresholdHue[0]);
@@ -66,6 +67,7 @@ void Vision::Process() {
 	//cout<<"VisionTestRan"<<endl;
 	double val = frc::SmartDashboard::GetNumber("CameraBrightness",2);
 	double exp = frc::SmartDashboard::GetNumber("CameraExposure",1);
+	double bal = frc::SmartDashboard::GetNumber("CameraBalance",2);
 	showColorThreshold = frc::SmartDashboard::GetBoolean("showColorThreshold", false);
 	hsvThresholdHue={SmartDashboard::GetNumber("HueMin",70),SmartDashboard::GetNumber("HueMax", 100)};
 	hsvThresholdValue={SmartDashboard::GetNumber("ValueMin", 100),SmartDashboard::GetNumber("ValueMax",255)};
@@ -74,7 +76,7 @@ void Vision::Process() {
 	gp.setHSVThresholdHue(hsvThresholdHue);
 	gp.setHSVThresholdValue(hsvThresholdValue);
 	gp.setHSVThresholdSaturation(hsvThresholdSaturation);
-	AdjustCamera(exp,0,val);
+	AdjustCamera(exp,bal,val);
 
 	gp.process(mat);
 	if(showColorThreshold){
@@ -120,11 +122,12 @@ void Vision::CameraSettings(double exposure, double balance, double brightness)
 	//cout <<"original brightness:"<<e<< endl;
 	camera.SetBrightness(brightness);
 	camera.SetExposureManual(exposure);
+	camera.SetWhiteBalanceManual(balance);
 	//e=camera.GetBrightness();
 	//cout <<"new brightness:"<<e<< endl;
 }
 
-void Vision::AdjustCamera(double e, double balance, double b) {
+void Vision::AdjustCamera(double e, double bal, double b) {
 	if(b!=brightness){
 		cout<<"New Brightness> "<<b<<endl;
 		brightness = b;
@@ -135,6 +138,11 @@ void Vision::AdjustCamera(double e, double balance, double b) {
 		cout<<"New exposure> "<<e<<endl;
 		exposure = e;
 		camera.SetExposureManual(exposure);
+	}
+	if(bal!=whiteBalance){
+		cout<<"New White Balance> "<<bal<<endl;
+		whiteBalance = bal;
+		camera.SetWhiteBalanceManual(bal);
 	}
 }
 // Put methods for controlling this subsystem
