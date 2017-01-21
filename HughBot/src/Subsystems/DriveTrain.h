@@ -14,11 +14,14 @@ private:
 	CANTalon backLeft;
 	CANTalon backRight;
 	RobotDrive *drive;
+	void CustomArcade(float xAxis, float yAxis, float zAxis);
+	float coerce(float min, float max, float x);
 public:
 	DriveTrain();
-	void InitDefaultCommand();
-	float quadDeadband(float minThreshold, float minOutput, float input);
 	void Drive(float xAxis, float yAxis, float zAxis);
+	void InitDefaultCommand();
+	//void Drive(float xAxis, float yAxis, float zAxis);
+	void ArcadeDrive(Joystick*);
 };
 
 #endif
