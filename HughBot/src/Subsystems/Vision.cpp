@@ -5,6 +5,8 @@
 #include "llvm/ArrayRef.h"
 #include "llvm/StringRef.h"
 
+using namespace frc;
+
 Vision::Vision() :
 		Subsystem("ExampleSubsystem"), gp() {
 }
@@ -25,7 +27,10 @@ void Vision::Init() {
 	frc::SmartDashboard::PutNumber("HueMax", hsvThresholdHue[1]);
 	frc::SmartDashboard::PutNumber("HueMin", hsvThresholdHue[0]);
 	//frc::SmartDashboard::PutNumberArray("hue", hsvThresholdHue);
-
+	frc::SmartDashboard::PutNumber("SaturationMax", hsvThresholdSaturation[1]);
+	frc::SmartDashboard::PutNumber("SaturationMin", hsvThresholdSaturation[0]);
+	frc::SmartDashboard::PutNumber("ValueMax", hsvThresholdValue[1]);
+	frc::SmartDashboard::PutNumber("ValueMin", hsvThresholdValue[0]);
 
 	// Set the resolution
 	camera.SetResolution(320, 240);
@@ -59,20 +64,16 @@ void Vision::Process() {
 		return;
 	}
 	//cout<<"VisionTestRan"<<endl;
-	double val = frc::SmartDashboard::GetNumber("CameraBrightness",0);
-	double exp = frc::SmartDashboard::GetNumber("CameraExposure",10);
+	double val = frc::SmartDashboard::GetNumber("CameraBrightness",2);
+	double exp = frc::SmartDashboard::GetNumber("CameraExposure",1);
 	showColorThreshold = frc::SmartDashboard::GetBoolean("showColorThreshold", false);
-	double hMin = frc::SmartDashboard::GetNumber("HueMin",0);
-	double hMax = frc::SmartDashboard::GetNumber("HueMax", 100);
-	llvm::ArrayRef<double> test={hMin,hMax};
-	if((hMin != hsvThresholdHue[0]) || (hMax != hsvThresholdHue[1])){
-		cout<<"hue changed"<<endl;
-		//llvm::ArrayRef<double> temp = gp.getHSVHue();
-		hsvThresholdHue=test;
-		//hsvThresholdHue.[0] = hMin;
-		//hsvThresholdHue[1] = hMax;
-		gp.setHSVThresholdHue(hsvThresholdHue);
-	}
+	hsvThresholdHue={SmartDashboard::GetNumber("HueMin",70),SmartDashboard::GetNumber("HueMax", 100)};
+	hsvThresholdValue={SmartDashboard::GetNumber("ValueMin", 100),SmartDashboard::GetNumber("ValueMax",255)};
+	hsvThresholdSaturation={SmartDashboard::GetNumber("SaturationMin", 100),SmartDashboard::GetNumber("SaturationMax",255)};
+
+	gp.setHSVThresholdHue(hsvThresholdHue);
+	gp.setHSVThresholdValue(hsvThresholdValue);
+	gp.setHSVThresholdSaturation(hsvThresholdSaturation);
 	AdjustCamera(exp,0,val);
 
 	gp.process(mat);
