@@ -23,7 +23,7 @@ private:
 	double whiteBalance = 2;
 
 	llvm::ArrayRef<double>  hsvThresholdHue = {70, 110};
-	llvm::ArrayRef<double>  hsvThresholdSaturation = {180, 255};
+	llvm::ArrayRef<double>  hsvThresholdSaturation = {50, 255};
 	llvm::ArrayRef<double>  hsvThresholdValue = {70, 200};
 
 

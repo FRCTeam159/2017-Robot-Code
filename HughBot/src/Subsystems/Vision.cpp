@@ -87,6 +87,7 @@ void Vision::Process() {
 
 	//cv::Mat* mat2=gp.getblurOutput();
 	int minx = 1000, maxx = 0, miny = 1000, maxy = 0;
+#ifdef SHOWCONTOURS
 	std::vector<std::vector<cv::Point> > points = *gp.getResultVector();
 	//cout << "points size:" << points.size() << endl;
 	for (unsigned int i = 0; i < points.size(); i++) {
@@ -102,8 +103,23 @@ void Vision::Process() {
 		}
 	}
 	cv::Point c(0.5*(maxx+minx),0.5*(maxy+miny));
-	rectangle(mat, cv::Point(minx, miny), cv::Point(maxx, maxy), cv::Scalar(255, 0, 0), 1);
-	drawMarker(mat, c, cv::Scalar(0, 0, 255),0, 10, 2,8);
+#else
+	std::vector<cv::Rect> rects= *gp.getRectangles();
+	cout<<"number of rectangles="<<rects.size()<<endl;
+
+	for (unsigned int i = 0; i < rects.size(); i++) {
+		cv::Rect r= rects [i];
+		cv::Point p= r.tl();
+		minx = p.x < minx ? p.x : minx;
+		miny = p.y < miny ? p.y : miny;
+		p= r.br();
+		maxy = p.y > maxy ? p.y : maxy;
+		maxx = p.x > maxx ? p.x : maxx;
+		rectangle(mat, r.tl(), r.br(), cv::Scalar(0, 255, 255), 1);
+	}
+#endif
+	rectangle(mat, cv::Point(minx, miny), cv::Point(maxx, maxy), cv::Scalar(255, 255, 255), 1);
+	//drawMarker(mat, c, cv::Scalar(0, 0, 255),0, 10, 2,8);
 	// Mats are very memory expensive. Let's reuse this Mat.
 	//rectangle(mat, cv::Point(10, 10), cv::Point(100, 100),
 	//		cv::Scalar(255, 0, 0), 1);

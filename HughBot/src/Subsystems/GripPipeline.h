@@ -40,6 +40,7 @@ class GripPipeline {
 		std::vector<std::vector<cv::Point> > convexHullsOutput;
 		std::vector<std::vector<cv::Point> > filterContoursOutput;
 		std::vector<std::vector<cv::Point> > returnVector;
+		std::vector<cv::Rect> returnRectangles;
 
 		void resizeImage(cv::Mat &, double , double , int , cv::Mat &);
 		void blur(cv::Mat &, BlurType &, double , cv::Mat &);
@@ -48,6 +49,7 @@ class GripPipeline {
 		void findContours(cv::Mat &, bool , std::vector<std::vector<cv::Point> > &);
 		void convexHulls(std::vector<std::vector<cv::Point> > &, std::vector<std::vector<cv::Point> > &);
 		void filterContours(std::vector<std::vector<cv::Point> > &, double , double , double , double , double , double , double [], double , double , double , double , std::vector<std::vector<cv::Point> > &);
+		void findRectangles(std::vector<std::vector<cv::Point> > &inputContours, std::vector<cv::Rect> &output);
 
 		llvm::ArrayRef<double>  hsvThresholdHue = {71, 115};
 		llvm::ArrayRef<double>  hsvThresholdSaturation = {134, 255};
@@ -64,6 +66,9 @@ class GripPipeline {
 		std::vector<std::vector<cv::Point> >* getfilterContoursOutput();
 		void setsource0(cv::Mat &source0);
 		std::vector<std::vector<cv::Point> >*getResultVector();
+		std::vector<cv::Rect>*getRectangles(){
+			return &returnRectangles;
+		}
 
 		void setHSVThresholdHue(llvm::ArrayRef<double> value) { hsvThresholdHue=value;}
 		void setHSVThresholdSaturation(llvm::ArrayRef<double> value) {hsvThresholdSaturation =value;}

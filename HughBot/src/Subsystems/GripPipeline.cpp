@@ -62,12 +62,13 @@ void GripPipeline::process(cv::Mat source0){
 	double filterContoursMaxVertices = 100;  // default Double
 	double filterContoursMinVertices = 4;  // default Double
 	double filterContoursMinRatio = 0;  // default Double
-	double filterContoursMaxRatio = 2.0/5.0;  // default Double
+	double filterContoursMaxRatio = 5.0/5.0;  // default Double
 	filterContours(filterContoursContours, filterContoursMinArea, filterContoursMinPerimeter, filterContoursMinWidth, filterContoursMaxWidth, filterContoursMinHeight, filterContoursMaxHeight, filterContoursSolidity, filterContoursMaxVertices, filterContoursMinVertices, filterContoursMinRatio, filterContoursMaxRatio, this->filterContoursOutput);
 	returnVector=this->filterContoursOutput;
 #else
 	returnVector=this->convexHullsOutput;
 #endif
+	findRectangles(returnVector, this->returnRectangles);
 
 }
 
@@ -254,10 +255,16 @@ std::vector<std::vector<cv::Point> >* GripPipeline::getfilterContoursOutput(){
 			output.push_back(contour);
 		}
 	}
+	void GripPipeline::findRectangles(std::vector<std::vector<cv::Point> > &inputContours, std::vector<cv::Rect> &output){
+		output.clear();
+		for (std::vector<cv::Point> contour: inputContours) {
+			cv::Rect bb = boundingRect(contour);
+			output.push_back(bb);
+		}
+	}
 
 
-
-} // end grip namespace
+	} // end grip namespace
 
 std::vector<std::vector<cv::Point> >* grip::GripPipeline::getResultVector() {
 	return &(this->returnVector)			;
