@@ -1,0 +1,25 @@
+<xml version="1.0">
+<dashboard>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
+		<location x="16" y="60"/>
+		<width>306</width>
+		<height>300</height>
+		<property name="Camera Choice" value=""/>
+	</static-widget>
+	<widget field="CameraBrightness" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="22" y="15"/>
+	</widget>
+</dashboard>
+<live-window>
+</live-window>
+	<hidden field="HueMax"/>
+	<hidden field="showColorThreshold"/>
+	<hidden field="CameraExposure"/>
+	<hidden field="SaturationMax"/>
+	<hidden field="SaturationMin"/>
+	<hidden field="HueMin"/>
+	<hidden field="CameraBalance"/>
+	<hidden field="Auto Selector"/>
+	<hidden field="ValueMin"/>
+	<hidden field="ValueMax"/>
+</xml>

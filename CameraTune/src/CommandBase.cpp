@@ -9,9 +9,6 @@ std::unique_ptr<OI> CommandBase::oi = std::make_unique<OI>();
 
 CommandBase::CommandBase(const std::string &name) :
 		frc::Command(name) {
-
-	visionSubsystem.reset(new Vision());
-	visionSubsystem->Init();
 }
 
 void CommandBase::init()
