@@ -13,7 +13,7 @@ Vision::Vision() :
 
 void Vision::InitDefaultCommand() {
 	// Set the default command for a subsystem here.
-	SetDefaultCommand(new VisionTest());
+	//SetDefaultCommand(new VisionTest());
 }
 
 void Vision::Init() {

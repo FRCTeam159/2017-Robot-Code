@@ -22,9 +22,9 @@ void DriveWithJoystick::Execute()
 	float xAxis = stick-> GetX();
 	float zAxis = stick-> GetZ();
 	// Run axis values through deadband
-	yAxis = quadDeadband(.6, .3, yAxis);
-	xAxis = quadDeadband(.6, .3, xAxis);
-	zAxis = quadDeadband(.6, .3, zAxis);
+	yAxis = quadDeadband(.3, .15, yAxis);
+	xAxis = quadDeadband(.3, .15, xAxis);
+	zAxis = quadDeadband(.3, .15, zAxis);
 	driveTrain.get()->Drive(xAxis, yAxis, zAxis);
 }
 

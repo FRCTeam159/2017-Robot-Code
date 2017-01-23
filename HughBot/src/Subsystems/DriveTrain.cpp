@@ -5,15 +5,19 @@
 
 DriveTrain::DriveTrain() :
 		frc::Subsystem("DriveTrain"),
-		frontLeft(FRONTLEFT),
-		frontRight(FRONTRIGHT),
-		backLeft(BACKLEFT),
-		backRight(BACKRIGHT)
+		frontLeft(FRONTLEFT), // slave 1
+		frontRight(FRONTRIGHT), //4
+		backLeft(BACKLEFT), //2
+		backRight(BACKRIGHT) // slave 3
 {
 	drive = new RobotDrive(&frontLeft, &backLeft, &frontRight, &backRight);
-	drive->SetInvertedMotor(RobotDrive::kFrontLeftMotor,true);
-	drive->SetInvertedMotor(RobotDrive::kRearLeftMotor,true);
+	//drive->SetInvertedMotor(RobotDrive::kFrontLeftMotor,true);
+	drive->SetInvertedMotor(RobotDrive::kRearLeftMotor,false);
 	drive->SetExpiration(0.5);
+	frontLeft.SetControlMode(CANTalon::kFollower);
+	backRight.SetControlMode(CANTalon::kFollower);
+	backRight.EnableControl();
+	frontLeft.EnableControl();
 }
 void DriveTrain::InitDefaultCommand()
 {
@@ -72,10 +76,10 @@ void DriveTrain::CustomArcade(float xAxis, float yAxis, float zAxis)
 		// Make sure values are between -1 and 1
 		left = coerce(-1,1,left);
 		right = coerce(-1,1,right);
-		frontLeft.Set(left);
+		frontLeft.Set(BACKLEFT);
 		backLeft.Set(left);
 		frontRight.Set(-1*right);
-		backRight.Set(-1*right);
+		backRight.Set(FRONTRIGHT);
 	}
 
 float DriveTrain::coerce(float min, float max, float x)
