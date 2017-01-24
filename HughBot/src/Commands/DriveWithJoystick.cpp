@@ -1,5 +1,6 @@
 #include "DriveWithJoystick.h"
 #include "Subsystems/DriveTrain.h"
+#include "RobotMap.h"
 
 DriveWithJoystick::DriveWithJoystick()
 {
@@ -18,6 +19,13 @@ void DriveWithJoystick::Execute()
 {
 	// Get axis values
 	Joystick *stick = oi->GetJoystick();
+
+	if (stick->GetRawButton(LOWGEAR_BUTTON)){
+		driveTrain->SetLowGear();
+	}
+	else if(stick->GetRawButton(HIGHGEAR_BUTTON)){
+		driveTrain->SetHighGear();
+	}
 	float yAxis = stick-> GetY();
 	float xAxis = stick-> GetX();
 	float zAxis = stick-> GetZ();

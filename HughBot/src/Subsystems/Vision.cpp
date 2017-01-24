@@ -8,7 +8,7 @@
 using namespace frc;
 
 Vision::Vision() :
-		Subsystem("ExampleSubsystem"), gp() {
+	Subsystem("ExampleSubsystem"), gp() {
 }
 
 void Vision::InitDefaultCommand() {
@@ -17,7 +17,7 @@ void Vision::InitDefaultCommand() {
 }
 
 void Vision::Init() {
-	camera = CameraServer::GetInstance()->StartAutomaticCapture();
+	camera = CameraServer::GetInstance()->StartAutomaticCapture(0);
 	camera2 = CameraServer::GetInstance()->StartAutomaticCapture("DriverCam",1);
 
 	CameraSettings(exposure, 0, brightness);
