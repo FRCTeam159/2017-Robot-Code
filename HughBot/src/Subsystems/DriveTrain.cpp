@@ -24,7 +24,7 @@ DriveTrain::DriveTrain() :
 
 
 
-	gearPneumatic = new DoubleSolenoid(0,0,1);
+	gearPneumatic = new DoubleSolenoid(7,0,1);
 	SetLowGear();
 
 	 m_safetyHelper = std::make_unique<MotorSafetyHelper>(this);
@@ -38,14 +38,33 @@ void DriveTrain::InitDefaultCommand()
 }
 void DriveTrain::Drive(float xAxis, float yAxis, float zAxis)
 {
-	CustomArcade(xAxis, yAxis, zAxis);
+	CustomArcade(xAxis, yAxis, zAxis, true);
 }
 // Put methods for controlling this subsystem
 // here. Call these from Commands.
-void DriveTrain::CustomArcade(float xAxis, float yAxis, float zAxis) {
-	float left = 0;
-	float right = 0;  // Left and right motor power values
-	// Turning logic
+void DriveTrain::CustomArcade(float xAxis, float yAxis, float zAxis, bool squaredInputs) {
+
+	  if (squaredInputs) {
+	    if (yAxis >= 0) {
+	      yAxis = (yAxis * yAxis);
+	    }else {
+	      yAxis = -(yAxis * yAxis);
+	    }
+	    if (xAxis >= 0) {
+	      xAxis = (xAxis * xAxis);
+	    }else {
+	      xAxis = -(xAxis * xAxis);
+	    }
+	    if (zAxis >= 0){
+	    	zAxis = (zAxis * zAxis);
+	    }else {
+	    	zAxis = -(zAxis * zAxis);
+	    }
+	  }
+		float left = 0;
+		float right = 0;  // Left and right motor power values
+		// Turning logic
+
 	if (zAxis != 0) {
 		left = zAxis;
 		right = -zAxis;
