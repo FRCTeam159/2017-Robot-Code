@@ -2,7 +2,6 @@
 #include "RobotMap.h"
 #include "Commands/DriveWithJoystick.h"
 #include "WPILib.h"
-
 DriveTrain::DriveTrain() :
 		frc::Subsystem("DriveTrain"),
 		frontLeft(FRONTLEFT), // slave 1
@@ -11,11 +10,11 @@ DriveTrain::DriveTrain() :
 		backRight(BACKRIGHT) // slave 3
 {
 	drive = new RobotDrive(&frontLeft, &backLeft, &frontRight, &backRight);
-	//drive->SetInvertedMotor(RobotDrive::kFrontLeftMotor,true);
+	//drive->SetInvertedMotor(DriveTrain::kFrontLeftMotor,true);
 	drive->SetInvertedMotor(RobotDrive::kRearLeftMotor,false);
 	//frontRight.SetFeedbackDevice(CANTalon::QuadEncoder);
 	//backLeft.SetFeedbackDevice(CANTalon::QuadEncoder);
-	//drive->SetExpiration(0.1);
+	drive->SetExpiration(0.1);
 	//frontRight.SetControlMode(CANTalon::kSpeed);
 	//backLeft.SetControlMode(CANTalon::kSpeed);
 	frontLeft.SetControlMode(CANTalon::kFollower);
@@ -27,6 +26,9 @@ DriveTrain::DriveTrain() :
 
 	gearPneumatic = new DoubleSolenoid(0,0,1);
 	SetLowGear();
+
+	 m_safetyHelper = std::make_unique<MotorSafetyHelper>(this);
+	 m_safetyHelper->SetSafetyEnabled(true);
 
 }
 void DriveTrain::InitDefaultCommand()
@@ -75,6 +77,7 @@ void DriveTrain::CustomArcade(float xAxis, float yAxis, float zAxis) {
 	backLeft.Set(left);
 	frontRight.Set(-right);
 	backRight.Set(FRONTRIGHT);
+	m_safetyHelper->Feed();
 }
 
 float DriveTrain::coerce(float min, float max, float x) {
@@ -102,4 +105,34 @@ void DriveTrain::SetHighGear() {
 		cout << "Setting High Gear"<<endl;
 		inlowgear=false;
 	}
+}
+
+void DriveTrain::SetExpiration(double timeout) {
+  m_safetyHelper->SetExpiration(timeout);
+}
+
+double DriveTrain::GetExpiration() const {
+  return m_safetyHelper->GetExpiration();
+}
+
+bool DriveTrain::IsAlive() const { return m_safetyHelper->IsAlive(); }
+
+bool DriveTrain::IsSafetyEnabled() const {
+  return m_safetyHelper->IsSafetyEnabled();
+}
+
+void DriveTrain::SetSafetyEnabled(bool enabled) {
+  m_safetyHelper->SetSafetyEnabled(enabled);
+}
+
+void DriveTrain::GetDescription(std::ostringstream& desc) const {
+  desc << "DriveTrain";
+}
+
+void DriveTrain::StopMotor() {
+  backRight.StopMotor();
+  backLeft.StopMotor();
+  frontRight.StopMotor();
+  frontLeft.StopMotor();
+  m_safetyHelper->Feed();
 }
