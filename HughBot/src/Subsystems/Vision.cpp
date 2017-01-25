@@ -1,6 +1,6 @@
+#include <Commands/VisionUpdate.h>
 #include "Vision.h"
 #include "../RobotMap.h"
-#include "Commands/VisionTest.h"
 #include "Subsystems/GripPipeline.h"
 #include "llvm/ArrayRef.h"
 #include "llvm/StringRef.h"
@@ -13,7 +13,7 @@ Vision::Vision() :
 
 void Vision::InitDefaultCommand() {
 	// Set the default command for a subsystem here.
-	//SetDefaultCommand(new VisionTest());
+	SetDefaultCommand(new VisionUpdate());
 }
 
 void Vision::Init() {
@@ -32,6 +32,7 @@ void Vision::Init() {
 	frc::SmartDashboard::PutNumber("SaturationMin", hsvThresholdSaturation[0]);
 	frc::SmartDashboard::PutNumber("ValueMax", hsvThresholdValue[1]);
 	frc::SmartDashboard::PutNumber("ValueMin", hsvThresholdValue[0]);
+	frc::SmartDashboard::PutNumber("Rectangles", 0);
 
 	// Set the resolution
 	camera.SetResolution(320, 240);
@@ -105,7 +106,9 @@ void Vision::Process() {
 	cv::Point c(0.5*(maxx+minx),0.5*(maxy+miny));
 #else
 	std::vector<cv::Rect> rects= *gp.getRectangles();
-	cout<<"number of rectangles="<<rects.size()<<endl;
+	//cout<<"number of rectangles="<<rects.size()<<endl;
+	frc::SmartDashboard::PutNumber("Rectangles",rects.size());
+
 
 	for (unsigned int i = 0; i < rects.size(); i++) {
 		cv::Rect r= rects [i];

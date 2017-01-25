@@ -2,34 +2,32 @@
 #include "RobotMap.h"
 #include "Commands/DriveWithJoystick.h"
 #include "WPILib.h"
-DriveTrain::DriveTrain() :
-		frc::Subsystem("DriveTrain"),
-		frontLeft(FRONTLEFT), // slave 1
-		frontRight(FRONTRIGHT), //4
-		backLeft(BACKLEFT), //2
-		backRight(BACKRIGHT) // slave 3
+DriveTrain::DriveTrain() : Subsystem("DriveTrain"),
+		frontLeft(FRONTLEFT),   // slave  1
+		frontRight(FRONTRIGHT), // master 4
+		backLeft(BACKLEFT),     // master 2
+		backRight(BACKRIGHT)    // slave  3
 {
-	drive = new RobotDrive(&frontLeft, &backLeft, &frontRight, &backRight);
+	InitDrive();
+	//drive = new RobotDrive(&frontLeft, &backLeft, &frontRight, &backRight);
 	//drive->SetInvertedMotor(DriveTrain::kFrontLeftMotor,true);
-	drive->SetInvertedMotor(RobotDrive::kRearLeftMotor,false);
+
+	backLeft.SetInverted(true);
+	//drive->SetInvertedMotor(RobotDrive::kRearLeftMotor,false);
+
 	//frontRight.SetFeedbackDevice(CANTalon::QuadEncoder);
 	//backLeft.SetFeedbackDevice(CANTalon::QuadEncoder);
-	drive->SetExpiration(0.1);
-	//frontRight.SetControlMode(CANTalon::kSpeed);
+	//frontRightSetExpiration.SetControlMode(CANTalon::kSpeed);
 	//backLeft.SetControlMode(CANTalon::kSpeed);
 	frontLeft.SetControlMode(CANTalon::kFollower);
 	backRight.SetControlMode(CANTalon::kFollower);
 	backRight.EnableControl();
 	frontLeft.EnableControl();
 
-
-
-	gearPneumatic = new DoubleSolenoid(7,0,1);
+	gearPneumatic = new DoubleSolenoid(GEARSHIFTID,0,1);
 	SetLowGear();
 
-	 m_safetyHelper = std::make_unique<MotorSafetyHelper>(this);
-	 m_safetyHelper->SetSafetyEnabled(true);
-
+	SetExpiration(0.2);
 }
 void DriveTrain::InitDefaultCommand()
 {
@@ -125,6 +123,10 @@ void DriveTrain::SetHighGear() {
 		inlowgear=false;
 	}
 }
+void DriveTrain::InitDrive() {
+	m_safetyHelper = std::make_unique<MotorSafetyHelper>(this);
+	m_safetyHelper->SetSafetyEnabled(true);
+}
 
 void DriveTrain::SetExpiration(double timeout) {
   m_safetyHelper->SetExpiration(timeout);
@@ -155,3 +157,4 @@ void DriveTrain::StopMotor() {
   frontLeft.StopMotor();
   m_safetyHelper->Feed();
 }
+
