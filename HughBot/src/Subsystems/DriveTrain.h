@@ -17,7 +17,7 @@ private:
 	DoubleSolenoid *gearPneumatic;
 	bool inlowgear=false;
 
-	void CustomArcade(float xAxis, float yAxis, float zAxis);
+	void CustomArcade(float xAxis, float yAxis, float zAxis, bool squaredInputs);
 	float coerce(float min, float max, float x);
 public:
 	DriveTrain();
