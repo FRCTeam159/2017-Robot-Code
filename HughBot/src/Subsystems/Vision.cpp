@@ -33,6 +33,7 @@ void Vision::Init() {
 	frc::SmartDashboard::PutNumber("ValueMax", hsvThresholdValue[1]);
 	frc::SmartDashboard::PutNumber("ValueMin", hsvThresholdValue[0]);
 	frc::SmartDashboard::PutNumber("Rectangles", 0);
+	frc::SmartDashboard::PutBoolean("showGoodRects", false);
 
 	// Set the resolution
 	camera.SetResolution(320, 240);
@@ -106,12 +107,41 @@ void Vision::Process() {
 	cv::Point c(0.5*(maxx+minx),0.5*(maxy+miny));
 #else
 	std::vector<cv::Rect> rects= *gp.getRectangles();
+
+	bool showGoodRects = frc::SmartDashboard::GetBoolean("showGoodRects", true);
+	cout<<"goodRects="<<showGoodRects<<endl;
 	//cout<<"number of rectangles="<<rects.size()<<endl;
-	frc::SmartDashboard::PutNumber("Rectangles",rects.size());
-
-
-	for (unsigned int i = 0; i < rects.size(); i++) {
-		cv::Rect r= rects [i];
+	std::vector<cv::Rect> *rectsPointer=&rects;
+	if (showGoodRects){
+		std::vector<cv::Rect> goodrects;
+		rectsPointer=&goodrects;
+		int goodFactor=5;
+		for (unsigned int i = 0; i < rects.size(); i++) {
+			int score = 0;
+			cv::Rect Rect1=rects [i];
+			int cx1=0.5*(Rect1.tl().x+Rect1.br().x);
+			int cy1=0.5*(Rect1.tl().y+Rect1.br().y);
+			double w1=rects[i].width;
+			for (unsigned int j = 0; j < rects.size(); j++) {
+				if (i==j)
+					continue;
+				cv::Rect Rect2=rects [j];
+				int cx2=0.5*(Rect2.tl().x+Rect2.br().x);
+				int cy2=0.5*(Rect2.tl().y+Rect2.br().y);
+				int dx=cx1-cx2;
+				int dy=cy1-cy2;
+				int d=sqrt(dx*dx+dy*dy);
+				double r=d/w1;
+				if (r<goodFactor)
+					score++;
+			}
+			if (score>0)
+				goodrects.push_back(Rect1);
+		}
+	}
+	frc::SmartDashboard::PutNumber("Rectangles",rectsPointer->size());
+	for (unsigned int i = 0; i < rectsPointer->size(); i++) {
+		cv::Rect r= rectsPointer[i];
 		cv::Point p= r.tl();
 		minx = p.x < minx ? p.x : minx;
 		miny = p.y < miny ? p.y : miny;
