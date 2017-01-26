@@ -18,8 +18,6 @@
  */
 class Robot: public frc::IterativeRobot {
 private:
-
-
 	void RobotInit() {
 		CommandBase::init();
 	}
@@ -29,7 +27,6 @@ private:
 	void TeleopPeriodic() override {
 		frc::Scheduler::GetInstance()->Run();
 	}
-
 };
 
 START_ROBOT_CLASS(Robot)

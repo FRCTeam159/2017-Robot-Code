@@ -5,34 +5,34 @@
 #include <opencv2/core/types.hpp>
 #include "Subsystems/GripPipeline.h"
 
-VisionTest::VisionTest() {
+VisionUpdate::VisionUpdate() {
 	// Use Requires() here to declare subsystem dependencies
 	// eg. Requires(Robot::chassis.get());
 	Requires(visionSubsystem.get());
 }
 
 // Called just before this Command runs the first time
-void VisionTest::Initialize() {
+void VisionUpdate::Initialize() {
 	// Get the USB camera from CameraServer
 }
 
 // Called repeatedly when this Command is scheduled to run
-void VisionTest::Execute() {
+void VisionUpdate::Execute() {
 	visionSubsystem->Process();
 }
 
 // Make this return true when this Command no longer needs to run execute()
-bool VisionTest::IsFinished() {
+bool VisionUpdate::IsFinished() {
 	return false;
 }
 
 // Called once after isFinished returns true
-void VisionTest::End() {
+void VisionUpdate::End() {
 
 }
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
-void VisionTest::Interrupted() {
+void VisionUpdate::Interrupted() {
 
 }

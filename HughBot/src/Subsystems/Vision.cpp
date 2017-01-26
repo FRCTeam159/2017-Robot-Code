@@ -109,12 +109,11 @@ void Vision::Process() {
 	std::vector<cv::Rect> rects= *gp.getRectangles();
 
 	bool showGoodRects = frc::SmartDashboard::GetBoolean("showGoodRects", true);
-	cout<<"goodRects="<<showGoodRects<<endl;
+	//cout<<"goodRects="<<showGoodRects<<endl;
 	//cout<<"number of rectangles="<<rects.size()<<endl;
-	std::vector<cv::Rect> *rectsPointer=&rects;
+	std::vector<cv::Rect> rectsPointer=rects;
 	if (showGoodRects){
 		std::vector<cv::Rect> goodrects;
-		rectsPointer=&goodrects;
 		int goodFactor=5;
 		for (unsigned int i = 0; i < rects.size(); i++) {
 			int score = 0;
@@ -138,9 +137,10 @@ void Vision::Process() {
 			if (score>0)
 				goodrects.push_back(Rect1);
 		}
+		rectsPointer=goodrects;
 	}
-	frc::SmartDashboard::PutNumber("Rectangles",rectsPointer->size());
-	for (unsigned int i = 0; i < rectsPointer->size(); i++) {
+	frc::SmartDashboard::PutNumber("Rectangles",rectsPointer.size());
+	for (unsigned int i = 0; i < rectsPointer.size(); i++) {
 		cv::Rect r= rectsPointer[i];
 		cv::Point p= r.tl();
 		minx = p.x < minx ? p.x : minx;

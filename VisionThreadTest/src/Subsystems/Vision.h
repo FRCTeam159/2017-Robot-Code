@@ -3,12 +3,15 @@
 
 #include <Commands/Subsystem.h>
 #include <networktables/NetworkTable.h>
+#include "Subsystems/GripPipeline.h"
+#include <CameraServer.h>
+
 
 class Vision : public Subsystem {
 private:
 	static void VisionThread();
 	std::shared_ptr<NetworkTable> table;
-	double brightness=2;
+
 public:
 	Vision();
 	void InitDefaultCommand();

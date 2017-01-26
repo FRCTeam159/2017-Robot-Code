@@ -1,19 +1,25 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="Rectangles" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="249" y="448"/>
+	</widget>
+	<widget field="Auto Selector" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="199" y="544"/>
+	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Label">
 		<location x="477" y="530"/>
 		<width>303</width>
 		<property name="Text" value="Logitech Camera"/>
 	</static-widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
-		<location x="467" y="275"/>
+		<location x="533" y="275"/>
 		<width>312</width>
 		<height>248</height>
-		<property name="Camera Choice" value=""/>
+		<property name="Camera Choice" value="USB Camera 0"/>
 	</static-widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
-		<location x="468" y="16"/>
-		<width>312</width>
+		<location x="542" y="17"/>
+		<width>267</width>
 		<height>235</height>
 		<property name="Camera Choice" value="DriverCam"/>
 	</static-widget>
@@ -21,7 +27,7 @@
 		<location x="14" y="542"/>
 	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
-		<location x="-24" y="7"/>
+		<location x="8" y="13"/>
 		<width>532</width>
 		<height>311</height>
 		<property name="Camera Choice" value="Rectangle"/>
@@ -56,12 +62,6 @@
 	<widget field="ValueMin" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="42" y="364"/>
 	</widget>
-	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
-		<location x="-24" y="7"/>
-		<width>532</width>
-		<height>311</height>
-		<property name="Camera Choice" value=""/>
-	</static-widget>
 </dashboard>
 <live-window>
 </live-window>

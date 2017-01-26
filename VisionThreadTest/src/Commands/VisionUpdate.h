@@ -4,11 +4,11 @@
 #include "../CommandBase.h"
 
 
-class VisionTest : public CommandBase {
+class VisionUpdate : public CommandBase {
 
 
 public:
-	VisionTest();
+	VisionUpdate();
 	void Initialize();
 	void Execute();
 	bool IsFinished();
