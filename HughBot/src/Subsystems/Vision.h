@@ -11,6 +11,15 @@ using namespace grip;
 
 class Vision : public Subsystem {
 private:
+	struct CameraInfo {
+		int screenWidth;
+		int screenHeight;
+		double fov;
+		double fovFactor;
+	};
+
+	CameraInfo cameraInfo;
+
 	static cs::UsbCamera camera1;
 	static cs::UsbCamera camera2;
 	static cs::CvSink cvSink;
@@ -34,6 +43,7 @@ public:
 	static void AdjustCamera(double exposure, double balance, double brightness);
 	double GetDistance();
 	double GetDirection();
+	void SetCameraInfo(int width, int height, double fov);
 };
 
 #endif  // Vision_H

@@ -5,11 +5,16 @@
 #include "llvm/ArrayRef.h"
 #include "llvm/StringRef.h"
 
+#define RPD(x) (x)*2*M_PI/360
+#define IMAGE_WIDTH 320
+#define IMAGE_HEIGHT 240
+#define FOV 60.0
+
 using namespace frc;
 
 llvm::ArrayRef<double>  Vision::hsvThresholdHue = {70, 110};
-llvm::ArrayRef<double>  Vision::hsvThresholdSaturation = {180, 255};
-llvm::ArrayRef<double>  Vision::hsvThresholdValue = {70, 200};
+llvm::ArrayRef<double>  Vision::hsvThresholdSaturation = {100, 255};
+llvm::ArrayRef<double>  Vision::hsvThresholdValue = {100, 200};
 cs::UsbCamera Vision::camera1;
 cs::UsbCamera Vision::camera2;
 cs::CvSink Vision::cvSink;
@@ -23,8 +28,8 @@ static double driverCameraExposure = 0;
 static double driverCameraBalance = 0;
 static 	GripPipeline gp;
 
-Vision::Vision() :
-	Subsystem("VisionSubsystem") {
+Vision::Vision() : Subsystem("VisionSubsystem") {
+	SetCameraInfo(IMAGE_WIDTH,IMAGE_HEIGHT,FOV);
 }
 
 void Vision::InitDefaultCommand() {
@@ -38,8 +43,9 @@ void Vision::Init() {
 	camera1 = CameraServer::GetInstance()->StartAutomaticCapture("Logitech",0);
 	camera2 = CameraServer::GetInstance()->StartAutomaticCapture("DriverCam",1);
 
-	frc::SmartDashboard::PutNumber("CameraBrightness", camera1.GetBrightness());
+	frc::SmartDashboard::PutNumber("CameraBrightness", 2);
 	frc::SmartDashboard::PutNumber("CameraExposure", exposure);
+	frc::SmartDashboard::PutNumber("TargetDistance", 0);
 	frc::SmartDashboard::PutNumber("CameraBalance", whiteBalance);
 	frc::SmartDashboard::PutBoolean("showColorThreshold", false);
 	frc::SmartDashboard::PutNumber("HueMax", hsvThresholdHue[1]);
@@ -77,13 +83,13 @@ void Vision::Init() {
 
 void Vision::Process() {
 	// test receiving data from image processing thread
-	cv::Point top=cv::Point(10, 10);
-	cv::Point bot=cv::Point(20, 20);
 
 	top.x=table->GetNumber("TopLeftX", 10);
 	top.y=table->GetNumber("TopLeftY", 10);
 	bot.x=table->GetNumber("BotRightX",20);
 	bot.y=table->GetNumber("BotRightY",20);
+	frc::SmartDashboard::PutNumber("TargetDistance", GetDistance());
+	//cout<<"GetDistance: "<<GetDistance()<<endl;
 	//cout<<"TL:"<<top<<" BR:"<<bot<<endl;
 }
 
@@ -235,30 +241,24 @@ void Vision::AdjustCamera(double e, double bal, double b) {
 	}
 }
 
+double Vision::GetDistance() {
+	//double camerafactor = 1/(2*tan(RPD(f/2.0)));
+	double targetwidth = 10.25; // width of tape to outside, in inches
+	int closestwidth = bot.x - top.x;
+	double dw = cameraInfo.fovFactor*cameraInfo.screenWidth*targetwidth/closestwidth;
+	return dw;
+}
 
+double Vision::GetDirection() {
+	return 0;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+void Vision::SetCameraInfo(int width, int height, double fov) {
+	cameraInfo.screenWidth = width;
+	cameraInfo.screenHeight = height;
+	cameraInfo.fov = fov;
+	cameraInfo.fovFactor = 1/(2*tan(RPD(fov/2.0)));
+	cout<<"fovFactor: "<<cameraInfo.fovFactor<<endl;
+}
 // Put methods for controlling this subsystem
 // here. Call these from Commands.
