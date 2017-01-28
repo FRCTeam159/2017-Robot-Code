@@ -11,16 +11,18 @@ using namespace grip;
 
 class Vision : public Subsystem {
 private:
-	cs::UsbCamera camera;
+	cs::UsbCamera camera1;
 	cs::UsbCamera camera2;
 	cs::CvSink cvSink;
 	cs::CvSource outputStream;
 	GripPipeline gp;
-	bool error=false;
 	double brightness = 2;
+	bool error=false;
 	double exposure = 2;
 	bool showColorThreshold = false;
 	double whiteBalance = 2;
+	double driverCameraExposure = 0;
+	double driverCameraBalance = 0;
 
 	llvm::ArrayRef<double>  hsvThresholdHue = {70, 110};
 	llvm::ArrayRef<double>  hsvThresholdSaturation = {50, 255};

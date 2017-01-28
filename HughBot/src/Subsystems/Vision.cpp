@@ -17,11 +17,11 @@ void Vision::InitDefaultCommand() {
 }
 
 void Vision::Init() {
-	camera = CameraServer::GetInstance()->StartAutomaticCapture(0);
+	camera1 = CameraServer::GetInstance()->StartAutomaticCapture(0);
 	camera2 = CameraServer::GetInstance()->StartAutomaticCapture("DriverCam",1);
 
 	CameraSettings(exposure, 0, brightness);
-	frc::SmartDashboard::PutNumber("CameraBrightness", camera.GetBrightness());
+	frc::SmartDashboard::PutNumber("CameraBrightness", camera1.GetBrightness());
 	frc::SmartDashboard::PutNumber("CameraExposure", exposure);
 	frc::SmartDashboard::PutNumber("CameraBalance", whiteBalance);
 	frc::SmartDashboard::PutBoolean("showColorThreshold", false);
@@ -34,9 +34,11 @@ void Vision::Init() {
 	frc::SmartDashboard::PutNumber("ValueMin", hsvThresholdValue[0]);
 	frc::SmartDashboard::PutNumber("Rectangles", 0);
 	frc::SmartDashboard::PutBoolean("showGoodRects", false);
+	frc::SmartDashboard::PutNumber("DriverCameraExposure",0);
+	frc::SmartDashboard::PutNumber("DriverBalance",0);
 
 	// Set the resolution
-	camera.SetResolution(320, 240);
+	camera1.SetResolution(320, 240);
 	camera2.SetResolution(320, 240);
 	//camera.SetFPS(1);
 
@@ -74,11 +76,29 @@ void Vision::Process() {
 	hsvThresholdHue={SmartDashboard::GetNumber("HueMin",70),SmartDashboard::GetNumber("HueMax", 100)};
 	hsvThresholdValue={SmartDashboard::GetNumber("ValueMin", 100),SmartDashboard::GetNumber("ValueMax",255)};
 	hsvThresholdSaturation={SmartDashboard::GetNumber("SaturationMin", 100),SmartDashboard::GetNumber("SaturationMax",255)};
-
+	double DriverCameraExposure = frc::SmartDashboard::GetNumber("DriverCameraExposure",0);
+	double DriverCameraBalance = frc::SmartDashboard::GetNumber("DriverBalance",0);
 	gp.setHSVThresholdHue(hsvThresholdHue);
 	gp.setHSVThresholdValue(hsvThresholdValue);
 	gp.setHSVThresholdSaturation(hsvThresholdSaturation);
 	AdjustCamera(exp,bal,val);
+	if(driverCameraBalance != DriverCameraBalance){
+		if(DriverCameraBalance < 1){
+			camera2.SetWhiteBalanceAuto();
+		}else{
+			camera2.SetWhiteBalanceManual(DriverCameraBalance);
+		}
+		driverCameraBalance = DriverCameraBalance;
+	}
+	if(driverCameraExposure != DriverCameraExposure){
+		if(DriverCameraExposure < 1){
+			camera2.SetExposureAuto();
+		}else{
+			camera2.SetExposureManual(DriverCameraExposure);
+		}
+		driverCameraExposure = DriverCameraExposure;
+	}
+
 
 	gp.process(mat);
 	if(showColorThreshold){
@@ -169,9 +189,9 @@ void Vision::CameraSettings(double exposure, double balance, double brightness)
 {
 	//float e=camera.GetBrightness();
 	//cout <<"original brightness:"<<e<< endl;
-	camera.SetBrightness(brightness);
-	camera.SetExposureManual(exposure);
-	camera.SetWhiteBalanceManual(balance);
+	camera1.SetBrightness(brightness);
+	camera1.SetExposureManual(exposure);
+	camera1.SetWhiteBalanceManual(balance);
 	//e=camera.GetBrightness();
 	//cout <<"new brightness:"<<e<< endl;
 }
@@ -180,18 +200,18 @@ void Vision::AdjustCamera(double e, double bal, double b) {
 	if(b!=brightness){
 		cout<<"New Brightness> "<<b<<endl;
 		brightness = b;
-		camera.SetBrightness(brightness);
+		camera1.SetBrightness(brightness);
 		//CameraSettings(0,0,brightness);
 	}
 	if(e!=exposure){
 		cout<<"New exposure> "<<e<<endl;
 		exposure = e;
-		camera.SetExposureManual(exposure);
+		camera1.SetExposureManual(exposure);
 	}
 	if(bal!=whiteBalance){
 		cout<<"New White Balance> "<<bal<<endl;
 		whiteBalance = bal;
-		camera.SetWhiteBalanceManual(bal);
+		camera1.SetWhiteBalanceManual(bal);
 	}
 }
 // Put methods for controlling this subsystem
