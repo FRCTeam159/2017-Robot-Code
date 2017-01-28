@@ -72,6 +72,7 @@ void Vision::VisionThread() {
 	gp.setHSVThresholdHue(hsvThresholdHue);
 	gp.setHSVThresholdValue(hsvThresholdValue);
 	gp.setHSVThresholdSaturation(hsvThresholdSaturation);
+	frc::SmartDashboard::PutNumber("CameraBrightness",camera1.GetBrightness());
 
 	// Mats are very memory expensive. Lets reuse this Mat.
 	cv::Mat mat;
@@ -119,7 +120,12 @@ void Vision::VisionThread() {
 		table->PutNumber("TopLeftY", tl.y);
 		table->PutNumber("BotRightX", br.x);
 		table->PutNumber("BotRightY", br.y);
+		double newBrightness = frc::SmartDashboard::GetNumber("CameraBrightness",camera1.GetBrightness());
+		if (newBrightness != brightness){
+			brightness = newBrightness;
+			camera1.SetBrightness(brightness);
 
+		}
 		//Wait(0.1);
 	}
 }

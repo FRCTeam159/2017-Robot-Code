@@ -214,5 +214,9 @@ void Vision::AdjustCamera(double e, double bal, double b) {
 		camera1.SetWhiteBalanceManual(bal);
 	}
 }
+
+void Vision::VisionThread(){
+
+}
 // Put methods for controlling this subsystem
 // here. Call these from Commands.
