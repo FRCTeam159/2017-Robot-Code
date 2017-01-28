@@ -11,23 +11,19 @@ using namespace grip;
 
 class Vision : public Subsystem {
 private:
-	cs::UsbCamera camera1;
-	cs::UsbCamera camera2;
-	cs::CvSink cvSink;
-	cs::CvSource outputStream;
-	GripPipeline gp;
-	double brightness = 2;
-	bool error=false;
-	double exposure = 2;
-	bool showColorThreshold = false;
-	double whiteBalance = 2;
-	double driverCameraExposure = 0;
-	double driverCameraBalance = 0;
+	static cs::UsbCamera camera1;
+	static cs::UsbCamera camera2;
+	static cs::CvSink cvSink;
+	static cs::CvSource outputStream;
 
-	llvm::ArrayRef<double>  hsvThresholdHue = {70, 110};
-	llvm::ArrayRef<double>  hsvThresholdSaturation = {50, 255};
-	llvm::ArrayRef<double>  hsvThresholdValue = {70, 200};
+
+	static llvm::ArrayRef<double>  hsvThresholdHue;
+	static llvm::ArrayRef<double>  hsvThresholdSaturation;
+	static llvm::ArrayRef<double>  hsvThresholdValue;
 	static void VisionThread();
+	std::shared_ptr<NetworkTable> table;
+	cv::Point top=cv::Point(10, 10);
+	cv::Point bot=cv::Point(20, 20);
 
 
 public:
@@ -35,9 +31,9 @@ public:
 	void InitDefaultCommand();
 	void Process();
 	void Init();
-	void CameraSettings(double exposure, double balance, double brightness);
-	void AdjustCamera(double exposure, double balance, double brightness);
-
+	static void AdjustCamera(double exposure, double balance, double brightness);
+	double GetDistance();
+	double GetDirection();
 };
 
 #endif  // Vision_H

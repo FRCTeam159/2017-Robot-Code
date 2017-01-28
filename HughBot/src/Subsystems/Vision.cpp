@@ -7,8 +7,24 @@
 
 using namespace frc;
 
+llvm::ArrayRef<double>  Vision::hsvThresholdHue = {70, 110};
+llvm::ArrayRef<double>  Vision::hsvThresholdSaturation = {180, 255};
+llvm::ArrayRef<double>  Vision::hsvThresholdValue = {70, 200};
+cs::UsbCamera Vision::camera1;
+cs::UsbCamera Vision::camera2;
+cs::CvSink Vision::cvSink;
+cs::CvSource Vision::outputStream;
+
+static double brightness = 2;
+static double exposure = 2;
+static bool showColorThreshold = false;
+static double whiteBalance = 2;
+static double driverCameraExposure = 0;
+static double driverCameraBalance = 0;
+static 	GripPipeline gp;
+
 Vision::Vision() :
-	Subsystem("ExampleSubsystem"), gp() {
+	Subsystem("VisionSubsystem") {
 }
 
 void Vision::InitDefaultCommand() {
@@ -17,10 +33,11 @@ void Vision::InitDefaultCommand() {
 }
 
 void Vision::Init() {
-	camera1 = CameraServer::GetInstance()->StartAutomaticCapture(0);
+	table=NetworkTable::GetTable("datatable");
+
+	camera1 = CameraServer::GetInstance()->StartAutomaticCapture("Logitech",0);
 	camera2 = CameraServer::GetInstance()->StartAutomaticCapture("DriverCam",1);
 
-	CameraSettings(exposure, 0, brightness);
 	frc::SmartDashboard::PutNumber("CameraBrightness", camera1.GetBrightness());
 	frc::SmartDashboard::PutNumber("CameraExposure", exposure);
 	frc::SmartDashboard::PutNumber("CameraBalance", whiteBalance);
@@ -41,160 +58,163 @@ void Vision::Init() {
 	camera1.SetResolution(320, 240);
 	camera2.SetResolution(320, 240);
 	//camera.SetFPS(1);
+	camera1.SetFPS(5);
+
 
 	//camera.SetPixelFormat(cs::VideoMode::PixelFormat::kBGR);
 
 	// Get a CvSink. This will capture Mats from the Camera
-	cvSink = CameraServer::GetInstance()->GetVideo();
+	//cvSink = CameraServer::GetInstance()->GetVideo();
 	// Setup a CvSource. This will send images back to the Dashboard
-	outputStream = CameraServer::GetInstance()->PutVideo("Rectangle", 320, 240);
+	//outputStream = CameraServer::GetInstance()->PutVideo("Rectangle", 320, 240);
 	//CameraSettings(0,0,frc::SmartDashboard::GetNumber("CameraBrightness",2));
+
+	std::thread visionThread(VisionThread);
+	visionThread.detach();
 }
 
 #define SHOW_COLOR_THRESHOLD
 
 void Vision::Process() {
+	// test receiving data from image processing thread
+	cv::Point top=cv::Point(10, 10);
+	cv::Point bot=cv::Point(20, 20);
+
+	top.x=table->GetNumber("TopLeftX", 10);
+	top.y=table->GetNumber("TopLeftY", 10);
+	bot.x=table->GetNumber("BotRightX",20);
+	bot.y=table->GetNumber("BotRightY",20);
+	//cout<<"TL:"<<top<<" BR:"<<bot<<endl;
+}
+
+
+void Vision::VisionThread(){
+
+	std::shared_ptr<NetworkTable> table2=NetworkTable::GetTable("datatable");
+
+
+	// Get a CvSink. This will capture Mats from the Camera
+	cvSink = CameraServer::GetInstance()->GetVideo("Logitech");
+	// Setup a CvSource. This will send images back to the Dashboard
+	outputStream = CameraServer::GetInstance()->PutVideo("Rectangle", 320, 240);
 
 	cv::Mat mat;
-	//return;
-	int status = cvSink.GrabFrame(mat);
-	//std::cout<<"status="<<status<<std::endl;
-	//std::cout<<"frame capture error"<<std::endl;
 
-	if (status == 0) {
-		// Send the output the error.
-		outputStream.NotifyError(cvSink.GetError());
-		// skip the rest of the current iteration
-		error = true;
-		return;
-	}
-	//cout<<"VisionTestRan"<<endl;
-	double val = frc::SmartDashboard::GetNumber("CameraBrightness",2);
-	double exp = frc::SmartDashboard::GetNumber("CameraExposure",1);
-	double bal = frc::SmartDashboard::GetNumber("CameraBalance",2);
-	showColorThreshold = frc::SmartDashboard::GetBoolean("showColorThreshold", false);
-	hsvThresholdHue={SmartDashboard::GetNumber("HueMin",70),SmartDashboard::GetNumber("HueMax", 100)};
-	hsvThresholdValue={SmartDashboard::GetNumber("ValueMin", 100),SmartDashboard::GetNumber("ValueMax",255)};
-	hsvThresholdSaturation={SmartDashboard::GetNumber("SaturationMin", 100),SmartDashboard::GetNumber("SaturationMax",255)};
-	double DriverCameraExposure = frc::SmartDashboard::GetNumber("DriverCameraExposure",0);
-	double DriverCameraBalance = frc::SmartDashboard::GetNumber("DriverBalance",0);
-	gp.setHSVThresholdHue(hsvThresholdHue);
-	gp.setHSVThresholdValue(hsvThresholdValue);
-	gp.setHSVThresholdSaturation(hsvThresholdSaturation);
-	AdjustCamera(exp,bal,val);
-	if(driverCameraBalance != DriverCameraBalance){
-		if(DriverCameraBalance < 1){
-			camera2.SetWhiteBalanceAuto();
-		}else{
-			camera2.SetWhiteBalanceManual(DriverCameraBalance);
-		}
-		driverCameraBalance = DriverCameraBalance;
-	}
-	if(driverCameraExposure != DriverCameraExposure){
-		if(DriverCameraExposure < 1){
-			camera2.SetExposureAuto();
-		}else{
-			camera2.SetExposureManual(DriverCameraExposure);
-		}
-		driverCameraExposure = DriverCameraExposure;
-	}
+	cv::Point tl=cv::Point(10, 10);
+	cv::Point br=cv::Point(20, 20);
 
 
-	gp.process(mat);
-	if(showColorThreshold){
-		//cout<<"Show color threshold is true"<<endl;
-	cv::Mat* mat2=gp.getColorThresholdOutput();
-	mat2->copyTo(mat);
-	}
+	while(true){
 
-	//cv::Mat* mat2=gp.getblurOutput();
-	int minx = 1000, maxx = 0, miny = 1000, maxy = 0;
-#ifdef SHOWCONTOURS
-	std::vector<std::vector<cv::Point> > points = *gp.getResultVector();
-	//cout << "points size:" << points.size() << endl;
-	for (unsigned int i = 0; i < points.size(); i++) {
-		std::vector<cv::Point> pv = points[i];
-		for (unsigned int j = 0; j < pv.size(); j++) {
-			cv::Point p = pv[j];
-			minx = p.x < minx ? p.x : minx;
-			maxx = p.x > maxx ? p.x : maxx;
-			miny = p.y < miny ? p.y : miny;
-			maxy = p.y > maxy ? p.y : maxy;
-			//cout<<p.x<<" "<<p.y;
-			//cout<<endl;
-		}
-	}
-	cv::Point c(0.5*(maxx+minx),0.5*(maxy+miny));
-#else
-	std::vector<cv::Rect> rects= *gp.getRectangles();
+		double val = frc::SmartDashboard::GetNumber("CameraBrightness",2);
+		double exp = frc::SmartDashboard::GetNumber("CameraExposure",1);
+		double bal = frc::SmartDashboard::GetNumber("CameraBalance",2);
 
-	bool showGoodRects = frc::SmartDashboard::GetBoolean("showGoodRects", true);
-	//cout<<"goodRects="<<showGoodRects<<endl;
-	//cout<<"number of rectangles="<<rects.size()<<endl;
-	std::vector<cv::Rect> rectsPointer=rects;
-	if (showGoodRects){
-		std::vector<cv::Rect> goodrects;
-		int goodFactor=5;
-		for (unsigned int i = 0; i < rects.size(); i++) {
-			int score = 0;
-			cv::Rect Rect1=rects [i];
-			int cx1=0.5*(Rect1.tl().x+Rect1.br().x);
-			int cy1=0.5*(Rect1.tl().y+Rect1.br().y);
-			double w1=rects[i].width;
-			for (unsigned int j = 0; j < rects.size(); j++) {
-				if (i==j)
-					continue;
-				cv::Rect Rect2=rects [j];
-				int cx2=0.5*(Rect2.tl().x+Rect2.br().x);
-				int cy2=0.5*(Rect2.tl().y+Rect2.br().y);
-				int dx=cx1-cx2;
-				int dy=cy1-cy2;
-				int d=sqrt(dx*dx+dy*dy);
-				double r=d/w1;
-				if (r<goodFactor)
-					score++;
+		double DriverCameraExposure = frc::SmartDashboard::GetNumber("DriverCameraExposure",0);
+		double DriverCameraBalance = frc::SmartDashboard::GetNumber("DriverBalance",0);
+
+		AdjustCamera(exp,bal,val);
+		if(driverCameraBalance != DriverCameraBalance){
+			if(DriverCameraBalance < 1){
+				camera2.SetWhiteBalanceAuto();
+			}else{
+				camera2.SetWhiteBalanceManual(DriverCameraBalance);
 			}
-			if (score>0)
-				goodrects.push_back(Rect1);
+			driverCameraBalance = DriverCameraBalance;
 		}
-		rectsPointer=goodrects;
+		if(driverCameraExposure != DriverCameraExposure){
+			if(DriverCameraExposure < 1){
+				camera2.SetExposureAuto();
+			}else{
+				camera2.SetExposureManual(DriverCameraExposure);
+			}
+			driverCameraExposure = DriverCameraExposure;
+		}
+
+		showColorThreshold = frc::SmartDashboard::GetBoolean("showColorThreshold", false);
+
+		// Tell the CvSink to grab a frame from the camera and put it
+		// in the source mat.  If there is an error notify the output.
+		if (cvSink.GrabFrame(mat) == 0) {
+			// Send the output the error.
+			//outputStream.NotifyError(cvSink.GetError());
+			// skip the rest of the current iteration
+			continue;
+		}
+
+		hsvThresholdHue={SmartDashboard::GetNumber("HueMin",70),SmartDashboard::GetNumber("HueMax", 100)};
+		hsvThresholdValue={SmartDashboard::GetNumber("ValueMin", 100),SmartDashboard::GetNumber("ValueMax",255)};
+		hsvThresholdSaturation={SmartDashboard::GetNumber("SaturationMin", 100),SmartDashboard::GetNumber("SaturationMax",255)};
+
+		gp.setHSVThresholdHue(hsvThresholdHue);
+		gp.setHSVThresholdValue(hsvThresholdValue);
+		gp.setHSVThresholdSaturation(hsvThresholdSaturation);
+
+		gp.process(mat);
+
+		if(showColorThreshold){
+			cv::Mat* mat2=gp.getColorThresholdOutput();
+			mat2->copyTo(mat);
+		}
+
+		int minx = 1000, maxx = 0, miny = 1000, maxy = 0;
+		std::vector<cv::Rect> rects= *gp.getRectangles();
+
+		bool showGoodRects = frc::SmartDashboard::GetBoolean("showGoodRects", true);
+
+		std::vector<cv::Rect> rectsPointer=rects;
+		if (showGoodRects){
+			std::vector<cv::Rect> goodrects;
+			int goodFactor=5;
+			for (unsigned int i = 0; i < rects.size(); i++) {
+				int score = 0;
+				cv::Rect Rect1=rects [i];
+				int cx1=0.5*(Rect1.tl().x+Rect1.br().x);
+				int cy1=0.5*(Rect1.tl().y+Rect1.br().y);
+				double w1=rects[i].width;
+				for (unsigned int j = 0; j < rects.size(); j++) {
+					if (i==j)
+						continue;
+					cv::Rect Rect2=rects [j];
+					int cx2=0.5*(Rect2.tl().x+Rect2.br().x);
+					int cy2=0.5*(Rect2.tl().y+Rect2.br().y);
+					int dx=cx1-cx2;
+					int dy=cy1-cy2;
+					int d=sqrt(dx*dx+dy*dy);
+					double r=d/w1;
+					if (r<goodFactor)
+						score++;
+				}
+				if (score>0)
+					goodrects.push_back(Rect1);
+			}
+			rectsPointer=goodrects;
+		}
+		frc::SmartDashboard::PutNumber("Rectangles",rectsPointer.size());
+		for (unsigned int i = 0; i < rectsPointer.size(); i++) {
+			cv::Rect r= rectsPointer[i];
+			cv::Point p= r.tl();
+			minx = p.x < minx ? p.x : minx;
+			miny = p.y < miny ? p.y : miny;
+			p= r.br();
+			maxy = p.y > maxy ? p.y : maxy;
+			maxx = p.x > maxx ? p.x : maxx;
+			rectangle(mat, r.tl(), r.br(), cv::Scalar(0, 255, 255), 1);
+		}
+
+		tl=cv::Point(minx, miny);
+		br=cv::Point(maxx, maxy);
+
+		rectangle(mat, cv::Point(minx, miny), cv::Point(maxx, maxy), cv::Scalar(255, 255, 255), 1);
+
+		outputStream.PutFrame(mat);
+		table2->PutNumber("TopLeftX", tl.x);
+		table2->PutNumber("TopLeftY", tl.y);
+		table2->PutNumber("BotRightX", br.x);
+		table2->PutNumber("BotRightY", br.y);
 	}
-	frc::SmartDashboard::PutNumber("Rectangles",rectsPointer.size());
-	for (unsigned int i = 0; i < rectsPointer.size(); i++) {
-		cv::Rect r= rectsPointer[i];
-		cv::Point p= r.tl();
-		minx = p.x < minx ? p.x : minx;
-		miny = p.y < miny ? p.y : miny;
-		p= r.br();
-		maxy = p.y > maxy ? p.y : maxy;
-		maxx = p.x > maxx ? p.x : maxx;
-		rectangle(mat, r.tl(), r.br(), cv::Scalar(0, 255, 255), 1);
-	}
-#endif
-	rectangle(mat, cv::Point(minx, miny), cv::Point(maxx, maxy), cv::Scalar(255, 255, 255), 1);
-	//drawMarker(mat, c, cv::Scalar(0, 0, 255),0, 10, 2,8);
-	// Mats are very memory expensive. Let's reuse this Mat.
-	//rectangle(mat, cv::Point(10, 10), cv::Point(100, 100),
-	//		cv::Scalar(255, 0, 0), 1);
-	// Give the output stream a new image to display
-
-	outputStream.PutFrame(mat);
-
-	//double val = frc::SmartDashboard::GetNumber("CameraBrightness",2);
-	//cout<<"CameraBrightness = "<<val<<endl;
-
 }
 
-void Vision::CameraSettings(double exposure, double balance, double brightness)
-{
-	//float e=camera.GetBrightness();
-	//cout <<"original brightness:"<<e<< endl;
-	camera1.SetBrightness(brightness);
-	camera1.SetExposureManual(exposure);
-	camera1.SetWhiteBalanceManual(balance);
-	//e=camera.GetBrightness();
-	//cout <<"new brightness:"<<e<< endl;
-}
 
 void Vision::AdjustCamera(double e, double bal, double b) {
 	if(b!=brightness){
@@ -215,8 +235,30 @@ void Vision::AdjustCamera(double e, double bal, double b) {
 	}
 }
 
-void Vision::VisionThread(){
 
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Put methods for controlling this subsystem
 // here. Call these from Commands.
