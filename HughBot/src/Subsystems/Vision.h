@@ -16,14 +16,28 @@ private:
 		int screenHeight;
 		double fov;
 		double fovFactor;
+		double HorizontalOffset;
 	};
 
 	CameraInfo cameraInfo;
+
+	struct TargetInfo {
+		cv::Point Center;
+		double Distance;
+		double HorizontalOffset;
+		double HorizontalError;
+		double Height;
+		double Width;
+		double ActualWidth;
+		double ActualHeight;
+	};
 
 	static cs::UsbCamera camera1;
 	static cs::UsbCamera camera2;
 	static cs::CvSink cvSink;
 	static cs::CvSource outputStream;
+
+	void CalcTargetInfo(cv::Point top, cv::Point bottom);
 
 
 	static llvm::ArrayRef<double>  hsvThresholdHue;
@@ -31,12 +45,11 @@ private:
 	static llvm::ArrayRef<double>  hsvThresholdValue;
 	static void VisionThread();
 	std::shared_ptr<NetworkTable> table;
-	cv::Point top=cv::Point(10, 10);
-	cv::Point bot=cv::Point(20, 20);
 
 
 public:
 	Vision();
+	TargetInfo targetInfo;
 	void InitDefaultCommand();
 	void Process();
 	void Init();

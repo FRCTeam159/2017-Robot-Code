@@ -14,7 +14,7 @@ using namespace frc;
 
 llvm::ArrayRef<double>  Vision::hsvThresholdHue = {70, 110};
 llvm::ArrayRef<double>  Vision::hsvThresholdSaturation = {100, 255};
-llvm::ArrayRef<double>  Vision::hsvThresholdValue = {100, 200};
+llvm::ArrayRef<double>  Vision::hsvThresholdValue = {100, 255};
 cs::UsbCamera Vision::camera1;
 cs::UsbCamera Vision::camera2;
 cs::CvSink Vision::cvSink;
@@ -27,25 +27,28 @@ static double whiteBalance = 2;
 static double driverCameraExposure = 0;
 static double driverCameraBalance = 0;
 static 	GripPipeline gp;
+//#define CAMERASENABLED
+
 
 Vision::Vision() : Subsystem("VisionSubsystem") {
 	SetCameraInfo(IMAGE_WIDTH,IMAGE_HEIGHT,FOV);
 }
 
 void Vision::InitDefaultCommand() {
+#ifdef CAMERASENABLED
 	// Set the default command for a subsystem here.
 	SetDefaultCommand(new VisionUpdate());
+#endif
 }
 
 void Vision::Init() {
 	table=NetworkTable::GetTable("datatable");
-
+#ifdef CAMERASENABLED
 	camera1 = CameraServer::GetInstance()->StartAutomaticCapture("Logitech",0);
 	camera2 = CameraServer::GetInstance()->StartAutomaticCapture("DriverCam",1);
 
 	frc::SmartDashboard::PutNumber("CameraBrightness", 2);
 	frc::SmartDashboard::PutNumber("CameraExposure", exposure);
-	frc::SmartDashboard::PutNumber("TargetDistance", 0);
 	frc::SmartDashboard::PutNumber("CameraBalance", whiteBalance);
 	frc::SmartDashboard::PutBoolean("showColorThreshold", false);
 	frc::SmartDashboard::PutNumber("HueMax", hsvThresholdHue[1]);
@@ -59,6 +62,10 @@ void Vision::Init() {
 	frc::SmartDashboard::PutBoolean("showGoodRects", false);
 	frc::SmartDashboard::PutNumber("DriverCameraExposure",0);
 	frc::SmartDashboard::PutNumber("DriverBalance",0);
+
+	frc::SmartDashboard::PutNumber("Distance", 0);
+	frc::SmartDashboard::PutNumber("HorizontalOffset", 0);
+	frc::SmartDashboard::PutNumber("HorizontalError", 0);
 
 	// Set the resolution
 	camera1.SetResolution(320, 240);
@@ -77,18 +84,27 @@ void Vision::Init() {
 
 	std::thread visionThread(VisionThread);
 	visionThread.detach();
+#endif
 }
 
 #define SHOW_COLOR_THRESHOLD
 
 void Vision::Process() {
 	// test receiving data from image processing thread
-
+	cv::Point top;
+	cv::Point bot;
 	top.x=table->GetNumber("TopLeftX", 10);
 	top.y=table->GetNumber("TopLeftY", 10);
 	bot.x=table->GetNumber("BotRightX",20);
 	bot.y=table->GetNumber("BotRightY",20);
-	frc::SmartDashboard::PutNumber("TargetDistance", GetDistance());
+	CalcTargetInfo (top, bot);
+	frc::SmartDashboard::PutNumber("Distance", targetInfo.Distance);
+	frc::SmartDashboard::PutNumber("HorizontalOffset", targetInfo.HorizontalOffset);
+	frc::SmartDashboard::PutNumber("HorizontalError", targetInfo.HorizontalError);
+	frc::SmartDashboard::PutNumber("TargetHeight", targetInfo.Height);
+	frc::SmartDashboard::PutNumber("TargetWidth", targetInfo.Width);
+	frc::SmartDashboard::PutNumber("TargetCenter.x", targetInfo.Center.x);
+	frc::SmartDashboard::PutNumber("TargetCenter.y", targetInfo.Center.y);
 	//cout<<"GetDistance: "<<GetDistance()<<endl;
 	//cout<<"TL:"<<top<<" BR:"<<bot<<endl;
 }
@@ -241,24 +257,23 @@ void Vision::AdjustCamera(double e, double bal, double b) {
 	}
 }
 
-double Vision::GetDistance() {
-	//double camerafactor = 1/(2*tan(RPD(f/2.0)));
-	double targetwidth = 10.25; // width of tape to outside, in inches
-	int closestwidth = bot.x - top.x;
-	double dw = cameraInfo.fovFactor*cameraInfo.screenWidth*targetwidth/closestwidth;
-	return dw;
-}
-
-double Vision::GetDirection() {
-	return 0;
-}
-
 void Vision::SetCameraInfo(int width, int height, double fov) {
 	cameraInfo.screenWidth = width;
 	cameraInfo.screenHeight = height;
 	cameraInfo.fov = fov;
 	cameraInfo.fovFactor = 1/(2*tan(RPD(fov/2.0)));
 	cout<<"fovFactor: "<<cameraInfo.fovFactor<<endl;
+}
+
+void Vision::CalcTargetInfo(cv::Point top, cv::Point bottom) {
+	targetInfo.Height=top.y-bottom.y;
+	targetInfo.Width=bottom.x-top.x;
+	targetInfo.Center.x=0.5*(bottom.x+top.x);
+	targetInfo.Center.y=0.5*(bottom.y+top.y);
+	targetInfo.HorizontalOffset=targetInfo.Center.x-cameraInfo.screenWidth/2;
+	targetInfo.ActualHeight=5.0;
+	targetInfo.ActualWidth=10.25;	//inches
+	targetInfo.Distance=cameraInfo.fovFactor*cameraInfo.screenWidth*targetInfo.ActualWidth/targetInfo.Width;
 }
 // Put methods for controlling this subsystem
 // here. Call these from Commands.

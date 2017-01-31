@@ -2,6 +2,11 @@
 #include "RobotMap.h"
 #include "Commands/DriveWithJoystick.h"
 #include "WPILib.h"
+
+#define P 0.1
+#define I 0.0
+#define D 0.0
+
 DriveTrain::DriveTrain() : Subsystem("DriveTrain"),
 		frontLeft(FRONTLEFT),   // slave  1
 		frontRight(FRONTRIGHT), // master 4
@@ -9,16 +14,26 @@ DriveTrain::DriveTrain() : Subsystem("DriveTrain"),
 		backRight(BACKRIGHT)    // slave  3
 {
 	InitDrive();
-	//drive = new RobotDrive(&frontLeft, &backLeft, &frontRight, &backRight);
-	//drive->SetInvertedMotor(DriveTrain::kFrontLeftMotor,true);
 
-	backLeft.SetInverted(true);
-	//drive->SetInvertedMotor(RobotDrive::kRearLeftMotor,false);
+	backLeft.SetInverted(false);
+	frontRight.ConfigLimitMode(CANSpeedController::kLimitMode_SrxDisableSwitchInputs);
+	backLeft.ConfigLimitMode(CANSpeedController::kLimitMode_SrxDisableSwitchInputs);
 
-	//frontRight.SetFeedbackDevice(CANTalon::QuadEncoder);
-	//backLeft.SetFeedbackDevice(CANTalon::QuadEncoder);
-	//frontRightSetExpiration.SetControlMode(CANTalon::kSpeed);
-	//backLeft.SetControlMode(CANTalon::kSpeed);
+	//frontRight.SetControlMode(CANTalon::kPercentVbus);
+	//backLeft.SetControlMode(CANTalon::kPercentVbus);
+
+	frontRight.SetControlMode(CANTalon::kSpeed);
+	backLeft.SetControlMode(CANTalon::kSpeed);
+
+	frontRight.SetPID(P,I,D);
+	backLeft.SetPID(P,I,D);
+
+	frontRight.SetFeedbackDevice(CANTalon::QuadEncoder);
+	backLeft.SetFeedbackDevice(CANTalon::QuadEncoder);
+
+	frontRight.ConfigEncoderCodesPerRev(900);
+	backLeft.ConfigEncoderCodesPerRev(900);
+
 	frontLeft.SetControlMode(CANTalon::kFollower);
 	backRight.SetControlMode(CANTalon::kFollower);
 	backRight.EnableControl();
