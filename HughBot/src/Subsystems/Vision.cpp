@@ -27,7 +27,7 @@ static double whiteBalance = 2;
 static double driverCameraExposure = 0;
 static double driverCameraBalance = 0;
 static 	GripPipeline gp;
-//#define CAMERASENABLED
+#define CAMERASENABLED
 
 
 Vision::Vision() : Subsystem("VisionSubsystem") {

@@ -1,10 +1,18 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="showGoodRects" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
+		<location x="11" y="427"/>
+	</widget>
+	<widget field="Rectangles" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="13" y="386"/>
+	</widget>
 	<widget field="CameraBalance" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="11" y="122"/>
 	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
-		<location x="400" y="23"/>
+		<location x="614" y="26"/>
+		<width>555</width>
+		<height>371</height>
 		<property name="Camera Choice" value="DriverCam"/>
 	</static-widget>
 	<widget field="showColorThreshold" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
@@ -17,7 +25,9 @@
 		<property name="Camera Choice" value="Rectangle"/>
 	</static-widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
-		<location x="201" y="24"/>
+		<location x="209" y="21"/>
+		<width>179</width>
+		<height>137</height>
 		<property name="Camera Choice" value="USB Camera 0"/>
 	</static-widget>
 	<widget field="Auto Modes" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
@@ -52,6 +62,12 @@
 	</widget>
 	<widget field="ValueMin" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="39" y="236"/>
+	</widget>
+	<widget field="DriverCameraExposure" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="8" y="455"/>
+	</widget>
+	<widget field="DriverBalance" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="51" y="484"/>
 	</widget>
 </dashboard>
 <live-window>

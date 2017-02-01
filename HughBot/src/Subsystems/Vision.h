@@ -10,11 +10,11 @@
 using namespace grip;
 
 class Vision : public Subsystem {
-private:
+public:
 	struct CameraInfo {
 		int screenWidth;
 		int screenHeight;
-		double fov;
+		double fov; // Field of veiw
 		double fovFactor;
 		double HorizontalOffset;
 	};
@@ -31,7 +31,7 @@ private:
 		double ActualWidth;
 		double ActualHeight;
 	};
-
+private:
 	static cs::UsbCamera camera1;
 	static cs::UsbCamera camera2;
 	static cs::CvSink cvSink;
