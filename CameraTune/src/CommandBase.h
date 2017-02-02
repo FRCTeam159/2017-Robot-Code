@@ -9,7 +9,7 @@
 using namespace std;
 
 #include "OI.h"
-#include "Subsystems/Vision.h"
+#include "Subsystems/Cameras.h"
 
 /**
  * The base for all commands. All atomic commands should subclass CommandBase.
@@ -23,7 +23,7 @@ public:
 	CommandBase() = default;
 	static void init();
 	// Create a single static instance of all of your subsystems
-	static std::shared_ptr<Vision> visionSubsystem;
+	static std::shared_ptr<Cameras> camerasSubsystem;
 	static std::unique_ptr<OI> oi;
 };
 

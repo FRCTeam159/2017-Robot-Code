@@ -12,8 +12,6 @@
 class Robot: public frc::IterativeRobot {
 public:
 	void RobotInit() override {
-		// chooser.AddObject("My Auto", new MyAutoCommand());
-		//frc::SmartDashboard::PutData("Auto Modes", &chooser);
 		CommandBase::init();
 	}
 
@@ -42,19 +40,6 @@ public:
 	 * to the if-else structure below with additional strings & commands.
 	 */
 	void AutonomousInit() override {
-		/* std::string autoSelected = frc::SmartDashboard::GetString("Auto Selector", "Default");
-		if (autoSelected == "My Auto") {
-			autonomousCommand.reset(new MyAutoCommand());
-		}
-		else {
-			autonomousCommand.reset(new ExampleCommand());
-		} */
-
-		autonomousCommand.reset(chooser.GetSelected());
-
-		if (autonomousCommand.get() != nullptr) {
-			autonomousCommand->Start();
-		}
 	}
 
 	void AutonomousPeriodic() override {
