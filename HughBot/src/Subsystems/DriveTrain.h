@@ -28,6 +28,8 @@ public:
 	void InitDefaultCommand();
 	void SetLowGear();
 	void SetHighGear();
+	void DisableDrive();
+	void EnableDrive();
 
 	// required MotorSafety functions
 	std::unique_ptr<MotorSafetyHelper> m_safetyHelper;
@@ -38,6 +40,7 @@ public:
 	bool IsSafetyEnabled() const override;
 	void SetSafetyEnabled(bool enabled) override;
 	void GetDescription(std::ostringstream& desc) const override;
+	int sign;
 };
 
 #endif

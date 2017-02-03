@@ -1,5 +1,4 @@
 #include "Autonomous.h"
-#include "Commands/DriveForTime.h"
 #include "VisionUpdate.h"
 Autonomous::Autonomous() {
 	// Add Commands here:
@@ -9,8 +8,8 @@ Autonomous::Autonomous() {
 
 	// To run multiple commands at the same time,
 	// use AddParallel()
-	AddParallel(new VisionUpdate());
-	AddSequential(new DriveForTime(25.0, 0.1));
+	//AddParallel(new VisionUpdate());
+	//AddSequential(new DriveForTime(25.0, 0.1));
 	// Command1 and Command2 will run in parallel.
 
 	// A command group will require all of the subsystems that each member

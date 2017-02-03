@@ -27,7 +27,7 @@ static double whiteBalance = 2;
 static double driverCameraExposure = 0;
 static double driverCameraBalance = 0;
 static 	GripPipeline gp;
-#define CAMERASENABLED
+//#define CAMERASENABLED
 
 
 Vision::Vision() : Subsystem("VisionSubsystem") {
@@ -72,6 +72,10 @@ void Vision::Init() {
 	camera2.SetResolution(320, 240);
 	//camera.SetFPS(1);
 	camera1.SetFPS(5);
+
+	//camera1.SetBrightness(2);
+	//camera1.SetExposureManual(2);
+	//camera1.SetWhiteBalanceManual(2);
 
 
 	//camera.SetPixelFormat(cs::VideoMode::PixelFormat::kBGR);

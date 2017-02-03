@@ -8,6 +8,7 @@
 
 #include "OI.h"
 #include "Subsystems/DriveTrain.h"
+#include "Subsystems/UltrasonicSubsystem.h"
 #include "Subsystems/GearSubsystem.h"
 #include "Subsystems/Vision.h"
 #include "Subsystems/Fuel.h"
@@ -29,6 +30,10 @@ public:
 	static std::shared_ptr<GearSubsystem> gearSubsystem;
 	static std::shared_ptr<Vision> visionSubsystem;
 	static std::shared_ptr<Fuel> fuelSubsystem;
+	static std::shared_ptr<UltrasonicSubsystem> ultrasonicSubsystem;
+	static void Enable();
+	static void Disable();
+
 	//static std::unique_ptr<ExampleSubsystem> exampleSubsystem;
 	static std::unique_ptr<OI> oi;
 };

@@ -6,6 +6,8 @@
 #define P 0.1
 #define I 0.0
 #define D 0.0
+#define SIGN(x) ((x) >= 0? 1:-1)
+
 
 DriveTrain::DriveTrain() : Subsystem("DriveTrain"),
 		frontLeft(FRONTLEFT),   // slave  1
@@ -19,9 +21,9 @@ DriveTrain::DriveTrain() : Subsystem("DriveTrain"),
 	frontRight.ConfigLimitMode(CANSpeedController::kLimitMode_SrxDisableSwitchInputs);
 	backLeft.ConfigLimitMode(CANSpeedController::kLimitMode_SrxDisableSwitchInputs);
 
-	//frontRight.SetControlMode(CANTalon::kPercentVbus);
-	//backLeft.SetControlMode(CANTalon::kPercentVbus);
-
+	frontRight.SetControlMode(CANTalon::kPercentVbus);
+	backLeft.SetControlMode(CANTalon::kPercentVbus);
+/*
 	frontRight.SetControlMode(CANTalon::kSpeed);
 	backLeft.SetControlMode(CANTalon::kSpeed);
 
@@ -33,7 +35,7 @@ DriveTrain::DriveTrain() : Subsystem("DriveTrain"),
 
 	frontRight.ConfigEncoderCodesPerRev(900);
 	backLeft.ConfigEncoderCodesPerRev(900);
-
+*/
 	frontLeft.SetControlMode(CANTalon::kFollower);
 	backRight.SetControlMode(CANTalon::kFollower);
 	backRight.EnableControl();
@@ -86,12 +88,12 @@ void DriveTrain::CustomArcade(float xAxis, float yAxis, float zAxis, bool square
 		if (xAxis != 0) {
 			if (xAxis > 0) {
 				left = yAxis;
-				right = (fabs(yAxis) / yAxis) * (fabs(yAxis) - fabs(xAxis));
+				right = SIGN(yAxis) * (fabs(yAxis) - fabs(xAxis));
 			}
 
 			else {
 				right = yAxis;
-				left = (fabs(yAxis) / yAxis) * (fabs(yAxis) - fabs(xAxis));
+				left = SIGN(yAxis) * (fabs(yAxis) - fabs(yAxis));
 			}
 		}
 		else {
@@ -101,7 +103,6 @@ void DriveTrain::CustomArcade(float xAxis, float yAxis, float zAxis, bool square
 	}
 
 	// Ramp values up
-
 	// Make sure values are between -1 and 1
 	left = coerce(-1, 1, left);
 	right = coerce(-1, 1, right);
@@ -159,6 +160,20 @@ bool DriveTrain::IsSafetyEnabled() const {
 
 void DriveTrain::SetSafetyEnabled(bool enabled) {
   m_safetyHelper->SetSafetyEnabled(enabled);
+}
+
+void DriveTrain::DisableDrive() {
+	backRight.Disable();
+	backLeft.Disable();
+	frontRight.Disable();
+	frontLeft.Disable();
+}
+
+void DriveTrain::EnableDrive() {
+	backRight.Enable();
+	backLeft.Enable();
+	frontRight.Enable();
+	frontLeft.Enable();
 }
 
 void DriveTrain::GetDescription(std::ostringstream& desc) const {

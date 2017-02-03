@@ -43,6 +43,7 @@ public:
 	 * the robot is disabled.
 	 */
 	void DisabledInit() override {
+		CommandBase::Disable();
 	}
 
 	void DisabledPeriodic() override {
@@ -70,6 +71,7 @@ public:
 			autonomousCommand.reset(new Autonomous());
 			cout<<"Chose default auto"<<endl;
 		}
+		CommandBase::Enable();
 
 		//autonomousCommand.reset(chooser.GetSelected());
 
@@ -90,6 +92,7 @@ public:
 		if (autonomousCommand != nullptr) {
 			autonomousCommand->Cancel();
 		}
+		CommandBase::Enable();
 	}
 
 	void TeleopPeriodic() override {
