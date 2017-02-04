@@ -20,14 +20,10 @@ cs::UsbCamera Vision::camera2;
 cs::CvSink Vision::cvSink;
 cs::CvSource Vision::outputStream;
 
-static double brightness = 2;
-static double exposure = 2;
 static bool showColorThreshold = false;
-static double whiteBalance = 2;
-static double driverCameraExposure = 0;
-static double driverCameraBalance = 0;
+
 static 	GripPipeline gp;
-//#define CAMERASENABLED
+#define CAMERASENABLED
 
 
 Vision::Vision() : Subsystem("VisionSubsystem") {
@@ -47,9 +43,9 @@ void Vision::Init() {
 	camera1 = CameraServer::GetInstance()->StartAutomaticCapture("Logitech",0);
 	camera2 = CameraServer::GetInstance()->StartAutomaticCapture("DriverCam",1);
 
-	frc::SmartDashboard::PutNumber("CameraBrightness", 2);
-	frc::SmartDashboard::PutNumber("CameraExposure", exposure);
-	frc::SmartDashboard::PutNumber("CameraBalance", whiteBalance);
+//	frc::SmartDashboard::PutNumber("CameraBrightness", 2);
+//	frc::SmartDashboard::PutNumber("CameraExposure", exposure);
+//	frc::SmartDashboard::PutNumber("CameraBalance", whiteBalance);
 	frc::SmartDashboard::PutBoolean("showColorThreshold", false);
 	frc::SmartDashboard::PutNumber("HueMax", hsvThresholdHue[1]);
 	frc::SmartDashboard::PutNumber("HueMin", hsvThresholdHue[0]);
@@ -60,8 +56,8 @@ void Vision::Init() {
 	frc::SmartDashboard::PutNumber("ValueMin", hsvThresholdValue[0]);
 	frc::SmartDashboard::PutNumber("Rectangles", 0);
 	frc::SmartDashboard::PutBoolean("showGoodRects", false);
-	frc::SmartDashboard::PutNumber("DriverCameraExposure",0);
-	frc::SmartDashboard::PutNumber("DriverBalance",0);
+//	frc::SmartDashboard::PutNumber("DriverCameraExposure",0);
+//	frc::SmartDashboard::PutNumber("DriverBalance",0);
 
 	frc::SmartDashboard::PutNumber("Distance", 0);
 	frc::SmartDashboard::PutNumber("HorizontalOffset", 0);
@@ -130,9 +126,16 @@ void Vision::VisionThread(){
 	cv::Point br=cv::Point(20, 20);
 
 
+	camera1.SetBrightness(2);
+	camera1.SetExposureManual(2);
+	camera1.SetWhiteBalanceManual(2);
+	camera2.SetBrightness(2);
+	camera2.SetExposureManual(40);
+	camera2.SetWhiteBalanceManual(10);
+
 	while(true){
 
-		double val = frc::SmartDashboard::GetNumber("CameraBrightness",2);
+/*		double val = frc::SmartDashboard::GetNumber("CameraBrightness",2);
 		double exp = frc::SmartDashboard::GetNumber("CameraExposure",1);
 		double bal = frc::SmartDashboard::GetNumber("CameraBalance",2);
 
@@ -155,7 +158,7 @@ void Vision::VisionThread(){
 				camera2.SetExposureManual(DriverCameraExposure);
 			}
 			driverCameraExposure = DriverCameraExposure;
-		}
+		}*/
 
 		showColorThreshold = frc::SmartDashboard::GetBoolean("showColorThreshold", false);
 
@@ -241,25 +244,6 @@ void Vision::VisionThread(){
 	}
 }
 
-
-void Vision::AdjustCamera(double e, double bal, double b) {
-	if(b!=brightness){
-		cout<<"New Brightness> "<<b<<endl;
-		brightness = b;
-		camera1.SetBrightness(brightness);
-		//CameraSettings(0,0,brightness);
-	}
-	if(e!=exposure){
-		cout<<"New exposure> "<<e<<endl;
-		exposure = e;
-		camera1.SetExposureManual(exposure);
-	}
-	if(bal!=whiteBalance){
-		cout<<"New White Balance> "<<bal<<endl;
-		whiteBalance = bal;
-		camera1.SetWhiteBalanceManual(bal);
-	}
-}
 
 void Vision::SetCameraInfo(int width, int height, double fov) {
 	cameraInfo.screenWidth = width;

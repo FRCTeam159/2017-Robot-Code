@@ -7,12 +7,10 @@
 #include <SmartDashboard/SendableChooser.h>
 #include <SmartDashboard/SmartDashboard.h>
 #include "CommandBase.h"
-#include "Commands/DisabledCommand.h"
 #include "Commands/Autonomous.h"
 
 #include <thread>
 #include <CameraServer.h>
-#include <Commands/DisabledCommand.h>
 #include <IterativeRobot.h>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/core/core.hpp>
@@ -100,8 +98,6 @@ public:
 	}
 
 	void TestInit(){
-		disabledCommand.reset(new DisabledCommand());
-		disabledCommand->Start();
 		cout<<"TestInit"<<endl;
 	}
 
@@ -112,7 +108,6 @@ public:
 private:
 	std::unique_ptr<frc::Command> autonomousCommand;
 	frc::SendableChooser<frc::Command*> chooser;
-	std::unique_ptr<frc::Command> disabledCommand;
 };
 
 START_ROBOT_CLASS(Robot)

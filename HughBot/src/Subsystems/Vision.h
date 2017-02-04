@@ -53,7 +53,6 @@ public:
 	void InitDefaultCommand();
 	void Process();
 	void Init();
-	static void AdjustCamera(double exposure, double balance, double brightness);
 	double GetDistance();
 	double GetDirection();
 	void SetCameraInfo(int width, int height, double fov);
