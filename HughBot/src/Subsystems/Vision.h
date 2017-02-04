@@ -25,11 +25,12 @@ public:
 		cv::Point Center;
 		double Distance;
 		double HorizontalOffset;
-		double HorizontalError;
+		double HorizontalAngle;
 		double Height;
 		double Width;
 		double ActualWidth;
 		double ActualHeight;
+		int numrects;
 	};
 private:
 	static cs::UsbCamera camera1;
@@ -46,6 +47,7 @@ private:
 	static void VisionThread();
 	std::shared_ptr<NetworkTable> table;
 
+	static std::vector<cv::Rect> GoodRects(std::vector<cv::Rect> r);
 
 public:
 	Vision();
@@ -53,9 +55,15 @@ public:
 	void InitDefaultCommand();
 	void Process();
 	void Init();
-	double GetDistance();
-	double GetDirection();
-	void SetCameraInfo(int width, int height, double fov);
+	double GetTargetDistance();
+	double GetTargetAngle();
+	int GetNumTargets();
+	void SetCameraInfo(int width, int height, double fov, double hoff);
+	void CalcTargetInfo(int n,cv::Point top, cv::Point bottom, TargetInfo &info);
+	void GetTargetInfo(TargetInfo &info);
+	void PublishTargetInfo(TargetInfo &info);
+
+
 };
 
 #endif  // Vision_H
