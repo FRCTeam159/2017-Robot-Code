@@ -22,6 +22,7 @@ const int STICK = 0;
 
 const int LOWGEAR_BUTTON = 4;
 const int HIGHGEAR_BUTTON = 6;
+const int GEARTOGGLEBUTTON=2;
 const int GEARSHIFTID=0;
 
 // If you are using multiple modules, make sure to define both the port
