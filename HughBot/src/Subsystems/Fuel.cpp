@@ -1,7 +1,7 @@
 #include "Fuel.h"
 #include "../RobotMap.h"
 
-Fuel::Fuel() : Subsystem("ExampleSubsystem") {
+Fuel::Fuel() : Subsystem("Fuel"), FuelPusherMotor(FUELMOTOR) {
 
 }
 
