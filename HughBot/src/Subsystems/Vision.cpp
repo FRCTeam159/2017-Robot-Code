@@ -15,7 +15,7 @@
 using namespace frc;
 
 llvm::ArrayRef<double>  Vision::hsvThresholdHue = {70, 110};
-llvm::ArrayRef<double>  Vision::hsvThresholdSaturation = {100, 255};
+llvm::ArrayRef<double>  Vision::hsvThresholdSaturation = {50, 255};
 llvm::ArrayRef<double>  Vision::hsvThresholdValue = {100, 255};
 cs::UsbCamera Vision::camera1;
 cs::UsbCamera Vision::camera2;
@@ -101,7 +101,7 @@ void Vision::VisionThread(){
 
 	cv::Point tl=cv::Point(10, 10);
 	cv::Point br=cv::Point(20, 20);
-
+//Camera settings
 
 	camera1.SetBrightness(2);
 	camera1.SetExposureManual(2);
@@ -123,7 +123,7 @@ void Vision::VisionThread(){
 
 		hsvThresholdHue={SmartDashboard::GetNumber("HueMin",70),SmartDashboard::GetNumber("HueMax", 100)};
 		hsvThresholdValue={SmartDashboard::GetNumber("ValueMin", 100),SmartDashboard::GetNumber("ValueMax",255)};
-		hsvThresholdSaturation={SmartDashboard::GetNumber("SaturationMin", 100),SmartDashboard::GetNumber("SaturationMax",255)};
+		hsvThresholdSaturation={SmartDashboard::GetNumber("SaturationMin", 50),SmartDashboard::GetNumber("SaturationMax",255)};
 
 		gp.setHSVThresholdHue(hsvThresholdHue);
 		gp.setHSVThresholdValue(hsvThresholdValue);

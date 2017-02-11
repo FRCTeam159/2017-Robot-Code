@@ -28,6 +28,7 @@ void CommandBase::init()
 	driveTrain.reset(new DriveTrain());
 	gearSubsystem.reset(new GearSubsystem());
 	ultrasonicSubsystem.reset(new UltrasonicSubsystem());
+	fuelSubsystem.reset(new FuelSubsystem())
 	oi.reset(new OI());
 }
 
@@ -37,4 +38,8 @@ void CommandBase::Enable() {
 
 void CommandBase::Disable() {
 	driveTrain->DisableDrive();
+}
+void CommandBase::AutonomousInit() {
+	driveTrain->Enable();
+	ultrasonicSubsystem->Enable();
 }

@@ -1,25 +1,19 @@
-#ifndef GearSubsystem_H
-#define GearSubsystem_H
+#ifndef ClimbingSubsystem_H
+#define ClimbingSubsystem_H
 #include "WPILib.h"
 #include "Commands/Subsystem.h"
-
+#include "CANTalon.h"
 #include <Commands/Subsystem.h>
 
-class GearSubsystem : public Subsystem {
+class ClimbingSubsystem : public Subsystem {
 private:
-	Solenoid gearPiston;
-		bool isOpen=false;
 	// It's desirable that everything possible under private except
 	// for methods that implement subsystem capabilities
+	CANTalon climberMotor;
 
 public:
-	GearSubsystem();
+	ClimbingSubsystem();
 	void InitDefaultCommand();
-
-	void Open();
-	void Close();
-	bool IsOpen() { return isOpen;}
-
 };
 
-#endif  // GearSubsystem_H
+#endif  // ClimbingSubsystem_H

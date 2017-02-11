@@ -69,9 +69,9 @@ public:
 			autonomousCommand.reset(new Autonomous());
 			cout<<"Chose default auto"<<endl;
 		}
-		CommandBase::Enable();
+		CommandBase::AutonomousInit();
 
-		//autonomousCommand.reset(chooser.GetSelected());
+		autonomousCommand.reset(new Autonomous());
 
 		if (autonomousCommand.get() != nullptr) {
 			autonomousCommand->Start();

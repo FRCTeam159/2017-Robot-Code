@@ -7,7 +7,7 @@ UltrasonicSubsystem::UltrasonicSubsystem() : Subsystem("ExampleSubsystem"),
 		port(9600, SerialPort::kOnboard, 8, SerialPort::kParity_None, SerialPort::kStopBits_One),
 		dOutput(0){
 	portEnabled=false;
-
+	frc::SmartDashboard::PutNumber("UltraSonicDistance", 0);
 }
 /*
 SerialPort::SerialPort(int baudRate, Port port, int dataBits,
@@ -47,7 +47,7 @@ double UltrasonicSubsystem::GetDistance() {
 		return 0;
 	}
 	sscanf(buffer, "R%d\n", & value);
-	cout<< "value=" << value << endl;
+	frc::SmartDashboard::PutNumber("UltraSonicDistance", value);
 	return value;
 }
 // Put methods for controlling this subsystem

@@ -3,7 +3,12 @@
 
 #include "../CommandBase.h"
 
-class DriveToTarget : public CommandBase {
+class DriveToTarget : public CommandBase, public PIDSource, public PIDOutput {
+	PIDController pid;
+	double distance;
+	double angle;
+	Vision::TargetInfo target;
+	double GetDistance();
 public:
 	DriveToTarget();
 	void Initialize();
@@ -11,6 +16,8 @@ public:
 	bool IsFinished();
 	void End();
 	void Interrupted();
+	void PIDWrite(double d);
+	double PIDGet();
 };
 
 #endif  // DriveToTarget_H

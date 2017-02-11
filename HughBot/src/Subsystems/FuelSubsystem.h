@@ -1,17 +1,17 @@
 #ifndef Fuel_H
 #define Fuel_H
-
+#include "CANTALON.h"
 #include <Commands/Subsystem.h>
 #include "CANTalon.h"
 
-class Fuel : public Subsystem {
+class FuelSubsystem : public Subsystem {
 private:
-	CANTalon FuelPusherMotor;
+	CANTalon fuelPusherMotor;
 	// It's desirable that everything possible under private except
 	// for methods that implement subsystem capabilities
 
 public:
-	Fuel();
+	FuelSubsystem();
 	void InitDefaultCommand();
 };
 

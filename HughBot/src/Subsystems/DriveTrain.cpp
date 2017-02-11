@@ -58,7 +58,7 @@ void DriveTrain::Drive(float xAxis, float yAxis, float zAxis)
 // Put methods for controlling this subsystem
 // here. Call these from Commands.
 void DriveTrain::CustomArcade(float xAxis, float yAxis, float zAxis, bool squaredInputs) {
-
+//Squaring inputs in order to create a smoother acceleration curve
 	  if (squaredInputs) {
 	    if (yAxis >= 0) {
 	      yAxis = (yAxis * yAxis);
@@ -186,5 +186,21 @@ void DriveTrain::StopMotor() {
   frontRight.StopMotor();
   frontLeft.StopMotor();
   m_safetyHelper->Feed();
+}
+void DriveTrain::TankDrive(float left, float right) { //Autonomous drive train call
+	left*=0.1;
+	right*=0.1;
+	frontLeft.Set(BACKLEFT);
+	backLeft.Set(left);
+	frontRight.Set(-right);
+	backRight.Set(FRONTRIGHT);
+
+	m_safetyHelper->Feed();
+}
+void DriveTrain::Enable() {
+	//backRight.Enable();
+	//frontLeft.Enable();
+	frontRight.Enable();
+	backLeft.Enable();
 }
 

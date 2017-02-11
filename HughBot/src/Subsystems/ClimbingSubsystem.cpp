@@ -1,11 +1,11 @@
-#include "Fuel.h"
+#include "ClimbingSubsystem.h"
 #include "../RobotMap.h"
 
-Fuel::Fuel() : Subsystem("Fuel"), FuelPusherMotor(FUELMOTOR) {
-
+ClimbingSubsystem::ClimbingSubsystem() : Subsystem("ExampleSubsystem") {
+	climberMotor.GetOutputCurrent();
 }
 
-void Fuel::InitDefaultCommand() {
+void ClimbingSubsystem::InitDefaultCommand() {
 	// Set the default command for a subsystem here.
 	// SetDefaultCommand(new MySpecialCommand());
 }

@@ -52,7 +52,7 @@ class GripPipeline {
 		void findRectangles(std::vector<std::vector<cv::Point> > &inputContours, std::vector<cv::Rect> &output);
 
 		llvm::ArrayRef<double>  hsvThresholdHue = {71, 115};
-		llvm::ArrayRef<double>  hsvThresholdSaturation = {134, 255};
+		llvm::ArrayRef<double>  hsvThresholdSaturation = {50, 255};
 		llvm::ArrayRef<double>  hsvThresholdValue = {121, 211};
 
 	public:
