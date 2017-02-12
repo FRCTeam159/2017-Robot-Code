@@ -13,6 +13,9 @@ private:
 public:
 	FuelSubsystem();
 	void InitDefaultCommand();
+	void SetVoltage(double);
+	bool AtUpperLimit();
+	bool AtLowerLimit();
 };
 
 #endif  // Fuel_H

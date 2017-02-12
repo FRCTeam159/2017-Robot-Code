@@ -6,6 +6,7 @@
 
 #include <Commands/Command.h>
 #include <Subsystems/FuelSubsystem.h>
+#include <Subsystems/ClimbingSubsystem.h>
 
 #include "OI.h"
 #include "Subsystems/DriveTrain.h"
@@ -31,7 +32,7 @@ public:
 	static std::shared_ptr<Vision> visionSubsystem;
 	static std::shared_ptr<FuelSubsystem> fuelSubsystem;
 	static std::shared_ptr<UltrasonicSubsystem> ultrasonicSubsystem;
-	static std::shared_ptr<FuelSubsystem> fuelSubsystem;
+	static std::shared_ptr<ClimbingSubsystem> climbingSubsystem;
 	static void Enable();
 	static void Disable();
 	static void AutonomousInit();

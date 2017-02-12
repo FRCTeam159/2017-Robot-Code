@@ -30,9 +30,9 @@ void DriveWithJoystick::Execute()
 	float xAxis = stick-> GetX();
 	float zAxis = stick-> GetZ();
 	// Run axis values through deadband
-	yAxis = quadDeadband(.2, .3, yAxis);
-	xAxis = quadDeadband(.2, .3, xAxis);
-	zAxis = quadDeadband(.2, .3, zAxis);
+	yAxis = quadDeadband(.3, .4, yAxis);
+	xAxis = quadDeadband(.3, .4, xAxis);
+	zAxis = quadDeadband(.4, .7, zAxis);
 	driveTrain.get()->Drive(xAxis, yAxis, zAxis);
 }
 
@@ -57,13 +57,13 @@ void DriveWithJoystick::Interrupted()
 float DriveWithJoystick::quadDeadband(float minThreshold, float minOutput, float input)
 {
 	if (input > minThreshold) {
-		return ((((1 - minOutput)
+		return ((((1 - minOutput) // 1 - minOutput/(1-minThreshold)^2 * (input-minThreshold)^2 + minOutput
 				/ ((1 - minThreshold)* (1 - minThreshold)))
 				* ((input - minThreshold)* (input - minThreshold)))
 				+ minOutput);
 	} else {
 		if (input < (-1 * minThreshold)) {
-			return (((minOutput - 1)
+			return (((minOutput - 1) // minOutput - 1/(minThreshold - 1)^2 * (minThreshold + input)^2 - minOutput
 					/ ((minThreshold - 1)* (minThreshold - 1)))
 					* ((minThreshold + input)* (minThreshold + input)))
 					- minOutput;

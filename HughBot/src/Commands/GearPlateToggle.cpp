@@ -1,4 +1,5 @@
 #include "GearPlateToggle.h"
+#include "RobotMap.h"
 
 GearPlateToggle::GearPlateToggle() {
 	Requires(gearSubsystem.get());
@@ -7,22 +8,25 @@ GearPlateToggle::GearPlateToggle() {
 
 // Called just before this Command runs the first time
 void GearPlateToggle::Initialize() {
-	if (isOpen){
-		std::cout << "Closing Gear Plate"<< endl;
-		gearSubsystem->Close();
-	}
-	else{
-		std::cout << "Opening Gear Plate"<< endl;
-		gearSubsystem->Open();
-	}
-	isOpen=!isOpen;
+	state = WAIT_FOR_TRIGGER_PUSH;
 
-	// Called repeatedly when this Command is scheduled to run
 };
 
 // Called repeatedly when this Command is scheduled to run
 void GearPlateToggle::Execute() {
+	Joystick *stick = oi->GetJoystick();
 
+	if(state == WAIT_FOR_TRIGGER_PUSH){
+		if(stick->GetRawButton(GEARTOGGLEBUTTON)){
+			gearSubsystem->Open();
+			state = WAIT_FOR_TRIGGER_RELEASE;
+		}
+	} else {
+		if(!stick->GetRawButton(GEARTOGGLEBUTTON)){
+			gearSubsystem->Close();
+			state = WAIT_FOR_TRIGGER_PUSH;
+		}
+	}
 }
 
 // Make this return true when this Command no longer needs to run execute()

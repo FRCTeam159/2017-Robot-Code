@@ -1,7 +1,8 @@
-#include "ClimbingSubsystem.h"
+#include "Subsystems/ClimbingSubsystem.h"
 #include "../RobotMap.h"
 
-ClimbingSubsystem::ClimbingSubsystem() : Subsystem("ExampleSubsystem") {
+
+ClimbingSubsystem::ClimbingSubsystem() : Subsystem("ClimbingSubsystem"),climberMotor(CLIMBING_MOTOR) {
 	climberMotor.GetOutputCurrent();
 }
 

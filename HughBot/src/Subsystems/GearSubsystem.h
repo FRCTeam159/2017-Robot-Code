@@ -7,7 +7,7 @@
 
 class GearSubsystem : public Subsystem {
 private:
-	Solenoid gearPiston;
+	DoubleSolenoid gearPiston;
 		bool isOpen=false;
 	// It's desirable that everything possible under private except
 	// for methods that implement subsystem capabilities

@@ -4,7 +4,13 @@
 #include "../CommandBase.h"
 
 class GearPlateToggle : public CommandBase {
-	bool isOpen=false;
+	enum{
+		WAIT_FOR_TRIGGER_PUSH,
+		WAIT_FOR_TRIGGER_RELEASE
+	};
+
+	int state = WAIT_FOR_TRIGGER_PUSH;
+
 public:
 	GearPlateToggle();
 	void Initialize();

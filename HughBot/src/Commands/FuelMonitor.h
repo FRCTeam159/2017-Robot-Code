@@ -4,6 +4,13 @@
 #include "../CommandBase.h"
 
 class FuelMonitor : public CommandBase {
+	enum {
+		WAITFORBUTTON,
+		WAITFORUPPERLIMIT,
+		WAITFORLOWERLIMIT,
+	};
+	int state = WAITFORBUTTON;
+
 public:
 	FuelMonitor();
 	void Initialize();

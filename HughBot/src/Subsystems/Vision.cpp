@@ -25,7 +25,7 @@ cs::CvSource Vision::outputStream;
 static bool showColorThreshold = false;
 
 static 	GripPipeline gp;
-#define CAMERASENABLED
+//#define CAMERASENABLED
 
 
 Vision::Vision() : Subsystem("VisionSubsystem") {
