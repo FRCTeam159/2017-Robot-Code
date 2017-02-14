@@ -14,6 +14,8 @@ private:
 public:
 	ClimbingSubsystem();
 	void InitDefaultCommand();
+	void SetVoltage(double voltage);
+	bool IsAtTop();
 };
 
 #endif  // ClimbingSubsystem_H

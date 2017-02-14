@@ -21,8 +21,7 @@ cs::UsbCamera Vision::camera1;
 cs::UsbCamera Vision::camera2;
 cs::CvSink Vision::cvSink;
 cs::CvSource Vision::outputStream;
-
-static bool showColorThreshold = false;
+//static bool showColorThreshold = false;
 
 static 	GripPipeline gp;
 //#define CAMERASENABLED
@@ -77,7 +76,7 @@ void Vision::Process() {
 	PublishTargetInfo(targetInfo);
 }
 
-
+//don't read this comment
 void Vision::VisionThread(){
 
 	std::shared_ptr<NetworkTable> table2=NetworkTable::GetTable("datatable");
@@ -101,8 +100,8 @@ void Vision::VisionThread(){
 
 	cv::Point tl=cv::Point(10, 10);
 	cv::Point br=cv::Point(20, 20);
-//Camera settings
 
+//Camera settings
 	camera1.SetBrightness(2);
 	camera1.SetExposureManual(2);
 	camera1.SetWhiteBalanceManual(2);
@@ -251,6 +250,7 @@ void Vision::GetTargetInfo(TargetInfo & info) {
 }
 
 void Vision::PublishTargetInfo(TargetInfo &info) {
+
 	frc::SmartDashboard::PutNumber("Distance", info.Distance);
 	frc::SmartDashboard::PutNumber("HorizontalOffset", info.HorizontalOffset);
 	frc::SmartDashboard::PutNumber("HorizontalAngle", info.HorizontalAngle);
@@ -261,5 +261,6 @@ void Vision::PublishTargetInfo(TargetInfo &info) {
 
 }
 
-	// Put methods for controlling this subsystem
-// here. Call these from Commands.
+////////////////////////////////////////////////////////////////////////////////
+// Put methods for controlling this subsystem here. Call these from Commands. //
+////////////////////////////////////////////////////////////////////////////////
