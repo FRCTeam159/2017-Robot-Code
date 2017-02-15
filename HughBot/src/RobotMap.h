@@ -26,7 +26,7 @@ const int HIGHGEAR_BUTTON = 6;
 const int GEARTOGGLEBUTTON=1;
 const int GEARSHIFTID=0;
 const int FUELPUSHERBUTTON=5;
-
+const int CLIMBERBUTTON=3;
 
 // If you are using multiple modules, make sure to define both the port
 // number and the module. For example you with a rangefinder:

@@ -1,7 +1,8 @@
 #include "Climb.h"
+#include "RobotMap.h"
 
-#define VOLTAGE 1
-//#define MOTORS_ENABLED // so we can get print statements but not mess with motors
+#define VOLTAGE 0.1
+#define MOTORS_ENABLED // so we can get print statements but not mess with motors
 
 Climb::Climb() {
 	// Use Requires() here to declare subsystem dependencies
@@ -11,22 +12,25 @@ Climb::Climb() {
 
 // Called just before this Command runs the first time
 void Climb::Initialize() {
-
+	frc::SmartDashboard::PutNumber("climberCurrent", 0);
 }
 
 // Called repeatedly when this Command is scheduled to run
 void Climb::Execute() {
+	double climbingCurrent = climbingSubsystem->GetCurrent();
 	Joystick *stick = oi->GetJoystick();
+	frc::SmartDashboard::PutNumber("climberCurrent", climbingCurrent);
+	std::cout << "ClimbingSubsystem: Current is " << climbingCurrent << endl;
 
-	if(stick->GetRawButton(CLIMBING_MOTOR) && !climbingSubsystem->IsAtTop()){
-		std::cout << "ClimbingSubsystem: Pressing button and not at top."<<endl;
+	if(stick->GetRawButton(CLIMBERBUTTON) && !climbingSubsystem->IsAtTop()){
+		//std::cout << "ClimbingSubsystem: Pressing button and not at top."<<endl;
 	#ifdef MOTORS_ENABLED
-		climbingSubsystem->SetVoltage(VOLTAGE);
+		climbingSubsystem->ClimberClimb();
 	#endif
-	} else if (!stick->GetRawButton(CLIMBING_MOTOR) || climbingSubsystem->IsAtTop()) {
-		std::cout << "ClimbingSubsystem: Not pressing button or we are at the top."<<endl;
+	} else {
+		//std::cout << "ClimbingSubsystem: Not pressing button or we are at the top."<<endl;
 	#ifdef MOTORS_ENABLED
-		climbingSubsystem->SetVoltage(0);
+		climbingSubsystem->Stop();
 	#endif
 	}
 
