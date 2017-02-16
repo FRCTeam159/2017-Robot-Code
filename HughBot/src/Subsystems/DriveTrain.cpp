@@ -93,7 +93,8 @@ void DriveTrain::CustomArcade(float xAxis, float yAxis, float zAxis, bool square
 
 			else {
 				right = yAxis;
-				left = SIGN(yAxis) * (fabs(yAxis) - fabs(yAxis));
+
+				left = SIGN(yAxis) * (fabs(yAxis) - fabs(xAxis));
 			}
 		}
 		else {

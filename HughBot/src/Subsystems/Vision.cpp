@@ -174,6 +174,9 @@ std::vector<cv::Rect> Vision::GoodRects(std::vector<cv::Rect> rects) {
 	if(rects.size()<3)
 		return rects;
 	std::vector<cv::Rect> goodrects;
+	double maxarea=0;
+	cv::Rect Rect2=rects[0];
+
 	int goodFactor=5;
 	for (unsigned int i = 0; i < rects.size(); i++) {
 		int score = 0;
@@ -181,6 +184,13 @@ std::vector<cv::Rect> Vision::GoodRects(std::vector<cv::Rect> rects) {
 		int cx1=0.5*(Rect1.tl().x+Rect1.br().x);
 		int cy1=0.5*(Rect1.tl().y+Rect1.br().y);
 		double w1=rects[i].width;
+		double area=Rect1.area();
+
+		if(i>0 && area>maxarea){
+			Rect2=Rect1;
+			maxarea=area;
+		}
+
 		for (unsigned int j = 0; j < rects.size(); j++) {
 			if (i==j)
 				continue;
@@ -197,6 +207,8 @@ std::vector<cv::Rect> Vision::GoodRects(std::vector<cv::Rect> rects) {
 		if (score>0)
 			goodrects.push_back(Rect1);
 	}
+	if(goodrects.size()==0)
+	goodrects.push_back(Rect2);
 	return goodrects;
 }
 
@@ -221,6 +233,13 @@ void Vision::CalcTargetInfo(int n,cv::Point top, cv::Point bottom, TargetInfo &i
 		info.ActualWidth=(n==1?2.0:10.25);	//inches
 		info.Distance=cameraInfo.fovFactor*cameraInfo.screenHeight*targetInfo.ActualHeight/targetInfo.Height;
 		// convert camera offset to pixels
+		double xoffset=0;
+		if(n==1){
+			if(info.HorizontalOffset<0)
+				xoffset-=0.5*info.Height;
+			else
+				xoffset+=0.5*info.Height;
+		}
 	    double adjust=cameraInfo.fovFactor*cameraInfo.screenWidth*cameraInfo.HorizontalOffset/info.Distance;
 	    double p=info.Center.x+adjust-0.5*cameraInfo.screenWidth;
 	    info.HorizontalAngle=p*cameraInfo.fov/cameraInfo.screenWidth;

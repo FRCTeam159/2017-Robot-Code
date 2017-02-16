@@ -81,11 +81,14 @@ double DriveToTarget::GetDistance() {
 }
 void DriveToTarget::PIDWrite(double err) {
 	double d=GetDistance();
+	int n=visionSubsystem->GetNumTargets();
 
 	double df=(d-MIN_DISTANCE)/(distance-MIN_DISTANCE); // fraction of starting distance remaining
-	double afact=(1-df)+0.2; // bias angle correction towards end of travel
+	double afact=(1-df)+0.1; // bias angle correction towards end of travel
 	double a=-0.1*pow(afact,4.0)*visionSubsystem->GetTargetAngle();
-    double e=-err;
+	if(n==0)
+		a=0;
+    double e=-0.5*err;
 	double m1=e+a;
 	double m2=e-a;
 	double mx=m1>m2?m1:m2;

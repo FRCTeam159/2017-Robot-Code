@@ -12,11 +12,22 @@ DriveWithJoystick::DriveWithJoystick()
 void DriveWithJoystick::Initialize()
 {
 	std::cout << "DriveWithJoystick::Initialize()" << std::endl;
+
+	frc::SmartDashboard::PutNumber("xMinThreshold", 0.7);
+	frc::SmartDashboard::PutNumber("xMinOutput", 0.8);
+
+	frc::SmartDashboard::PutNumber("zMinThreshold", 0.4);
+	frc::SmartDashboard::PutNumber("zMinOutput", 0.7);
 }
 
 // Called repeatedly when this Command is scheduled to run
 void DriveWithJoystick::Execute()
 {
+	double xMinThreshold = SmartDashboard::GetNumber("xMinThreshold",0.7);
+	double xMinOutput = SmartDashboard::GetNumber("xMinOutput",0.8);
+
+	double zMinThreshold = SmartDashboard::GetNumber("zMinThreshold",0.4);
+	double zMinOutput = SmartDashboard::GetNumber("zMinOutput",0.7);
 	// Get axis values
 	Joystick *stick = oi->GetJoystick();
 
@@ -31,8 +42,8 @@ void DriveWithJoystick::Execute()
 	float zAxis = stick-> GetZ();
 	// Run axis values through deadband
 	yAxis = quadDeadband(.3, .4, yAxis);
-	xAxis = quadDeadband(.3, .4, xAxis);
-	zAxis = quadDeadband(.4, .7, zAxis);
+	xAxis = quadDeadband(xMinThreshold, xMinOutput, xAxis);
+	zAxis = quadDeadband(zMinThreshold, zMinOutput, zAxis);
 	driveTrain.get()->Drive(xAxis, yAxis, zAxis);
 }
 
