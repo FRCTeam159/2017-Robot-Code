@@ -4,6 +4,11 @@
 #include "../CommandBase.h"
 
 class Climb : public CommandBase {
+	enum {
+			WAITFORTOP,
+			ISATTOP,
+		};
+	int state = WAITFORTOP;
 public:
 	Climb();
 	void Initialize();

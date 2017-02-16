@@ -5,6 +5,7 @@
 
 ClimbingSubsystem::ClimbingSubsystem() : Subsystem("ClimbingSubsystem"),climberMotor(CLIMBING_MOTOR) {
 	frc::SmartDashboard::PutNumber("climberVoltage", 0.1);
+	frc::SmartDashboard::PutNumber("climberCurrentThreshold", 10);
 }
 
 void ClimbingSubsystem::InitDefaultCommand() {
@@ -13,8 +14,14 @@ void ClimbingSubsystem::InitDefaultCommand() {
 	SetDefaultCommand(new Climb());
 }
 
-bool ClimbingSubsystem::IsAtTop() { // not done, need to test and code this somehow
-	return false;
+bool ClimbingSubsystem::IsAtTop() { // TODO
+	double currentThreshold = SmartDashboard::GetNumber("climberCurrentThreshold", 10);
+
+	if(GetCurrent() > currentThreshold){
+		return true;
+	} else {
+		return false;
+	}
 }
 
 double ClimbingSubsystem::GetCurrent(){
