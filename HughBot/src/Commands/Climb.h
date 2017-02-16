@@ -6,7 +6,7 @@
 class Climb : public CommandBase {
 	enum {
 			WAITFORTOP,
-			ISATTOP,
+			REACHEDTOP,
 		};
 	int state = WAITFORTOP;
 public:

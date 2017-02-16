@@ -22,15 +22,27 @@ void Climb::Execute() {
 	frc::SmartDashboard::PutNumber("climberCurrent", climbingCurrent);
 	std::cout << "ClimbingSubsystem: Current is " << climbingCurrent << endl;
 
-	if(climbingSubsystem->IsAtTop()){
-		state = ISATTOP;
-	}
+	switch(state){
+	default:
+	case WAITFORTOP:
 
-	if(stick->GetRawButton(CLIMBERBUTTON) && state == WAITFORTOP){
-		//std::cout << "ClimbingSubsystem: Pressing button and not at top."<<endl;
-		climbingSubsystem->ClimberClimb();
-	} else if (!stick->GetRawButton(CLIMBERBUTTON) || state == ISATTOP){
+		if(stick->GetRawButton(CLIMBERBUTTON)){
+			climbingSubsystem->ClimberClimb();
+		} else {
+			climbingSubsystem->Stop();
+		}
+
+		if(climbingSubsystem->IsAtTop()){
+			state=REACHEDTOP;
+		}
+
+		break;
+
+	case REACHEDTOP:
+
 		climbingSubsystem->Stop();
+
+	break;
 	}
 }
 
