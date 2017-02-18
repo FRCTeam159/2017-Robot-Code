@@ -27,7 +27,7 @@ static 	GripPipeline gp;
 #define CAMERASENABLED
 
 
-Vision::Vision() : Subsystem("VisionSubsystem") {
+Vision::Vision() : Subsystem("VisionSubsystem"), dio(0) {
 	SetCameraInfo(IMAGE_WIDTH,IMAGE_HEIGHT,FOV,HOFFSET);
 }
 
@@ -39,6 +39,7 @@ void Vision::InitDefaultCommand() {
 }
 
 void Vision::Init() {
+	SetRingLight(true);
 	table=NetworkTable::GetTable("datatable");
 	frc::SmartDashboard::PutBoolean("showColorThreshold", false);
 	frc::SmartDashboard::PutNumber("HueMax", hsvThresholdHue[1]);
@@ -281,6 +282,9 @@ void Vision::PublishTargetInfo(TargetInfo &info) {
 
 }
 
+void Vision::SetRingLight(bool state) {
+	dio.Set(state);
+}
 ////////////////////////////////////////////////////////////////////////////////
 // Put methods for controlling this subsystem here. Call these from Commands. //
 ////////////////////////////////////////////////////////////////////////////////

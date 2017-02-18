@@ -37,10 +37,12 @@ void CommandBase::init()
 }
 
 void CommandBase::Enable() {
+	visionSubsystem->SetRingLight(true);
 	driveTrain->EnableDrive();
 }
 
 void CommandBase::Disable() {
+	visionSubsystem->SetRingLight(false);
 	driveTrain->DisableDrive();
 }
 void CommandBase::AutonomousInit() {

@@ -33,6 +33,8 @@ public:
 		int numrects;
 	};
 private:
+	DigitalOutput dio;
+
 	static cs::UsbCamera camera1;
 	static cs::UsbCamera camera2;
 	static cs::CvSink cvSink;
@@ -62,8 +64,7 @@ public:
 	void CalcTargetInfo(int n,cv::Point top, cv::Point bottom, TargetInfo &info);
 	void GetTargetInfo(TargetInfo &info);
 	void PublishTargetInfo(TargetInfo &info);
-
-
+	void SetRingLight(bool state);
 };
 
 #endif  // Vision_H
