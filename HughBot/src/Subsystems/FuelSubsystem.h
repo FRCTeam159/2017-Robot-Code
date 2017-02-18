@@ -18,4 +18,4 @@ public:
 	bool AtLowerLimit();
 };
 
-#endif  // Fuel_H
+#endif

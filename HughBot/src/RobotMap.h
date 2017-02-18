@@ -12,21 +12,24 @@ using namespace std;
  
 // For example to map the left and right motors, you could define the
 // following variables to use with your drivetrain subsystem.
+
+// motor IDs
 const int FRONTLEFT = 1;
 const int FRONTRIGHT = 4;
 const int BACKLEFT = 2;
 const int BACKRIGHT = 3;
 const int FUELMOTOR = 5;
-const int CLIMBING_MOTOR=6;
+const int CLIMBING_MOTOR = 6;
 
 const int STICK = 0;
 
+// button mapping
 const int LOWGEAR_BUTTON = 4;
 const int HIGHGEAR_BUTTON = 6;
-const int GEARTOGGLEBUTTON=1;
-const int GEARSHIFTID=0;
-const int FUELPUSHERBUTTON=5;
-const int CLIMBERBUTTON=3;
+const int GEARTOGGLEBUTTON = 1;
+const int GEARSHIFTID = 0;
+const int FUELPUSHERBUTTON = 5;
+const int CLIMBERBUTTON = 3;
 
 // If you are using multiple modules, make sure to define both the port
 // number and the module. For example you with a rangefinder:

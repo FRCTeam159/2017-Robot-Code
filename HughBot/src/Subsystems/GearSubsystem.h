@@ -22,4 +22,4 @@ public:
 
 };
 
-#endif  // GearSubsystem_H
+#endif

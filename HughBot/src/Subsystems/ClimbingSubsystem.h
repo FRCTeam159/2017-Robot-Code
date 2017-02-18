@@ -21,4 +21,4 @@ public:
 	void ClimberClimb();
 };
 
-#endif  // ClimbingSubsystem_H
+#endif
