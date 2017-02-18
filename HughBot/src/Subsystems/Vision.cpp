@@ -24,7 +24,7 @@ cs::CvSource Vision::outputStream;
 //static bool showColorThreshold = false;
 
 static 	GripPipeline gp;
-//#define CAMERASENABLED
+#define CAMERASENABLED
 
 
 Vision::Vision() : Subsystem("VisionSubsystem") {
@@ -63,6 +63,14 @@ void Vision::Init() {
 	camera2.SetResolution(320, 240);
 	//camera.SetFPS(1);
 	camera1.SetFPS(10);
+
+	camera1.SetBrightness(1);
+	camera1.SetExposureManual(1);
+	camera1.SetWhiteBalanceManual(50);
+	camera2.SetBrightness(10);
+	camera2.SetExposureManual(40);
+	camera2.SetWhiteBalanceManual(10);
+
 #endif
 	std::thread visionThread(VisionThread);
 	visionThread.detach();
@@ -101,13 +109,6 @@ void Vision::VisionThread(){
 	cv::Point tl=cv::Point(10, 10);
 	cv::Point br=cv::Point(20, 20);
 
-//Camera settings
-	camera1.SetBrightness(2);
-	camera1.SetExposureManual(2);
-	camera1.SetWhiteBalanceManual(2);
-	camera2.SetBrightness(2);
-	camera2.SetExposureManual(40);
-	camera2.SetWhiteBalanceManual(10);
 
 	while(true){
 #ifdef SIMULATION

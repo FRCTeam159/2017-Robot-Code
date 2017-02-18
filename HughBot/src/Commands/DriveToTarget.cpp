@@ -18,7 +18,6 @@ DriveToTarget::DriveToTarget() : CommandBase("DriveToTarget"),
 // Called just before this Command runs the first time
 void DriveToTarget::Initialize() {
 	distance=visionSubsystem->GetTargetDistance();
-
 	SetTimeout(DRIVE_TIMEOUT*distance+1);
     int ntargets = visionSubsystem->GetNumTargets();
     if (ntargets>0){
@@ -41,10 +40,10 @@ void DriveToTarget::Execute() {
 
 // Make this return true when this Command no longer needs to run execute()
 bool DriveToTarget::IsFinished() {
-	if(IsTimedOut()){
+	/*if(IsTimedOut()){
 		std::cout << "DriveToTarget Error:  Timeout expired"<<std::endl;
 		return true;
-	}
+	}*/
 	visionSubsystem->GetTargetInfo(target);
 
 	double d=GetDistance();
@@ -73,11 +72,15 @@ double DriveToTarget::PIDGet() {
 }
 double DriveToTarget::GetDistance() {
 	double d1=visionSubsystem->GetTargetDistance();
+#ifdef ULTRASONIC
 	double d2=ultrasonicSubsystem->GetDistance();
 	double d=d1;
 	if(d2>5 && d1<20)
 		d=d2;
+	return d;
+#else
     return d1;
+#endif
 }
 void DriveToTarget::PIDWrite(double err) {
 	double d=GetDistance();
@@ -85,7 +88,7 @@ void DriveToTarget::PIDWrite(double err) {
 
 	double df=(d-MIN_DISTANCE)/(distance-MIN_DISTANCE); // fraction of starting distance remaining
 	double afact=(1-df)+0.1; // bias angle correction towards end of travel
-	double a=-0.1*pow(afact,4.0)*visionSubsystem->GetTargetAngle();
+	double a=-0.1*df*pow(afact,4.0)*visionSubsystem->GetTargetAngle();
 	if(n==0)
 		a=0;
     double e=-0.5*err;
@@ -99,4 +102,5 @@ void DriveToTarget::PIDWrite(double err) {
 	cout<<" dist:"<<d <<" a:"<<a<<" e:"<<e<<" l:"<<l<<" r:"<<r<<endl;
 #endif
 	driveTrain->TankDrive(l,r);
+	std::cout<<"This is a print statement"<<endl;
 }

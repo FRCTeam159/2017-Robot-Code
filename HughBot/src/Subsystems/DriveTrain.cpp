@@ -45,6 +45,8 @@ DriveTrain::DriveTrain() : Subsystem("DriveTrain"),
 	SetLowGear();
 
 	SetExpiration(0.2);
+
+	Publish(true);
 }
 void DriveTrain::InitDefaultCommand()
 {
@@ -111,6 +113,9 @@ void DriveTrain::CustomArcade(float xAxis, float yAxis, float zAxis, bool square
 	backLeft.Set(left);
 	frontRight.Set(-right);
 	backRight.Set(FRONTRIGHT);
+
+	Publish(false);
+
 	m_safetyHelper->Feed();
 }
 
@@ -189,12 +194,12 @@ void DriveTrain::StopMotor() {
   m_safetyHelper->Feed();
 }
 void DriveTrain::TankDrive(float left, float right) { //Autonomous drive train call
-	left*=0.1;
-	right*=0.1;
 	frontLeft.Set(BACKLEFT);
 	backLeft.Set(left);
 	frontRight.Set(-right);
 	backRight.Set(FRONTRIGHT);
+
+	Publish(false);
 
 	m_safetyHelper->Feed();
 }
@@ -203,5 +208,15 @@ void DriveTrain::Enable() {
 	//frontLeft.Enable();
 	frontRight.Enable();
 	backLeft.Enable();
+}
+void DriveTrain::Publish(bool init) {
+	if(init){
+		frc::SmartDashboard::PutNumber("LeftWheels",0);
+		frc::SmartDashboard::PutNumber("RightWheels", 0);
+
+	}else{
+		frc::SmartDashboard::PutNumber("LeftWheels", backLeft.GetOutputVoltage());
+		frc::SmartDashboard::PutNumber("RightWheels", frontRight.GetOutputVoltage());
+	}
 }
 

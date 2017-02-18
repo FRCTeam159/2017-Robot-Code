@@ -17,7 +17,7 @@ SerialPort::SerialPort(int baudRate, Port port, int dataBits,
 
 void UltrasonicSubsystem::InitDefaultCommand() {
 		// Set the default command for a subsystem here.
-		SetDefaultCommand(new UltraUpdate());
+		//SetDefaultCommand(new UltraUpdate());
 }
 
 void UltrasonicSubsystem::Disable() {

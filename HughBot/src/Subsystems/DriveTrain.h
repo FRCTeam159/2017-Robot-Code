@@ -22,6 +22,7 @@ private:
 	void InitDrive();
 	void CustomArcade(float xAxis, float yAxis, float zAxis, bool squaredInputs);
 	float coerce(float min, float max, float x);
+	void Publish(bool);
 public:
 	DriveTrain();
 	void Drive(float xAxis, float yAxis, float zAxis);

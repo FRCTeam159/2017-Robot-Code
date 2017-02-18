@@ -11,7 +11,7 @@ ClimbingSubsystem::ClimbingSubsystem() : Subsystem("ClimbingSubsystem"),climberM
 void ClimbingSubsystem::InitDefaultCommand() {
 	// Set the default command for a subsystem here.
 	// SetDefaultCommand(new MySpecialCommand());
-	SetDefaultCommand(new Climb());
+	//SetDefaultCommand(new Climb());
 }
 
 bool ClimbingSubsystem::IsAtTop() { // TODO
