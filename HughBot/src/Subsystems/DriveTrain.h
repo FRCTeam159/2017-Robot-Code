@@ -6,6 +6,7 @@
 #include "ErrorBase.h"
 #include "MotorSafety.h"
 #include "MotorSafetyHelper.h"
+#include <ADXRS450_Gyro.h>
 
 using namespace frc;
 
@@ -18,6 +19,7 @@ private:
 	CANTalon backLeft;
 	CANTalon backRight;
 	DoubleSolenoid *gearPneumatic;
+	ADXRS450_Gyro gyro;
 	bool inlowgear=false;
 	void InitDrive();
 	void CustomArcade(float xAxis, float yAxis, float zAxis, bool squaredInputs);
@@ -44,6 +46,16 @@ public:
 	void GetDescription(std::ostringstream& desc) const override;
 	void Enable();
 	int sign;
+
+	//Anonomous code
+	double GetDistance();//DriveStraight code
+	double GetLeftDistance();
+	double GetRightDistance();
+
+	void Reset();
+
+
+	double GetHeading();
 };
 
 #endif

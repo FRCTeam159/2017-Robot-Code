@@ -3,17 +3,27 @@
 #include "Commands/DriveWithJoystick.h"
 #include "WPILib.h"
 
+
 #define P 0.1
 #define I 0.0
 #define D 0.0
 #define SIGN(x) ((x) >= 0? 1:-1)
 
+#ifdef SIMULATION
+#define DRIVE_ENCODER_TICKS 360
+#else
+#define DRIVE_ENCODER_TICKS 900
+#endif
+#define WHEEL_DIAMETER 4.25
+
+#define TICKS_PER_INCH (DRIVE_ENCODER_TICKS/M_PI/WHEEL_DIAMETER)
 
 DriveTrain::DriveTrain() : Subsystem("DriveTrain"),
 		frontLeft(FRONTLEFT),   // slave  1
 		frontRight(FRONTRIGHT), // master 4
 		backLeft(BACKLEFT),     // master 2
-		backRight(BACKRIGHT)    // slave  3
+		backRight(BACKRIGHT),    // slave  3
+		gyro(frc::SPI::kOnboardCS0)
 {
 	InitDrive();
 
@@ -23,23 +33,17 @@ DriveTrain::DriveTrain() : Subsystem("DriveTrain"),
 
 	frontRight.SetControlMode(CANTalon::kPercentVbus);
 	backLeft.SetControlMode(CANTalon::kPercentVbus);
-/*
-	frontRight.SetControlMode(CANTalon::kSpeed);
-	backLeft.SetControlMode(CANTalon::kSpeed);
 
-	frontRight.SetPID(P,I,D);
-	backLeft.SetPID(P,I,D);
 
-	frontRight.SetFeedbackDevice(CANTalon::QuadEncoder);
-	backLeft.SetFeedbackDevice(CANTalon::QuadEncoder);
-
-	frontRight.ConfigEncoderCodesPerRev(900);
-	backLeft.ConfigEncoderCodesPerRev(900);
-*/
 	frontLeft.SetControlMode(CANTalon::kFollower);
 	backRight.SetControlMode(CANTalon::kFollower);
 	backRight.EnableControl();
 	frontLeft.EnableControl();
+
+
+	frontRight.ConfigEncoderCodesPerRev(TICKS_PER_INCH);
+	backLeft.ConfigEncoderCodesPerRev(TICKS_PER_INCH);
+
 
 	gearPneumatic = new DoubleSolenoid(GEARSHIFTID,0,1);
 	SetLowGear();
@@ -148,6 +152,7 @@ void DriveTrain::SetHighGear() {
 void DriveTrain::InitDrive() {
 	m_safetyHelper = std::make_unique<MotorSafetyHelper>(this);
 	m_safetyHelper->SetSafetyEnabled(true);
+	gyro.Calibrate();
 }
 
 void DriveTrain::SetExpiration(double timeout) {
@@ -213,10 +218,35 @@ void DriveTrain::Publish(bool init) {
 	if(init){
 		frc::SmartDashboard::PutNumber("LeftWheels",0);
 		frc::SmartDashboard::PutNumber("RightWheels", 0);
-
+		frc::SmartDashboard::PutNumber("Travel", 0);
+		frc::SmartDashboard::PutNumber("Heading", 0);
 	}else{
+		frc::SmartDashboard::PutNumber("Travel", GetDistance());
 		frc::SmartDashboard::PutNumber("LeftWheels", backLeft.GetOutputVoltage());
 		frc::SmartDashboard::PutNumber("RightWheels", frontRight.GetOutputVoltage());
+		frc::SmartDashboard::PutNumber("Heading",GetHeading());
 	}
 }
 
+double DriveTrain::GetDistance() {
+	double d1=-frontRight.GetPosition();
+	double d2=backLeft.GetPosition();
+	double x=0.5*(d1+d2);
+	return round(x * 100) / 100.0;
+}
+double DriveTrain::GetRightDistance() {
+	return frontRight.GetPosition();
+}
+double DriveTrain::GetLeftDistance() {
+	return backLeft.GetPosition();
+}
+
+void DriveTrain::Reset() {
+	frontRight.Reset();
+	backLeft.Reset();
+	gyro.Reset();
+}
+
+double DriveTrain::GetHeading() {
+	return gyro.GetAngle();
+}

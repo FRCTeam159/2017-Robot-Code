@@ -28,6 +28,7 @@ void DriveWithJoystick::Execute()
 
 	double zMinThreshold = SmartDashboard::GetNumber("zMinThreshold",0.4);
 	double zMinOutput = SmartDashboard::GetNumber("zMinOutput",0.7);
+
 	// Get axis values
 	Joystick *stick = oi->GetJoystick();
 

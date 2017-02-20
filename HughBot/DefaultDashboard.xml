@@ -1,0 +1,109 @@
+<xml version="1.0">
+<dashboard>
+	<widget field="climberCurrent" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.LinePlot">
+		<location x="905" y="414"/>
+		<width>325</width>
+		<height>173</height>
+	</widget>
+	<widget field="LeftWheels" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.LinePlot">
+		<location x="1107" y="209"/>
+		<width>254</width>
+		<height>202</height>
+	</widget>
+	<widget field="RightWheels" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.LinePlot">
+		<location x="1097" y="25"/>
+		<width>260</width>
+		<height>175</height>
+	</widget>
+	<widget field="Travel" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="176" y="535"/>
+	</widget>
+	<widget field="GearPlateOpen" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="541" y="419"/>
+		<width>105</width>
+		<height>23</height>
+	</widget>
+	<widget field="showGoodRects" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
+		<location x="419" y="427"/>
+	</widget>
+	<widget field="showColorThreshold" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
+		<location x="399" y="450"/>
+	</widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
+		<location x="544" y="6"/>
+		<width>527</width>
+		<height>399</height>
+		<property name="Camera Choice" value="DriverCam"/>
+	</static-widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
+		<location x="4" y="3"/>
+		<width>534</width>
+		<height>403</height>
+		<property name="Camera Choice" value="Rectangle"/>
+	</static-widget>
+	<widget field="Auto Modes" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
+		<location x="0" y="357"/>
+	</widget>
+	<widget field="climberCurrentThreshold" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="685" y="431"/>
+		<width>168</width>
+	</widget>
+	<widget field="UltraSonicDistance" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="-4" y="557"/>
+		<height>23</height>
+	</widget>
+	<widget field="HueMin" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="61" y="488"/>
+	</widget>
+	<widget field="SaturationMin" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="27" y="435"/>
+	</widget>
+	<widget field="climberVoltage" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="732" y="462"/>
+		<width>123</width>
+		<height>20</height>
+	</widget>
+	<widget field="ValueMax" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="231" y="459"/>
+	</widget>
+	<widget field="Rectangles" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="422" y="476"/>
+		<width>93</width>
+		<height>20</height>
+	</widget>
+	<widget field="HueMax" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="235" y="489"/>
+	</widget>
+	<widget field="Auto Selector" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="336" y="557"/>
+		<height>20</height>
+	</widget>
+	<widget field="SaturationMax" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="201" y="432"/>
+	</widget>
+	<widget field="Distance" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="43" y="537"/>
+	</widget>
+	<widget field="ValueMin" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="57" y="460"/>
+	</widget>
+	<widget field="HorizontalAngle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="8" y="517"/>
+	</widget>
+</dashboard>
+<live-window>
+</live-window>
+	<hidden field="Heading"/>
+	<hidden field="TargetCenter.x"/>
+	<hidden field="TargetCenter.y"/>
+	<hidden field="TargetWidth"/>
+	<hidden field="AutoMode"/>
+	<hidden field="HorizontalOffset"/>
+	<hidden field="zMinOutput"/>
+	<hidden field="TargetHeight"/>
+	<hidden field="HighGear"/>
+	<hidden field="Angle"/>
+	<hidden field="xMinThreshold"/>
+	<hidden field="xMinOutput"/>
+	<hidden field="zMinThreshold"/>
+</xml>
