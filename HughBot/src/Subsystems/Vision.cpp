@@ -5,6 +5,7 @@
 #include "llvm/ArrayRef.h"
 #include "llvm/StringRef.h"
 
+
 #define RPD(x) (x)*2*M_PI/360
 #define IMAGE_WIDTH 320
 #define IMAGE_HEIGHT 240
@@ -27,7 +28,7 @@ static 	GripPipeline gp;
 #define CAMERASENABLED
 
 
-Vision::Vision() : Subsystem("VisionSubsystem"), dio(0) {
+Vision::Vision() : Subsystem("VisionSubsystem"), ringLight(0) {
 	SetCameraInfo(IMAGE_WIDTH,IMAGE_HEIGHT,FOV,HOFFSET);
 }
 
@@ -283,7 +284,11 @@ void Vision::PublishTargetInfo(TargetInfo &info) {
 }
 
 void Vision::SetRingLight(bool state) {
-	dio.Set(state);
+	if(state){
+	ringLight.Set(Relay::kForward);
+	} else {
+		ringLight.Set(Relay::kOff);
+	}
 }
 ////////////////////////////////////////////////////////////////////////////////
 // Put methods for controlling this subsystem here. Call these from Commands. //

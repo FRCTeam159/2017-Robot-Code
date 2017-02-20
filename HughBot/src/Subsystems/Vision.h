@@ -33,7 +33,7 @@ public:
 		int numrects;
 	};
 private:
-	DigitalOutput dio;
+	Relay ringLight;
 
 	static cs::UsbCamera camera1;
 	static cs::UsbCamera camera2;
