@@ -27,7 +27,7 @@ void DriveWithJoystick::Execute()
 	double xMinOutput = SmartDashboard::GetNumber("xMinOutput",0.8);
 
 	double zMinThreshold = SmartDashboard::GetNumber("zMinThreshold",0.4);
-	double zMinOutput = SmartDashboard::GetNumber("zMinOutput",0.7);
+	double zMinOutput = SmartDashboard::GetNumber("zMinOutput",0.4);
 
 	// Get axis values
 	Joystick *stick = oi->GetJoystick();
@@ -44,7 +44,7 @@ void DriveWithJoystick::Execute()
 	// Run axis values through deadband
 	yAxis = quadDeadband(.3, .4, yAxis);
 	xAxis = quadDeadband(xMinThreshold, xMinOutput, xAxis);
-	zAxis = quadDeadband(zMinThreshold, zMinOutput, zAxis);
+	zAxis = .75*quadDeadband(zMinThreshold, zMinOutput, zAxis);
 	driveTrain.get()->Drive(xAxis, yAxis, zAxis);
 }
 

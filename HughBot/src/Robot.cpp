@@ -8,6 +8,9 @@
 #include <SmartDashboard/SmartDashboard.h>
 #include "CommandBase.h"
 #include "Commands/Autonomous.h"
+#include "Commands/DriveForTime.h"
+#include "Commands/TurnToAngle.h"
+#include "Commands/DriveToTarget.h"
 
 #include <thread>
 #include <CameraServer.h>
@@ -17,14 +20,21 @@
 #include <opencv2/core/types.hpp>
 
 
+#define RIGHTTURNANGLE 50
+#define LEFTTURNANGLE 45
+
 class Robot: public frc::IterativeRobot {
 
 public:
 	void RobotInit() override {
 		CommandBase::init();
+		frc::SmartDashboard::PutString("AutoMode", "Center");
+		frc::SmartDashboard::PutNumber("DriveTime", 3);
+	//	frc::SmartDashboard::PutNumber("RightAutoAngle", RIGHTTURNANGLE);
+		//frc::SmartDashboard::PutNumber("LeftTurnAnlge", LEFTTURNANGLE);
 		// chooser.AddDefault("Default Auto", new ExampleCommand());
 		// chooser.AddObject("My Auto", new MyAutoCommand());
-		frc::SmartDashboard::PutData("Auto Modes", &chooser);
+		//frc::SmartDashboard::PutData("Auto Modes", &chooser);
       //  CameraServer::GetInstance()->SetQuality(50);
 
         //the camera name (ex "cam0") can be found through the roborio web interface
@@ -60,22 +70,58 @@ public:
 	 * to the if-else structure below with additional strings & commands.
 	 */
 	void AutonomousInit() override {
-		std::string autoSelected = frc::SmartDashboard::GetString("Auto Selector", "Default");
-		if (autoSelected == "My Auto") {
-			autonomousCommand.reset(new Autonomous());
-			cout<<"Chose My Auto"<<endl;
-		}
-		else {
-			autonomousCommand.reset(new Autonomous());
-			cout<<"Chose default auto"<<endl;
-		}
-		CommandBase::AutonomousInit();
+//		std::string autoSelected = frc::SmartDashboard::GetString("Auto Selector", "Default");
+//		if (autoSelected == "My Auto") {
+//			autonomousCommand.reset(new Autonomous());
+//			cout<<"Chose My Auto"<<endl;
+//		}
+//		else {
+//			autonomousCommand.reset(new Autonomous());
+//			cout<<"Chose default auto"<<endl;
+//		}
+//		CommandBase::AutonomousInit();
+//
+//		autonomousCommand.reset(new Autonomous());
+//
+//		if (autonomousCommand.get() != nullptr) {
+//			autonomousCommand->Start();
+//		}
+	//	double rightAngle = frc::SmartDashboard::GetNumber("RightAngle", RIGHTTURNANGLE);
+	//	double leftAngle = frc::SmartDashboard::GetNumber("LeftAngle", LEFTTURNANGLE);
+		std::string autoSelected = frc::SmartDashboard::GetString("AutoMode", "Center");
+		double driveTime = frc::SmartDashboard::GetNumber("DriveTime", 3);
+		CommandGroup *autonomous=new Autonomous();
+		if (autoSelected == "Right") {
+			autonomous->AddSequential(new DriveForTime(driveTime, 0.45));
+			//autonomous->AddSequential(new DriveStraight(DRIVEDISTANCE));
+			//autonomous->AddSequential(new Turn(-0.27));
+			autonomous->AddSequential(new TurnToAngle(-RIGHTTURNANGLE));
 
-		autonomousCommand.reset(new Autonomous());
+			cout<<"Chose::Right Auto"<<endl;
+		}
+		else if(autoSelected == "Left"){
+			autonomous->AddSequential(new DriveForTime(driveTime, 0.45));
+			//autonomous->AddSequential(new DriveStraight(DRIVEDISTANCE));
+			//autonomous->AddSequential(new Turn(0.27));
+			autonomous->AddSequential(new TurnToAngle(LEFTTURNANGLE));
+			cout<<"Chose::Left Auto"<<endl;
+		}
+		else if(autoSelected == "Center"){
+			cout<<"Chose::Center Auto"<<endl;
+		}
+		else{
+			cout<<"Chose::Default Auto"<<endl;
+		}
+		autonomous->AddSequential(new DriveToTarget());
+
+		autonomousCommand.reset(autonomous);
+
+		CommandBase::AutonomousInit();
 
 		if (autonomousCommand.get() != nullptr) {
 			autonomousCommand->Start();
 		}
+
 	}
 
 	void AutonomousPeriodic() override {

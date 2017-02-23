@@ -1,12 +1,13 @@
 #include "TurnToAngle.h"
 
 
-#define P 0.1
-#define I 0.005
+#define P 0.01
+#define I 0.0001
 #define D 0.0
 
 #define WIDTH 26 // horizontal distance between wheels (side-to-side)
 #define LENGTH 8.5 // vertical distance between center wheels only (i.e the wheels with encoders)
+#define USE_GYRO
 
 TurnToAngle::TurnToAngle(double a) : CommandBase("DriveStraight"),
 	pid(P,I,D,this,this)
@@ -21,13 +22,20 @@ TurnToAngle::TurnToAngle(double a) : CommandBase("DriveStraight"),
 // Called just before this Command runs the first time
 void TurnToAngle::Initialize() {
 	//double d = driveTrain->GetDistance();
+#ifdef USE_GYRO
+	double a=angle;
+#else
+	double d = driveTrain->GetDistance();
+	driveTrain->Reset();
+	driveTrain->SetDistance(d);
+	double a = angle*2.0*M_PI*radius/360;
+#endif
 	driveTrain->Reset();
 	//driveTrain->SetDistance(d);
   	pid.Reset();
   	// arc length (wheel travel distance) given radius and turn angle
-	double a = angle*2.0*M_PI*radius/360;
   	pid.SetSetpoint(a);
-	pid.SetAbsoluteTolerance(0.5);
+	pid.SetAbsoluteTolerance(3);
 	pid.Enable();
 	driveTrain->Enable();
 	std::cout << "TurnToAngle Started: "<< a <<std::endl;
@@ -55,23 +63,37 @@ void TurnToAngle::Interrupted() {
 	End();
 }
 double TurnToAngle::PIDGet() {
+#ifdef USE_GYRO
+	double a=driveTrain->GetHeading();
+#ifdef DEBUG_COMMAND
+	std::cout << "TurnToAngle::PIDGet:" << a << std::endl;
+#endif
+
+	return a;
+#else
 	double l = driveTrain->GetLeftDistance();
 	double r = driveTrain->GetRightDistance();
 	double d = 0.5 * (fabs(l) + fabs(r)); // average wheel travel distance
 
 	d = angle < 0 ? -d : d;
-	//double a = d * 360 / M_PI / radius / 2;
+	double a = d * 360 / M_PI / radius / 2;
 
-	//driveTrain->SetAngle(a);
+	driveTrain->SetAngle(a);
 #ifdef DEBUG_COMMAND
 	std::cout << "TurnToAngle::PIDGet:" << l << "," << r << ","<<d<<","<<a << std::endl;
 #endif
 	return d;
+#endif
 }
 
+#define MAXSPEED 0.5
 void TurnToAngle::PIDWrite(double a) {
 
     std::cout << "TurnToAngle::PIDWrite("<<a<<")"<< std::endl;
+    if (fabs(a) > MAXSPEED) {
+    	if (a>0) 	a = MAXSPEED;
+    	else a = -MAXSPEED;
+    }
 
-	driveTrain->TankDrive(a,-a);
+	driveTrain->TankDrive(-a,a);
 }

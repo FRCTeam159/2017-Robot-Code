@@ -8,6 +8,7 @@
 #define I 0.0
 #define D 0.0
 #define SIGN(x) ((x) >= 0? 1:-1)
+#define ROUND(x) ((x * 100) / 100.0)
 
 #ifdef SIMULATION
 #define DRIVE_ENCODER_TICKS 360
@@ -15,8 +16,9 @@
 #define DRIVE_ENCODER_TICKS 900
 #endif
 #define WHEEL_DIAMETER 4.25
+#define GEAR_REDUCTION (3*38/22)
 
-#define TICKS_PER_INCH (DRIVE_ENCODER_TICKS/M_PI/WHEEL_DIAMETER)
+#define TICKS_PER_INCH (DRIVE_ENCODER_TICKS*GEAR_REDUCTION/M_PI/WHEEL_DIAMETER)
 
 DriveTrain::DriveTrain() : Subsystem("DriveTrain"),
 		frontLeft(FRONTLEFT),   // slave  1
@@ -30,6 +32,10 @@ DriveTrain::DriveTrain() : Subsystem("DriveTrain"),
 	backLeft.SetInverted(false);
 	frontRight.ConfigLimitMode(CANSpeedController::kLimitMode_SrxDisableSwitchInputs);
 	backLeft.ConfigLimitMode(CANSpeedController::kLimitMode_SrxDisableSwitchInputs);
+/*
+	frontRight.SetFeedbackDevice(CANTalon::QuadEncoder);
+	backLeft.SetFeedbackDevice(CANTalon::QuadEncoder);
+*/
 
 	frontRight.SetControlMode(CANTalon::kPercentVbus);
 	backLeft.SetControlMode(CANTalon::kPercentVbus);
@@ -41,8 +47,8 @@ DriveTrain::DriveTrain() : Subsystem("DriveTrain"),
 	frontLeft.EnableControl();
 
 
-	frontRight.ConfigEncoderCodesPerRev(TICKS_PER_INCH);
-	backLeft.ConfigEncoderCodesPerRev(TICKS_PER_INCH);
+	//frontRight.ConfigEncoderCodesPerRev(DRIVE_ENCODER_TICKS);
+	//backLeft.ConfigEncoderCodesPerRev(DRIVE_ENCODER_TICKS);
 
 
 	gearPneumatic = new DoubleSolenoid(GEARSHIFTID,0,1);
@@ -118,6 +124,9 @@ void DriveTrain::CustomArcade(float xAxis, float yAxis, float zAxis, bool square
 	frontRight.Set(-right);
 	backRight.Set(FRONTRIGHT);
 
+	cout << "left:"<<left<<" right:"<<right<<endl;
+
+
 	Publish(false);
 
 	m_safetyHelper->Feed();
@@ -181,6 +190,7 @@ void DriveTrain::DisableDrive() {
 }
 
 void DriveTrain::EnableDrive() {
+	Reset();
 	backRight.Enable();
 	backLeft.Enable();
 	frontRight.Enable();
@@ -200,8 +210,8 @@ void DriveTrain::StopMotor() {
 }
 void DriveTrain::TankDrive(float left, float right) { //Autonomous drive train call
 	frontLeft.Set(BACKLEFT);
-	backLeft.Set(left);
-	frontRight.Set(-right);
+	backLeft.Set(-left);
+	frontRight.Set(right);
 	backRight.Set(FRONTRIGHT);
 
 	Publish(false);
@@ -213,6 +223,7 @@ void DriveTrain::Enable() {
 	//frontLeft.Enable();
 	frontRight.Enable();
 	backLeft.Enable();
+	//Reset();
 }
 void DriveTrain::Publish(bool init) {
 	if(init){
@@ -220,11 +231,17 @@ void DriveTrain::Publish(bool init) {
 		frc::SmartDashboard::PutNumber("RightWheels", 0);
 		frc::SmartDashboard::PutNumber("Travel", 0);
 		frc::SmartDashboard::PutNumber("Heading", 0);
+		SmartDashboard::PutNumber("LeftDistance",0);
+		SmartDashboard::PutNumber("RightDistance",0);
+
 	}else{
 		frc::SmartDashboard::PutNumber("Travel", GetDistance());
-		frc::SmartDashboard::PutNumber("LeftWheels", backLeft.GetOutputVoltage());
-		frc::SmartDashboard::PutNumber("RightWheels", frontRight.GetOutputVoltage());
-		frc::SmartDashboard::PutNumber("Heading",GetHeading());
+		frc::SmartDashboard::PutNumber("LeftWheels", backLeft.Get());
+		frc::SmartDashboard::PutNumber("RightWheels", frontRight.Get());
+		frc::SmartDashboard::PutNumber("Heading", ROUND(GetHeading()));
+		SmartDashboard::PutNumber("LeftDistance",GetLeftDistance());
+		SmartDashboard::PutNumber("RightDistance",GetRightDistance());
+
 	}
 }
 
@@ -232,7 +249,7 @@ double DriveTrain::GetDistance() {
 	double d1=-frontRight.GetPosition();
 	double d2=backLeft.GetPosition();
 	double x=0.5*(d1+d2);
-	return round(x * 100) / 100.0;
+	return ROUND(x);
 }
 double DriveTrain::GetRightDistance() {
 	return frontRight.GetPosition();
@@ -244,6 +261,8 @@ double DriveTrain::GetLeftDistance() {
 void DriveTrain::Reset() {
 	frontRight.Reset();
 	backLeft.Reset();
+	frontRight.SetPosition(0);
+	backLeft.SetPosition(0);
 	gyro.Reset();
 }
 

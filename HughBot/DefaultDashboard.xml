@@ -1,5 +1,27 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="Exposure" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="561"/>
+	</widget>
+	<widget field="Brightness" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="407"/>
+	</widget>
+	<widget field="DriveTime" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="679" y="556"/>
+	</widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Label">
+		<location x="411" y="523"/>
+		<property name="Text" value="Left, Center, Right"/>
+	</static-widget>
+	<widget field="AutoMode" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="515" y="523"/>
+		<width>151</width>
+		<height>23</height>
+		<property name="Background" value="0.255.255.255"/>
+	</widget>
+	<widget field="Heading" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="528" y="556"/>
+	</widget>
 	<widget field="climberCurrent" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.LinePlot">
 		<location x="905" y="414"/>
 		<width>325</width>
@@ -16,7 +38,7 @@
 		<height>175</height>
 	</widget>
 	<widget field="Travel" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="176" y="535"/>
+		<location x="211" y="573"/>
 	</widget>
 	<widget field="GearPlateOpen" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
 		<location x="541" y="419"/>
@@ -49,7 +71,7 @@
 		<width>168</width>
 	</widget>
 	<widget field="UltraSonicDistance" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="-4" y="557"/>
+		<location x="187" y="537"/>
 		<height>23</height>
 	</widget>
 	<widget field="HueMin" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
@@ -74,15 +96,11 @@
 	<widget field="HueMax" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="235" y="489"/>
 	</widget>
-	<widget field="Auto Selector" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="336" y="557"/>
-		<height>20</height>
-	</widget>
 	<widget field="SaturationMax" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="201" y="432"/>
 	</widget>
 	<widget field="Distance" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="43" y="537"/>
+		<location x="42" y="540"/>
 	</widget>
 	<widget field="ValueMin" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="57" y="460"/>
@@ -93,17 +111,17 @@
 </dashboard>
 <live-window>
 </live-window>
-	<hidden field="Heading"/>
 	<hidden field="TargetCenter.x"/>
 	<hidden field="TargetCenter.y"/>
 	<hidden field="TargetWidth"/>
-	<hidden field="AutoMode"/>
 	<hidden field="HorizontalOffset"/>
+	<hidden field="RightDistance"/>
 	<hidden field="zMinOutput"/>
 	<hidden field="TargetHeight"/>
-	<hidden field="HighGear"/>
-	<hidden field="Angle"/>
+	<hidden field="LeftDistance"/>
+	<hidden field="RightAutoAngle"/>
 	<hidden field="xMinThreshold"/>
 	<hidden field="xMinOutput"/>
+	<hidden field="LeftTurnAnlge"/>
 	<hidden field="zMinThreshold"/>
 </xml>

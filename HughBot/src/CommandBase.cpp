@@ -27,6 +27,7 @@ void CommandBase::init()
 	visionSubsystem.reset(new Vision());
 
 	visionSubsystem->Init();
+	visionSubsystem->SetRingLight(true);
 
 	driveTrain.reset(new DriveTrain());
 	gearSubsystem.reset(new GearSubsystem());
@@ -42,10 +43,11 @@ void CommandBase::Enable() {
 }
 
 void CommandBase::Disable() {
-	visionSubsystem->SetRingLight(false);
+	//visionSubsystem->SetRingLight(false);
 	driveTrain->DisableDrive();
 }
 void CommandBase::AutonomousInit() {
+
 	driveTrain->Enable();
 	ultrasonicSubsystem->Enable();
 }

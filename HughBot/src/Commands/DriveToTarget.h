@@ -9,6 +9,7 @@ class DriveToTarget : public CommandBase, public PIDSource, public PIDOutput {
 	double angle;
 	Vision::TargetInfo target;
 	double GetDistance();
+	double Clamp(double min,double max,double x);
 public:
 	DriveToTarget();
 	void Initialize();

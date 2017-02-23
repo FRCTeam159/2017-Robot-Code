@@ -9,8 +9,8 @@
 #define RPD(x) (x)*2*M_PI/360
 #define IMAGE_WIDTH 320
 #define IMAGE_HEIGHT 240
-#define FOV 60.0
-#define HOFFSET 0 // camera offset from robot center
+#define FOV 34.0
+#define HOFFSET 2.6 // camera offset from robot center
 
 
 using namespace frc;
@@ -18,6 +18,8 @@ using namespace frc;
 llvm::ArrayRef<double>  Vision::hsvThresholdHue = {70, 110};
 llvm::ArrayRef<double>  Vision::hsvThresholdSaturation = {50, 255};
 llvm::ArrayRef<double>  Vision::hsvThresholdValue = {100, 255};
+double Vision::brightness = 1.0;
+double Vision::exposure = 1.0;
 cs::UsbCamera Vision::camera1;
 cs::UsbCamera Vision::camera2;
 cs::CvSink Vision::cvSink;
@@ -55,6 +57,8 @@ void Vision::Init() {
 	frc::SmartDashboard::PutNumber("Distance", 0);
 	frc::SmartDashboard::PutNumber("HorizontalOffset", 0);
 	frc::SmartDashboard::PutNumber("HorizontalAngle", 0);
+	frc::SmartDashboard::PutNumber("Brightness", 1);
+	frc::SmartDashboard::PutNumber("Exposure",1);
 #ifdef CAMERASENABLED
 #ifndef SIMULATION
 	camera1 = CameraServer::GetInstance()->StartAutomaticCapture("Logitech",0);
@@ -68,10 +72,10 @@ void Vision::Init() {
 
 	camera1.SetBrightness(1);
 	camera1.SetExposureManual(1);
-	camera1.SetWhiteBalanceManual(50);
+	//camera1.SetWhiteBalanceManual(50);
 	camera2.SetBrightness(10);
 	camera2.SetExposureManual(40);
-	camera2.SetWhiteBalanceManual(10);
+	//camera2.SetWhiteBalanceManual(10);
 
 #endif
 	std::thread visionThread(VisionThread);
@@ -126,6 +130,18 @@ void Vision::VisionThread(){
 		hsvThresholdHue={SmartDashboard::GetNumber("HueMin",70),SmartDashboard::GetNumber("HueMax", 100)};
 		hsvThresholdValue={SmartDashboard::GetNumber("ValueMin", 100),SmartDashboard::GetNumber("ValueMax",255)};
 		hsvThresholdSaturation={SmartDashboard::GetNumber("SaturationMin", 50),SmartDashboard::GetNumber("SaturationMax",255)};
+		double newBrightness=SmartDashboard::GetNumber("Brightness", 1);
+		double newExposure=SmartDashboard::GetNumber("Exposure", 1);
+
+		if(newBrightness != brightness){
+			camera1.SetBrightness(newBrightness);
+			brightness=newBrightness;
+		}
+
+		if(newExposure != exposure){
+			camera1.SetExposureManual(newExposure);
+			exposure=newExposure;
+		}
 
 		gp.setHSVThresholdHue(hsvThresholdHue);
 		gp.setHSVThresholdValue(hsvThresholdValue);
@@ -285,9 +301,12 @@ void Vision::PublishTargetInfo(TargetInfo &info) {
 
 void Vision::SetRingLight(bool state) {
 	if(state){
-	ringLight.Set(Relay::kForward);
+		ringLight.Set(Relay::kForward);
+		cout<<"turning ringlight on"<<endl;
 	} else {
 		ringLight.Set(Relay::kOff);
+		cout<<"turning ringlight off"<<endl;
+
 	}
 }
 ////////////////////////////////////////////////////////////////////////////////

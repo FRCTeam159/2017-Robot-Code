@@ -1,6 +1,6 @@
 #include "DriveStraight.h"
 
-#define P 0.05
+#define P 0.005
 #define I 0.0
 #define D 0.0
 

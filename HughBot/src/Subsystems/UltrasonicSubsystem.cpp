@@ -8,7 +8,11 @@ UltrasonicSubsystem::UltrasonicSubsystem() : Subsystem("ExampleSubsystem"),
 		dOutput(0){
 	portEnabled=false;
 	frc::SmartDashboard::PutNumber("UltraSonicDistance", 0);
+
+	//-------------------------------------------------IMPORTANT-------------------------------------------------------------
+// In order for the ultrasonic to work, you must uncheck "Enable Console Out" in the Rio setting interface in the internet explorer interface.
 }
+
 /*
 SerialPort::SerialPort(int baudRate, Port port, int dataBits,
                        SerialPort::Parity parity,
@@ -17,7 +21,7 @@ SerialPort::SerialPort(int baudRate, Port port, int dataBits,
 
 void UltrasonicSubsystem::InitDefaultCommand() {
 		// Set the default command for a subsystem here.
-		//SetDefaultCommand(new UltraUpdate());
+		SetDefaultCommand(new UltraUpdate());
 }
 
 void UltrasonicSubsystem::Disable() {

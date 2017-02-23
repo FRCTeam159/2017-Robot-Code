@@ -1,13 +1,14 @@
 #include "Commands/DriveToTarget.h"
 #define ADJUST_TIMEOUT 0.5
 #define MAX_ANGLE_ERROR 0.5
-#define P 0.5
-#define I 0.01
+#define P 0.05
+#define I 0
+
 #define D 0
 #define SCALE 0.1
-#define MIN_DISTANCE 10
+#define MIN_DISTANCE 12
 #define DRIVE_TIMEOUT 0.2
-
+#define MAX_SPEED 0.5
 DriveToTarget::DriveToTarget() : CommandBase("DriveToTarget"),
     pid(P,I,D,this,this)
 {
@@ -92,15 +93,23 @@ void DriveToTarget::PIDWrite(double err) {
 	if(n==0)
 		a=0;
     double e=-0.5*err;
-	double m1=e+a;
-	double m2=e-a;
+	double m1=e-a;
+	double m2=e+a;
 	double mx=m1>m2?m1:m2;
 	double scale=mx>1?1/mx:1;
 	double l=m2*scale;
 	double r=m1*scale;
+	//l=Clamp(-0.25,0.25,l);
+	//r=Clamp(-0.25,0.25,r);
+#define DEBUG_COMMAND
 #ifdef DEBUG_COMMAND
 	cout<<" dist:"<<d <<" a:"<<a<<" e:"<<e<<" l:"<<l<<" r:"<<r<<endl;
 #endif
 	driveTrain->TankDrive(l,r);
-	std::cout<<"This is a print statement"<<endl;
+}
+
+double DriveToTarget::Clamp(double min,double max, double x) {
+	 x=x>max? max: x;
+	 x=x<min? min: x;
+	 return x;
 }

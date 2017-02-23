@@ -46,6 +46,8 @@ private:
 	static llvm::ArrayRef<double>  hsvThresholdHue;
 	static llvm::ArrayRef<double>  hsvThresholdSaturation;
 	static llvm::ArrayRef<double>  hsvThresholdValue;
+	static double brightness;
+	static double exposure;
 	static void VisionThread();
 	std::shared_ptr<NetworkTable> table;
 
