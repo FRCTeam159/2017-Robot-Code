@@ -9,6 +9,7 @@
 #define MIN_DISTANCE 12
 #define DRIVE_TIMEOUT 0.2
 #define MAX_SPEED 0.5
+#define ULTRASONIC
 DriveToTarget::DriveToTarget() : CommandBase("DriveToTarget"),
     pid(P,I,D,this,this)
 {
@@ -76,7 +77,7 @@ double DriveToTarget::GetDistance() {
 #ifdef ULTRASONIC
 	double d2=ultrasonicSubsystem->GetDistance();
 	double d=d1;
-	if(d2>5 && d1<20)
+	if(d1<20)
 		d=d2;
 	return d;
 #else
@@ -89,7 +90,7 @@ void DriveToTarget::PIDWrite(double err) {
 
 	double df=(d-MIN_DISTANCE)/(distance-MIN_DISTANCE); // fraction of starting distance remaining
 	double afact=(1-df)+0.1; // bias angle correction towards end of travel
-	double a=-0.1*df*pow(afact,4.0)*visionSubsystem->GetTargetAngle();
+	double a=-0.1*df*pow(afact,2.0)*visionSubsystem->GetTargetAngle();
 	if(n==0)
 		a=0;
     double e=-0.5*err;
