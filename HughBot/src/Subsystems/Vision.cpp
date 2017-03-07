@@ -9,17 +9,24 @@
 #define RPD(x) (x)*2*M_PI/360
 #define IMAGE_WIDTH 320
 #define IMAGE_HEIGHT 240
-#define FOV 34.0
-#define HOFFSET 2.6 // camera offset from robot center
+#define HFOV 49.6
+#define HOFFSET 8 // camera offset from robot center
 
 
 using namespace frc;
 
-llvm::ArrayRef<double>  Vision::hsvThresholdHue = {70, 110};
-llvm::ArrayRef<double>  Vision::hsvThresholdSaturation = {50, 255};
-llvm::ArrayRef<double>  Vision::hsvThresholdValue = {100, 255};
+llvm::ArrayRef<double>  Vision::hsvThresholdHue = {50, 110};
+llvm::ArrayRef<double>  Vision::hsvThresholdSaturation = {0, 70};
+llvm::ArrayRef<double>  Vision::hsvThresholdValue = {100, 150};
 double Vision::brightness = 1.0;
 double Vision::exposure = 1.0;
+double Vision::I = 0.0001;
+double Vision::P = 0.05;
+/*sat min/max (0-70)
+ * value (100-150)
+ * hue (50-110)
+ *
+ */
 cs::UsbCamera Vision::camera1;
 cs::UsbCamera Vision::camera2;
 cs::CvSink Vision::cvSink;
@@ -31,7 +38,7 @@ static 	GripPipeline gp;
 
 
 Vision::Vision() : Subsystem("VisionSubsystem"), ringLight(0) {
-	SetCameraInfo(IMAGE_WIDTH,IMAGE_HEIGHT,FOV,HOFFSET);
+	SetCameraInfo(IMAGE_WIDTH,IMAGE_HEIGHT,HFOV,HOFFSET);
 }
 
 void Vision::InitDefaultCommand() {
@@ -59,6 +66,8 @@ void Vision::Init() {
 	frc::SmartDashboard::PutNumber("HorizontalAngle", 0);
 	frc::SmartDashboard::PutNumber("Brightness", 1);
 	frc::SmartDashboard::PutNumber("Exposure",1);
+	frc::SmartDashboard::PutNumber("I", I);
+	frc::SmartDashboard::PutNumber("P", P);
 #ifdef CAMERASENABLED
 #ifndef SIMULATION
 	camera1 = CameraServer::GetInstance()->StartAutomaticCapture("Logitech",0);
@@ -126,13 +135,19 @@ void Vision::VisionThread(){
 			continue;
 		}
 		bool showColorThreshold = frc::SmartDashboard::GetBoolean("showColorThreshold", false);
-
-		hsvThresholdHue={SmartDashboard::GetNumber("HueMin",70),SmartDashboard::GetNumber("HueMax", 100)};
-		hsvThresholdValue={SmartDashboard::GetNumber("ValueMin", 100),SmartDashboard::GetNumber("ValueMax",255)};
-		hsvThresholdSaturation={SmartDashboard::GetNumber("SaturationMin", 50),SmartDashboard::GetNumber("SaturationMax",255)};
+		/*sat min/max (0-70)
+		 * value (100-150)
+		 * hue (50-110)
+		 *
+		 */
+		hsvThresholdHue={SmartDashboard::GetNumber("HueMin",50),SmartDashboard::GetNumber("HueMax", 110)};
+		hsvThresholdValue={SmartDashboard::GetNumber("ValueMin", 100),SmartDashboard::GetNumber("ValueMax",150)};
+		hsvThresholdSaturation={SmartDashboard::GetNumber("SaturationMin", 0),SmartDashboard::GetNumber("SaturationMax",70)};
 		double newBrightness=SmartDashboard::GetNumber("Brightness", 1);
 		double newExposure=SmartDashboard::GetNumber("Exposure", 1);
-
+		I = SmartDashboard::GetNumber("I", 0.0001);
+		P = SmartDashboard::GetNumber("P", 0.05);
+/*
 		if(newBrightness != brightness){
 			camera1.SetBrightness(newBrightness);
 			brightness=newBrightness;
@@ -142,6 +157,9 @@ void Vision::VisionThread(){
 			camera1.SetExposureManual(newExposure);
 			exposure=newExposure;
 		}
+*/
+		camera1.SetBrightness(newBrightness);
+		camera1.SetExposureManual(newExposure);
 
 		gp.setHSVThresholdHue(hsvThresholdHue);
 		gp.setHSVThresholdValue(hsvThresholdValue);
@@ -182,6 +200,7 @@ void Vision::VisionThread(){
 		rectangle(mat, cv::Point(minx, miny), cv::Point(maxx, maxy), cv::Scalar(255, 255, 255), 1);
 
 		outputStream.PutFrame(mat);
+
 		table2->PutNumber("TopLeftX", tl.x);
 		table2->PutNumber("TopLeftY", tl.y);
 		table2->PutNumber("BotRightX", br.x);
@@ -235,7 +254,7 @@ void Vision::SetCameraInfo(int width, int height, double fov, double hoff) {
 	cameraInfo.screenWidth = width;
 	cameraInfo.screenHeight = height;
 	cameraInfo.fov = fov;
-	cameraInfo.fovFactor = 1/(2*tan(RPD(fov/2.0)));
+	cameraInfo.fovFactor = cameraInfo.screenWidth/(2*tan(RPD(fov/2.0)));
 	cameraInfo.HorizontalOffset=hoff;
 	cout<<"fovFactor: "<<cameraInfo.fovFactor<<endl;
 }
@@ -250,7 +269,7 @@ void Vision::CalcTargetInfo(int n,cv::Point top, cv::Point bottom, TargetInfo &i
 		info.HorizontalOffset=targetInfo.Center.x-cameraInfo.screenWidth/2;
 		info.ActualHeight=5.0;
 		info.ActualWidth=(n==1?2.0:10.25);	//inches
-		info.Distance=cameraInfo.fovFactor*cameraInfo.screenHeight*targetInfo.ActualHeight/targetInfo.Height;
+		info.Distance=cameraInfo.fovFactor*targetInfo.ActualHeight/targetInfo.Height;
 		// convert camera offset to pixels
 		double xoffset=0;
 		if(n==1){
@@ -259,7 +278,7 @@ void Vision::CalcTargetInfo(int n,cv::Point top, cv::Point bottom, TargetInfo &i
 			else
 				xoffset+=0.5*info.Height;
 		}
-	    double adjust=cameraInfo.fovFactor*cameraInfo.screenWidth*cameraInfo.HorizontalOffset/info.Distance;
+	    double adjust=cameraInfo.fovFactor*cameraInfo.HorizontalOffset/info.Distance;
 	    double p=info.Center.x+adjust-0.5*cameraInfo.screenWidth;
 	    info.HorizontalAngle=p*cameraInfo.fov/cameraInfo.screenWidth;
 	}

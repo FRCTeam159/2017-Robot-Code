@@ -6,7 +6,7 @@ using namespace frc;
 UltrasonicSubsystem::UltrasonicSubsystem() : Subsystem("ExampleSubsystem"),
 		port(9600, SerialPort::kOnboard, 8, SerialPort::kParity_None, SerialPort::kStopBits_One),
 		dOutput(0){
-	portEnabled=false;
+	portEnabled=true;
 	frc::SmartDashboard::PutNumber("UltraSonicDistance", 0);
 
 	//-------------------------------------------------IMPORTANT-------------------------------------------------------------

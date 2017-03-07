@@ -1,6 +1,6 @@
 #include "FuelMonitor.h"
 #include "RobotMap.h"
-#define FORWARDVOLTAGE 1
+#define FORWARDVOLTAGE .5
 #define REVERSEVOLTAGE -0.5
 
 FuelMonitor::FuelMonitor() {

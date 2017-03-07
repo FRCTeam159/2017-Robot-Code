@@ -4,8 +4,8 @@
 
 
 ClimbingSubsystem::ClimbingSubsystem() : Subsystem("ClimbingSubsystem"),climberMotor(CLIMBING_MOTOR) {
-	frc::SmartDashboard::PutNumber("climberVoltage", 0.1);
-	frc::SmartDashboard::PutNumber("climberCurrentThreshold", 10);
+	frc::SmartDashboard::PutNumber("climberVoltage", 1);
+	frc::SmartDashboard::PutNumber("climberCurrentThreshold", 60);
 }
 
 void ClimbingSubsystem::InitDefaultCommand() {
@@ -15,7 +15,7 @@ void ClimbingSubsystem::InitDefaultCommand() {
 }
 
 bool ClimbingSubsystem::IsAtTop() { // TODO
-	double currentThreshold = SmartDashboard::GetNumber("climberCurrentThreshold", 10);
+	double currentThreshold = SmartDashboard::GetNumber("climberCurrentThreshold", 65);
 
 	if(GetCurrent() > currentThreshold){
 		return true;
@@ -33,7 +33,7 @@ void ClimbingSubsystem::Stop() {
 }
 
 void ClimbingSubsystem::ClimberClimb() {
-	climberMotor.Set(SmartDashboard::GetNumber("climberVoltage", 0.1));
+	climberMotor.Set(SmartDashboard::GetNumber("climberVoltage", 1));
 }
 // Put methods for controlling this subsystem
 // here. Call these from Commands.

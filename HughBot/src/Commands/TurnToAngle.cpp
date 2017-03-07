@@ -35,7 +35,7 @@ void TurnToAngle::Initialize() {
   	pid.Reset();
   	// arc length (wheel travel distance) given radius and turn angle
   	pid.SetSetpoint(a);
-	pid.SetAbsoluteTolerance(3);
+	pid.SetAbsoluteTolerance(5);
 	pid.Enable();
 	driveTrain->Enable();
 	std::cout << "TurnToAngle Started: "<< a <<std::endl;

@@ -20,11 +20,10 @@
 #include <opencv2/core/types.hpp>
 
 
-#define RIGHTTURNANGLE 50
+#define RIGHTTURNANGLE 55
 #define LEFTTURNANGLE 45
 
 class Robot: public frc::IterativeRobot {
-
 public:
 	void RobotInit() override {
 		CommandBase::init();
@@ -108,6 +107,7 @@ public:
 		}
 		else if(autoSelected == "Center"){
 			cout<<"Chose::Center Auto"<<endl;
+			autonomous->AddSequential(new DriveForTime(1.75, 0.45));
 		}
 		else{
 			cout<<"Chose::Default Auto"<<endl;

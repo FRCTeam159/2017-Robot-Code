@@ -17,7 +17,7 @@ void DriveWithJoystick::Initialize()
 	frc::SmartDashboard::PutNumber("xMinOutput", 0.8);
 
 	frc::SmartDashboard::PutNumber("zMinThreshold", 0.4);
-	frc::SmartDashboard::PutNumber("zMinOutput", 0.7);
+	frc::SmartDashboard::PutNumber("zMinOutput", 0.6);
 }
 
 // Called repeatedly when this Command is scheduled to run
@@ -27,10 +27,11 @@ void DriveWithJoystick::Execute()
 	double xMinOutput = SmartDashboard::GetNumber("xMinOutput",0.8);
 
 	double zMinThreshold = SmartDashboard::GetNumber("zMinThreshold",0.4);
-	double zMinOutput = SmartDashboard::GetNumber("zMinOutput",0.4);
+	double zMinOutput = SmartDashboard::GetNumber("zMinOutput",0.6);
 
 	// Get axis values
 	Joystick *stick = oi->GetJoystick();
+
 
 	if (stick->GetRawButton(LOWGEAR_BUTTON)){
 		driveTrain->SetLowGear();
@@ -44,7 +45,7 @@ void DriveWithJoystick::Execute()
 	// Run axis values through deadband
 	yAxis = quadDeadband(.3, .4, yAxis);
 	xAxis = quadDeadband(xMinThreshold, xMinOutput, xAxis);
-	zAxis = .75*quadDeadband(zMinThreshold, zMinOutput, zAxis);
+	zAxis = 0.75*quadDeadband(zMinThreshold, zMinOutput, zAxis);
 	driveTrain.get()->Drive(xAxis, yAxis, zAxis);
 }
 

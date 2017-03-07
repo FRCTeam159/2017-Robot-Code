@@ -20,6 +20,14 @@ public:
 	};
 
 	CameraInfo cameraInfo;
+	static double I;
+	static double GetI() {
+		return I;
+	}
+	static double P;
+	static double GetP() {
+		return P;
+	}
 
 	struct TargetInfo {
 		cv::Point Center;
@@ -30,6 +38,7 @@ public:
 		double Width;
 		double ActualWidth;
 		double ActualHeight;
+
 		int numrects;
 	};
 private:

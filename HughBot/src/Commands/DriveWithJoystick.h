@@ -6,6 +6,7 @@
 
 class DriveWithJoystick: public CommandBase
 {
+
 public:
 	DriveWithJoystick();
 	void Initialize();

@@ -5,8 +5,8 @@
 
 FuelSubsystem::FuelSubsystem() : Subsystem("Fuel"), fuelPusherMotor(FUELMOTOR) {
 	fuelPusherMotor.ConfigLimitMode(CANTalon::kLimitMode_SwitchInputsOnly);
-	fuelPusherMotor.ConfigRevLimitSwitchNormallyOpen(false);
-	fuelPusherMotor.ConfigFwdLimitSwitchNormallyOpen(false);
+	fuelPusherMotor.ConfigRevLimitSwitchNormallyOpen(true);
+	fuelPusherMotor.ConfigFwdLimitSwitchNormallyOpen(true);
 }
 
 void FuelSubsystem::InitDefaultCommand() {

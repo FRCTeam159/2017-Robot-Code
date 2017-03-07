@@ -1,21 +1,22 @@
 #include "Commands/DriveToTarget.h"
+
 #define ADJUST_TIMEOUT 0.5
 #define MAX_ANGLE_ERROR 0.5
-#define P 0.05
-#define I 0
-
+#define DEFAULT_P 0.05
+#define DEFAULT_I 0.0001
 #define D 0
 #define SCALE 0.1
-#define MIN_DISTANCE 12
+#define MIN_DISTANCE 5
 #define DRIVE_TIMEOUT 0.2
 #define MAX_SPEED 0.5
-#define ULTRASONIC
+#define MIN_CURRENT .1
 DriveToTarget::DriveToTarget() : CommandBase("DriveToTarget"),
-    pid(P,I,D,this,this)
+    pid(DEFAULT_P,DEFAULT_I,D,this,this)
 {
 	Requires(driveTrain.get());
     std::cout << "new DriveToTarget"<< std::endl;
 }
+
 
 // Called just before this Command runs the first time
 void DriveToTarget::Initialize() {
@@ -26,6 +27,9 @@ void DriveToTarget::Initialize() {
        std::cout << "DriveToTarget Started ..." << std::endl;
       	pid.Reset();
 		pid.SetSetpoint(MIN_DISTANCE);
+		double I = visionSubsystem->GetI();
+		double P = visionSubsystem->GetP();
+		pid.SetPID(P,I,0);
 		pid.Enable();
     }
     else{
@@ -87,7 +91,7 @@ double DriveToTarget::GetDistance() {
 void DriveToTarget::PIDWrite(double err) {
 	double d=GetDistance();
 	int n=visionSubsystem->GetNumTargets();
-
+	err += MIN_CURRENT;
 	double df=(d-MIN_DISTANCE)/(distance-MIN_DISTANCE); // fraction of starting distance remaining
 	double afact=(1-df)+0.1; // bias angle correction towards end of travel
 	double a=-0.1*df*pow(afact,2.0)*visionSubsystem->GetTargetAngle();

@@ -1,5 +1,11 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="P" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="539" y="443"/>
+	</widget>
+	<widget field="I" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="582"/>
+	</widget>
 	<widget field="Exposure" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="0" y="561"/>
 	</widget>
@@ -23,9 +29,9 @@
 		<location x="528" y="556"/>
 	</widget>
 	<widget field="climberCurrent" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.LinePlot">
-		<location x="905" y="414"/>
-		<width>325</width>
-		<height>173</height>
+		<location x="1121" y="403"/>
+		<width>280</width>
+		<height>191</height>
 	</widget>
 	<widget field="LeftWheels" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.LinePlot">
 		<location x="1107" y="209"/>
@@ -111,17 +117,7 @@
 </dashboard>
 <live-window>
 </live-window>
-	<hidden field="TargetCenter.x"/>
-	<hidden field="TargetCenter.y"/>
-	<hidden field="TargetWidth"/>
+	<hidden field="LeftDistance"/>
 	<hidden field="HorizontalOffset"/>
 	<hidden field="RightDistance"/>
-	<hidden field="zMinOutput"/>
-	<hidden field="TargetHeight"/>
-	<hidden field="LeftDistance"/>
-	<hidden field="RightAutoAngle"/>
-	<hidden field="xMinThreshold"/>
-	<hidden field="xMinOutput"/>
-	<hidden field="LeftTurnAnlge"/>
-	<hidden field="zMinThreshold"/>
 </xml>
