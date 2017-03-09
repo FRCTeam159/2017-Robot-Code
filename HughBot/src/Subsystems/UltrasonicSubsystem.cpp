@@ -3,6 +3,8 @@
 #include "Commands/UltraUpdate.h"
 using namespace frc;
 
+//#define ULTRASONIC
+
 UltrasonicSubsystem::UltrasonicSubsystem() : Subsystem("ExampleSubsystem"),
 		port(9600, SerialPort::kOnboard, 8, SerialPort::kParity_None, SerialPort::kStopBits_One),
 		dOutput(0){
@@ -21,7 +23,9 @@ SerialPort::SerialPort(int baudRate, Port port, int dataBits,
 
 void UltrasonicSubsystem::InitDefaultCommand() {
 		// Set the default command for a subsystem here.
+#ifdef ULTRASONIC
 		SetDefaultCommand(new UltraUpdate());
+#endif
 }
 
 void UltrasonicSubsystem::Disable() {

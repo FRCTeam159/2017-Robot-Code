@@ -11,6 +11,7 @@
 #include "Commands/DriveForTime.h"
 #include "Commands/TurnToAngle.h"
 #include "Commands/DriveToTarget.h"
+#include "Commands/TurnForTime.h"
 
 #include <thread>
 #include <CameraServer.h>
@@ -29,6 +30,7 @@ public:
 		CommandBase::init();
 		frc::SmartDashboard::PutString("AutoMode", "Center");
 		frc::SmartDashboard::PutNumber("DriveTime", 3);
+		frc::SmartDashboard::PutNumber("TurnTime",1);
 	//	frc::SmartDashboard::PutNumber("RightAutoAngle", RIGHTTURNANGLE);
 		//frc::SmartDashboard::PutNumber("LeftTurnAnlge", LEFTTURNANGLE);
 		// chooser.AddDefault("Default Auto", new ExampleCommand());
@@ -89,28 +91,28 @@ public:
 	//	double leftAngle = frc::SmartDashboard::GetNumber("LeftAngle", LEFTTURNANGLE);
 		std::string autoSelected = frc::SmartDashboard::GetString("AutoMode", "Center");
 		double driveTime = frc::SmartDashboard::GetNumber("DriveTime", 3);
+		double turnTime = frc::SmartDashboard::GetNumber("TurnTime",1);
 		CommandGroup *autonomous=new Autonomous();
 		if (autoSelected == "Right") {
 			autonomous->AddSequential(new DriveForTime(driveTime, 0.45));
+			autonomous->AddSequential(new TurnForTime(turnTime, -0.45));
 			//autonomous->AddSequential(new DriveStraight(DRIVEDISTANCE));
 			//autonomous->AddSequential(new Turn(-0.27));
-			autonomous->AddSequential(new TurnToAngle(-RIGHTTURNANGLE));
+			//autonomous->AddSequential(new TurnToAngle(-RIGHTTURNANGLE));
 
 			cout<<"Chose::Right Auto"<<endl;
 		}
 		else if(autoSelected == "Left"){
 			autonomous->AddSequential(new DriveForTime(driveTime, 0.45));
+			autonomous->AddSequential(new TurnForTime(turnTime, 0.45));
 			//autonomous->AddSequential(new DriveStraight(DRIVEDISTANCE));
 			//autonomous->AddSequential(new Turn(0.27));
-			autonomous->AddSequential(new TurnToAngle(LEFTTURNANGLE));
+			//autonomous->AddSequential(new TurnToAngle(LEFTTURNANGLE));
 			cout<<"Chose::Left Auto"<<endl;
 		}
-		else if(autoSelected == "Center"){
+		else {
 			cout<<"Chose::Center Auto"<<endl;
-			autonomous->AddSequential(new DriveForTime(1.75, 0.45));
-		}
-		else{
-			cout<<"Chose::Default Auto"<<endl;
+			//autonomous->AddSequential(new DriveForTime(1, 0.4));
 		}
 		autonomous->AddSequential(new DriveToTarget());
 

@@ -10,13 +10,13 @@
 #define IMAGE_WIDTH 320
 #define IMAGE_HEIGHT 240
 #define HFOV 49.6
-#define HOFFSET 8 // camera offset from robot center
+#define HOFFSET 5 // camera offset from robot center
 
 
 using namespace frc;
 
 llvm::ArrayRef<double>  Vision::hsvThresholdHue = {50, 110};
-llvm::ArrayRef<double>  Vision::hsvThresholdSaturation = {0, 70};
+llvm::ArrayRef<double>  Vision::hsvThresholdSaturation = {0, 255};
 llvm::ArrayRef<double>  Vision::hsvThresholdValue = {100, 150};
 double Vision::brightness = 1.0;
 double Vision::exposure = 1.0;

@@ -45,7 +45,11 @@ void DriveWithJoystick::Execute()
 	// Run axis values through deadband
 	yAxis = quadDeadband(.3, .4, yAxis);
 	xAxis = quadDeadband(xMinThreshold, xMinOutput, xAxis);
-	zAxis = 0.75*quadDeadband(zMinThreshold, zMinOutput, zAxis);
+	if(driveTrain->IsInLowGear()){ // if we are in low gear, decrease sensitivity
+		zAxis = 0.70*quadDeadband(zMinThreshold, zMinOutput, zAxis);
+	} else {
+		zAxis = quadDeadband(zMinThreshold, zMinOutput, zAxis);
+	}
 	driveTrain.get()->Drive(xAxis, yAxis, zAxis);
 }
 

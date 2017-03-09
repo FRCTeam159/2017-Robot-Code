@@ -20,12 +20,16 @@
 
 #define TICKS_PER_INCH (DRIVE_ENCODER_TICKS*GEAR_REDUCTION/M_PI/WHEEL_DIAMETER)
 
+//#define GYRO
+
 DriveTrain::DriveTrain() : Subsystem("DriveTrain"),
 		frontLeft(FRONTLEFT),   // slave  1
 		frontRight(FRONTRIGHT), // master 4
 		backLeft(BACKLEFT),     // master 2
-		backRight(BACKRIGHT),    // slave  3
-		gyro(frc::SPI::kOnboardCS0)
+		backRight(BACKRIGHT)    // slave  3
+#ifdef GYRO
+		,gyro(frc::SPI::kOnboardCS0)
+#endif
 {
 	InitDrive();
 
@@ -158,10 +162,14 @@ void DriveTrain::SetHighGear() {
 		inlowgear=false;
 	}
 }
+
+
 void DriveTrain::InitDrive() {
 	m_safetyHelper = std::make_unique<MotorSafetyHelper>(this);
 	m_safetyHelper->SetSafetyEnabled(true);
+#ifdef GYRO
 	gyro.Calibrate();
+#endif
 }
 
 void DriveTrain::SetExpiration(double timeout) {
@@ -263,9 +271,22 @@ void DriveTrain::Reset() {
 	backLeft.Reset();
 	frontRight.SetPosition(0);
 	backLeft.SetPosition(0);
+#ifdef GYRO
 	gyro.Reset();
+#endif
 }
 
 double DriveTrain::GetHeading() {
+#ifdef GYRO
 	return gyro.GetAngle();
+#endif
+	return 0;
+}
+
+bool DriveTrain::IsInLowGear() {
+	if(inlowgear){
+		return true;
+	} else {
+		return false;
+	}
 }

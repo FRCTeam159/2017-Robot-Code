@@ -3,10 +3,10 @@
 #define ADJUST_TIMEOUT 0.5
 #define MAX_ANGLE_ERROR 0.5
 #define DEFAULT_P 0.05
-#define DEFAULT_I 0.0001
+#define DEFAULT_I 0
 #define D 0
 #define SCALE 0.1
-#define MIN_DISTANCE 5
+#define MIN_DISTANCE 6
 #define DRIVE_TIMEOUT 0.2
 #define MAX_SPEED 0.5
 #define MIN_CURRENT .1
@@ -91,10 +91,11 @@ double DriveToTarget::GetDistance() {
 void DriveToTarget::PIDWrite(double err) {
 	double d=GetDistance();
 	int n=visionSubsystem->GetNumTargets();
-	err += MIN_CURRENT;
+	//err += MIN_CURRENT;
 	double df=(d-MIN_DISTANCE)/(distance-MIN_DISTANCE); // fraction of starting distance remaining
 	double afact=(1-df)+0.1; // bias angle correction towards end of travel
-	double a=-0.1*df*pow(afact,2.0)*visionSubsystem->GetTargetAngle();
+	double a=-0.01*df*visionSubsystem->GetTargetAngle();
+	// double a=-0.1*df*pow(afact,2.0)*visionSubsystem->GetTargetAngle();
 	if(n==0)
 		a=0;
     double e=-0.5*err;

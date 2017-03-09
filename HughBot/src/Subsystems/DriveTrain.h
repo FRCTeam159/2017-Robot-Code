@@ -31,6 +31,7 @@ public:
 	void InitDefaultCommand();
 	void SetLowGear();
 	void SetHighGear();
+	bool IsInLowGear();
 	void DisableDrive();
 	void EnableDrive();
 	void TankDrive(float xAxis, float yAxis);
