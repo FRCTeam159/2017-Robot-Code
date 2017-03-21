@@ -29,10 +29,10 @@
 #define TUNE_AUTO
 
 class Robot: public frc::IterativeRobot {
-	double rightDrive=0.45;
+	double rightDrive=0.47;
 	double rightTurn=0.4;
-	double leftDrive=0.45;
-	double leftTurn=0.25;
+	double leftDrive=0.47;
+	double leftTurn=0.35;
 
 public:
 	void RobotInit() override {
@@ -75,7 +75,7 @@ public:
 #ifdef TUNE_AUTO
 		leftDrive = frc::SmartDashboard::GetNumber("leftDrive", 0.5);
 		leftTurn = frc::SmartDashboard::GetNumber("leftTurn",0.32);
-		rightDrive = frc::SmartDashboard::GetNumber("rightDrive", 0.5);
+		rightDrive = frc::SmartDashboard::GetNumber("rightDrive", 0.47);
 		rightTurn = frc::SmartDashboard::GetNumber("rightTurn",0.32);
 #endif
 		CommandGroup *autonomous=new Autonomous();
@@ -108,7 +108,8 @@ public:
 			autonomous->AddSequential(new DriveForTime(1.5, 0.4));
 		}
 		autonomous->AddSequential(new DriveToTarget());
-		autonomous->AddSequential(new DriveForTime(1, 0.25));
+		//autonomous->AddSequential(new DriveForTime(0.5, 0));
+		autonomous->AddSequential(new DriveForTime(1, 0.3));
 		autonomous->AddSequential(new DriveForTime(1.5, -0.2));
 
 		autonomousCommand.reset(autonomous);

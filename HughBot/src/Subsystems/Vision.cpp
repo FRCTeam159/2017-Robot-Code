@@ -20,8 +20,8 @@ llvm::ArrayRef<double>  Vision::hsvThresholdSaturation = {0, 255};
 llvm::ArrayRef<double>  Vision::hsvThresholdValue = {100, 150};
 double Vision::brightness = 1.0;
 double Vision::exposure = 1.0;
-double Vision::I = 0.000;
-double Vision::P = 0.06;
+double Vision::I = 0.0002;
+double Vision::P = 0.07;
 /*sat min/max (0-70)
  * value (100-150)
  * hue (50-110)
@@ -145,8 +145,8 @@ void Vision::VisionThread(){
 		hsvThresholdSaturation={SmartDashboard::GetNumber("SaturationMin", 0),SmartDashboard::GetNumber("SaturationMax",70)};
 		double newBrightness=SmartDashboard::GetNumber("Brightness", 1);
 		double newExposure=SmartDashboard::GetNumber("Exposure", 1);
-		I = SmartDashboard::GetNumber("I", 0);
-		P = SmartDashboard::GetNumber("P", 0.06);
+		I = SmartDashboard::GetNumber("I", 0.0002);
+		P = SmartDashboard::GetNumber("P", 0.07);
 /*
 		if(newBrightness != brightness){
 			camera1.SetBrightness(newBrightness);

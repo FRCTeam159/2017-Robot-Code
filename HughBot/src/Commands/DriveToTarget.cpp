@@ -2,11 +2,11 @@
 
 #define ADJUST_TIMEOUT 0.5
 #define MAX_ANGLE_ERROR 0.5
-#define DEFAULT_P 0.06
-#define DEFAULT_I 0
+#define DEFAULT_P 0.07
+#define DEFAULT_I 0.0002
 #define D 0
 #define SCALE 0.1
-#define MIN_DISTANCE 10
+#define MIN_DISTANCE 12
 #define DRIVE_TIMEOUT 0.5
 #define MAX_SPEED 0.5
 #define MIN_CURRENT .1
