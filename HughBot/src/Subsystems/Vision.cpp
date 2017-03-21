@@ -10,7 +10,7 @@
 #define IMAGE_WIDTH 320
 #define IMAGE_HEIGHT 240
 #define HFOV 49.6
-#define HOFFSET 5 // camera offset from robot center
+#define HOFFSET 8 // camera offset from robot center
 
 
 using namespace frc;
@@ -20,8 +20,8 @@ llvm::ArrayRef<double>  Vision::hsvThresholdSaturation = {0, 255};
 llvm::ArrayRef<double>  Vision::hsvThresholdValue = {100, 150};
 double Vision::brightness = 1.0;
 double Vision::exposure = 1.0;
-double Vision::I = 0.0001;
-double Vision::P = 0.05;
+double Vision::I = 0.000;
+double Vision::P = 0.06;
 /*sat min/max (0-70)
  * value (100-150)
  * hue (50-110)
@@ -145,8 +145,8 @@ void Vision::VisionThread(){
 		hsvThresholdSaturation={SmartDashboard::GetNumber("SaturationMin", 0),SmartDashboard::GetNumber("SaturationMax",70)};
 		double newBrightness=SmartDashboard::GetNumber("Brightness", 1);
 		double newExposure=SmartDashboard::GetNumber("Exposure", 1);
-		I = SmartDashboard::GetNumber("I", 0.0001);
-		P = SmartDashboard::GetNumber("P", 0.05);
+		I = SmartDashboard::GetNumber("I", 0);
+		P = SmartDashboard::GetNumber("P", 0.06);
 /*
 		if(newBrightness != brightness){
 			camera1.SetBrightness(newBrightness);
@@ -274,9 +274,11 @@ void Vision::CalcTargetInfo(int n,cv::Point top, cv::Point bottom, TargetInfo &i
 		double xoffset=0;
 		if(n==1){
 			if(info.HorizontalOffset<0)
-				xoffset-=0.5*info.Height;
+				xoffset-=2*info.Width;
+				//xoffset-=0.6*info.Height;
 			else
-				xoffset+=0.5*info.Height;
+				xoffset+=2*info.Width;
+				//xoffset+=0.6*info.Height;
 		}
 	    double adjust=cameraInfo.fovFactor*cameraInfo.HorizontalOffset/info.Distance;
 	    double p=info.Center.x+adjust-0.5*cameraInfo.screenWidth;

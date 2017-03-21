@@ -10,6 +10,7 @@ TurnForTime::TurnForTime(double t, double s) {
 
 // Called just before this Command runs the first time
 void TurnForTime::Initialize() {
+	driveTrain->EnableDrive();
 	targetTime = Timer::GetFPGATimestamp() + time;
 	std::cout << "TurnForTime Started .."<< std::endl;
 }
@@ -29,6 +30,7 @@ bool TurnForTime::IsFinished() {
 
 // Called once after isFinished returns true
 void TurnForTime::End() {
+	driveTrain->DisableDrive();
 	std::cout << "TurnForTime End"<< std::endl;
 }
 

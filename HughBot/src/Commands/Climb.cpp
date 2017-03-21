@@ -20,7 +20,7 @@ void Climb::Execute() {
 	double climbingCurrent = climbingSubsystem->GetCurrent();
 	Joystick *stick = oi->GetJoystick();
 	frc::SmartDashboard::PutNumber("climberCurrent", climbingCurrent);
-	std::cout << "ClimbingSubsystem: Current is " << climbingCurrent << endl;
+	//std::cout << "ClimbingSubsystem: Current is " << climbingCurrent << endl;
 
 	switch(state){
 	default:

@@ -14,6 +14,7 @@ DriveForTime::DriveForTime(double t, double s)
 // Called just before this Command runs the first time
 void DriveForTime::Initialize()
 {
+	driveTrain->EnableDrive();
 	targetTime = Timer::GetFPGATimestamp() + time;
 	std::cout << "DriveForTime Started .."<< std::endl;
 }
@@ -37,6 +38,7 @@ bool DriveForTime::IsFinished()
 void DriveForTime::End()
 {
 	std::cout << "DriveForTime End"<< std::endl;
+	driveTrain->DisableDrive();
 }
 
 // Called when another command which requires one or more of the same

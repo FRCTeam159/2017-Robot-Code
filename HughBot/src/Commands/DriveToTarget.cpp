@@ -2,12 +2,12 @@
 
 #define ADJUST_TIMEOUT 0.5
 #define MAX_ANGLE_ERROR 0.5
-#define DEFAULT_P 0.05
+#define DEFAULT_P 0.06
 #define DEFAULT_I 0
 #define D 0
 #define SCALE 0.1
-#define MIN_DISTANCE 6
-#define DRIVE_TIMEOUT 0.2
+#define MIN_DISTANCE 10
+#define DRIVE_TIMEOUT 0.5
 #define MAX_SPEED 0.5
 #define MIN_CURRENT .1
 DriveToTarget::DriveToTarget() : CommandBase("DriveToTarget"),
@@ -21,6 +21,7 @@ DriveToTarget::DriveToTarget() : CommandBase("DriveToTarget"),
 // Called just before this Command runs the first time
 void DriveToTarget::Initialize() {
 	distance=visionSubsystem->GetTargetDistance();
+	driveTrain->EnableDrive();
 	SetTimeout(DRIVE_TIMEOUT*distance+1);
     int ntargets = visionSubsystem->GetNumTargets();
     if (ntargets>0){
@@ -51,10 +52,11 @@ bool DriveToTarget::IsFinished() {
 		return true;
 	}*/
 	visionSubsystem->GetTargetInfo(target);
-
+#define MAX_DIST_ERR 2
 	double d=GetDistance();
+	double err=d-MIN_DISTANCE;
 	int ntargets=visionSubsystem->GetNumTargets();
-	if(ntargets==0 || d<=MIN_DISTANCE)
+	if(ntargets==0 || err<MAX_DIST_ERR)
 		return true;
 	return false;
 }
@@ -63,6 +65,7 @@ bool DriveToTarget::IsFinished() {
 void DriveToTarget::End() {
 	pid.Disable();
 	driveTrain->DisableDrive();
+	gearSubsystem->Open();
     std::cout << "DriveToTarget End" << std::endl;
 
 }
@@ -93,7 +96,7 @@ void DriveToTarget::PIDWrite(double err) {
 	int n=visionSubsystem->GetNumTargets();
 	//err += MIN_CURRENT;
 	double df=(d-MIN_DISTANCE)/(distance-MIN_DISTANCE); // fraction of starting distance remaining
-	double afact=(1-df)+0.1; // bias angle correction towards end of travel
+	//double afact=(1-df)+0.1; // bias angle correction towards end of travel
 	double a=-0.01*df*visionSubsystem->GetTargetAngle();
 	// double a=-0.1*df*pow(afact,2.0)*visionSubsystem->GetTargetAngle();
 	if(n==0)

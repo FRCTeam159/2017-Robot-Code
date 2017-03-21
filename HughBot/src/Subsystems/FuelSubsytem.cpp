@@ -11,7 +11,7 @@ FuelSubsystem::FuelSubsystem() : Subsystem("Fuel"), fuelPusherMotor(FUELMOTOR) {
 
 void FuelSubsystem::InitDefaultCommand() {
 	// Set the default command for a subsystem here.
-	SetDefaultCommand(new FuelMonitor());
+	//SetDefaultCommand(new FuelMonitor());
 }
 
 void FuelSubsystem::SetVoltage(double value) {
