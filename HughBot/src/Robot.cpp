@@ -31,7 +31,7 @@
 class Robot: public frc::IterativeRobot {
 	double rightDrive=0.47;
 	double rightTurn=0.4;
-	double leftDrive=0.47;
+	double leftDrive=0.46;
 	double leftTurn=0.35;
 
 public:
@@ -110,7 +110,7 @@ public:
 		autonomous->AddSequential(new DriveToTarget());
 		//autonomous->AddSequential(new DriveForTime(0.5, 0));
 		autonomous->AddSequential(new DriveForTime(1, 0.3));
-		autonomous->AddSequential(new DriveForTime(1.5, -0.2));
+		autonomous->AddSequential(new DriveForTime(1, -0.2));
 
 		autonomousCommand.reset(autonomous);
 
